@@ -1,0 +1,246 @@
+/* ================================================================
+   AG MIAMI MOTORS — booking.css
+   ================================================================ */
+
+.booking-hero {
+  padding: calc(var(--header-h) + clamp(40px, 7vh, 100px)) var(--pad-x) clamp(40px, 6vh, 80px);
+  background: var(--c-black);
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 32px; flex-wrap: wrap;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.booking-hero__title {
+  font-family: var(--f-head);
+  font-size: clamp(56px, 10vw, 140px);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.88;
+  letter-spacing: -0.01em;
+}
+.booking-hero__title em { font-style: italic; color: var(--c-orange); }
+.booking-hero__sub {
+  font-size: 13px; font-weight: 300;
+  color: rgba(255,255,255,0.45);
+  max-width: 340px; line-height: 1.75;
+  align-self: flex-end;
+}
+
+/* ── Form Layout ────────────────────────────────────────────────── */
+.booking-section {
+  padding: clamp(60px, 8vh, 110px) var(--pad-x);
+  background: var(--c-black);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(48px, 8vw, 120px);
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .booking-section { grid-template-columns: 1fr; }
+  .booking-form__side { order: -1; }
+}
+
+.booking-form__info { position: sticky; top: 100px; }
+.booking-form__info h2 {
+  font-family: var(--f-head);
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.9;
+  margin-bottom: 36px;
+  letter-spacing: -0.01em;
+}
+.booking-form__info h2 em { color: var(--c-orange); font-style: italic; }
+.booking-form__info p {
+  font-size: 13px; font-weight: 300;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.8;
+  margin-bottom: 36px;
+}
+.booking-trust {
+  display: flex; flex-direction: column; gap: 18px;
+}
+.booking-trust__item {
+  display: flex; align-items: center; gap: 14px;
+  font-size: 13px; color: rgba(255,255,255,0.55);
+  line-height: 1.4;
+}
+.booking-trust__item::before {
+  content: '';
+  display: block; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--c-orange); flex-shrink: 0;
+}
+
+/* ── Live Price Summary ──────────────────────────────────────────── */
+.booking-price {
+  margin-top: 36px;
+  padding: 28px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,85,0,0.25);
+  border-radius: 2px;
+}
+.booking-price[hidden] { display: none; }
+.booking-price__label {
+  display: block;
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 10px;
+}
+.booking-price__car {
+  font-family: var(--f-head);
+  font-size: 20px; font-weight: 800;
+  text-transform: uppercase;
+  color: var(--c-white);
+  letter-spacing: -0.01em;
+  margin-bottom: 20px;
+}
+.booking-price__row {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 13px; color: rgba(255,255,255,0.5);
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.booking-price__row span:last-child { color: rgba(255,255,255,0.85); font-weight: 500; }
+.booking-price__row em {
+  font-style: normal; font-weight: 400;
+  font-size: 10px; letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.35);
+}
+.booking-price__total {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 18px;
+  font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+}
+.booking-price__total span:last-child {
+  font-family: var(--f-head);
+  font-size: 28px; font-weight: 900;
+  letter-spacing: -0.01em; text-transform: none;
+  color: var(--c-orange);
+}
+.booking-price__note {
+  margin-top: 16px;
+  font-size: 11px; line-height: 1.6;
+  color: rgba(255,255,255,0.3);
+}
+
+/* ── Form Fields ────────────────────────────────────────────────── */
+.booking-form { display: flex; flex-direction: column; gap: 24px; }
+
+.field-group {
+  display: grid; gap: 16px;
+}
+.field-group--2 { grid-template-columns: 1fr 1fr; }
+@media (max-width: 480px) { .field-group--2 { grid-template-columns: 1fr; } }
+
+.field {
+  position: relative;
+}
+.field__label {
+  display: block;
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 8px;
+  transition: color 0.25s;
+}
+.field:focus-within .field__label { color: var(--c-orange); }
+.field__label em {
+  font-style: normal; font-weight: 400;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.2);
+}
+
+.field__input,
+.field__select,
+.field__textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 2px;
+  padding: 14px 16px;
+  font-family: var(--f-body);
+  font-size: 14px; font-weight: 400;
+  color: var(--c-white);
+  appearance: none;
+  outline: none;
+  transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
+}
+.field__input:focus,
+.field__select:focus,
+.field__textarea:focus {
+  border-color: var(--c-orange);
+  background: rgba(255,85,0,0.04);
+  box-shadow: 0 0 0 1px rgba(255,85,0,0.2);
+}
+.field__input::placeholder,
+.field__textarea::placeholder { color: rgba(255,255,255,0.2); }
+
+.field__select { cursor: pointer; }
+.field__select option { background: #1a1a1a; }
+
+.field__textarea { resize: vertical; min-height: 100px; }
+
+/* Date & Time custom wrapper */
+.field__input[type="date"],
+.field__input[type="time"] {
+  color-scheme: dark;
+}
+
+/* Validation error state */
+.field__error {
+  display: none;
+  font-size: 11px; color: #ff5252;
+  margin-top: 6px;
+  letter-spacing: 0.02em;
+}
+.field--invalid .field__input {
+  border-color: #ff5252;
+  background: rgba(255,82,82,0.05);
+  box-shadow: 0 0 0 1px rgba(255,82,82,0.25);
+}
+.field--invalid .field__error { display: block; }
+
+/* Car selector (hidden by default, pre-filled by URL param) */
+.field--car .field__input {
+  border-color: rgba(255,85,0,0.3);
+  background: rgba(255,85,0,0.04);
+  color: var(--c-orange);
+  font-weight: 500;
+}
+
+/* Divider */
+.form-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+}
+
+/* Submit */
+.form-submit {
+  padding-top: 8px;
+}
+.btn-submit {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  width: 100%; padding: 20px 32px;
+  background: var(--c-orange);
+  border: none; border-radius: 2px;
+  font-family: var(--f-body);
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--c-black);
+  transition: background 0.3s, transform 0.2s;
+  cursor: pointer;
+}
+.btn-submit:hover {
+  background: #ff6a1a;
+  transform: translateY(-1px);
+}
+.btn-submit:active { transform: translateY(0); }
+.btn-submit svg { width: 16px; height: 16px; }
+
+.form-note {
+  font-size: 11px; color: rgba(255,255,255,0.25);
+  text-align: center; line-height: 1.6;
+  margin-top: 4px;
+}
+.form-note a { color: var(--c-orange); }

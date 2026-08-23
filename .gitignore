@@ -1,0 +1,6 @@
+# Secrets — contains a live API key, must never be committed
+.mcp.json
+
+# OS junk
+.DS_Store
+Thumbs.db
