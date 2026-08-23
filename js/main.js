@@ -183,6 +183,12 @@ lenis.on('scroll', ScrollTrigger.update);
       );
     });
   });
+
+  // Bfcache restore (browser Back/Forward) freezes the DOM mid-transition —
+  // without this the curtain can stay stuck covering the screen (black screen on back).
+  window.addEventListener('pageshow', event => {
+    if (event.persisted) gsap.set(curtain, { y: '-100%' });
+  });
 })();
 
 /* ── 9. Fleet cards entrance ─────────────────────────────────────── */

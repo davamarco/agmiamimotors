@@ -36,6 +36,12 @@ if (header) {
       gsap.fromTo(curtain, { y: '100%' }, { y: '0%', duration: 0.65, ease: 'expo.in', onComplete: () => window.location.href = href });
     });
   });
+
+  // Bfcache restore (browser Back/Forward) freezes the DOM mid-transition —
+  // without this the curtain can stay stuck covering the screen (black screen on back).
+  window.addEventListener('pageshow', event => {
+    if (event.persisted) gsap.set(curtain, { y: '-100%' });
+  });
 })();
 
 /* ── Magnetic ───────────────────────────────────────────────────── */

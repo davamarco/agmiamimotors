@@ -48,6 +48,12 @@ gsap.from('.car-hero__right',   { opacity: 0, x: 30, duration: 1,   ease: 'expo.
       });
     });
   });
+
+  // Bfcache restore (browser Back/Forward) freezes the DOM mid-transition —
+  // without this the curtain can stay stuck covering the screen (black screen on back).
+  window.addEventListener('pageshow', event => {
+    if (event.persisted) gsap.set(curtain, { y: '-100%' });
+  });
 })();
 
 /* ── Magnetic buttons ───────────────────────────────────────────── */
