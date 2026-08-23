@@ -182,6 +182,33 @@ function validateBookingForm(f) {
   return firstInvalid;
 }
 
+/* ── Thank-you modal ───────────────────────────────────────────── */
+function showThankYouModal() {
+  const modal = document.getElementById('thankyou-modal');
+  if (!modal) return;
+  setTimeout(() => {
+    modal.classList.add('is-visible');
+    modal.setAttribute('aria-hidden', 'false');
+  }, 1000);
+}
+
+(function initThankYouModal() {
+  const modal = document.getElementById('thankyou-modal');
+  if (!modal) return;
+
+  function closeModal() {
+    modal.classList.remove('is-visible');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  modal.addEventListener('click', e => {
+    if (e.target.closest('[data-modal-close]')) closeModal();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.classList.contains('is-visible')) closeModal();
+  });
+})();
+
 (function() {
   const form = document.getElementById('booking-form');
   if (!form) return;
@@ -209,7 +236,6 @@ function validateBookingForm(f) {
     const car      = val('car-name') || val('car-select') || 'Not specified';
     const dateFrom = val('date-from');
     const dateTo   = val('date-to');
-    const time     = val('time');
     const location = val('location');
     const name     = val('name');
     const email    = val('email');
@@ -217,16 +243,15 @@ function validateBookingForm(f) {
     const comment  = val('comment');
 
     const lines = [
-      `🚗 NEW BOOKING REQUEST`,
+      `NEW BOOKING REQUEST`,
       `Car: ${car}`,
-      `📅 Pick-up: ${dateFrom}`,
-      `📅 Return: ${dateTo}`,
-      time     ? `⏰ Time: ${time}` : null,
-      location ? `📍 Location: ${location}` : null,
-      `👤 Name: ${name}`,
-      `📞 Phone/WhatsApp: ${whatsapp}`,
-      email    ? `📧 Email: ${email}` : null,
-      comment  ? `💬 Notes: ${comment}` : null,
+      `Pick-up: ${dateFrom}`,
+      `Return: ${dateTo}`,
+      `Name: ${name}`,
+      `Phone/WhatsApp: ${whatsapp}`,
+      email    ? `Email: ${email}` : null,
+      location ? `Location: ${location}` : null,
+      comment  ? `Notes: ${comment}` : null,
       `From: AGMiamiMotors Website`,
     ].filter(Boolean).join('\n');
 
@@ -234,6 +259,7 @@ function validateBookingForm(f) {
     const url     = `https://wa.me/${WA_NUMBER}?text=${encoded}`;
 
     window.open(url, '_blank', 'noopener,noreferrer');
+    showThankYouModal();
   });
 })();
 

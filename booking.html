@@ -95,16 +95,10 @@
           </div>
         </div>
 
-        <!-- Time & Location -->
-        <div class="field-group field-group--2">
-          <div class="field">
-            <label class="field__label" for="time">Pick-Up Time <em>(optional)</em></label>
-            <input class="field__input" type="time" id="time" name="time" />
-          </div>
-          <div class="field">
-            <label class="field__label" for="location">Delivery Location <em>(optional)</em></label>
-            <input class="field__input" type="text" id="location" name="location" placeholder="Hotel, address or airport…" />
-          </div>
+        <!-- Location -->
+        <div class="field">
+          <label class="field__label" for="location">Delivery Location <em>(optional)</em></label>
+          <input class="field__input" type="text" id="location" name="location" placeholder="Hotel, address or airport…" />
         </div>
 
         <div class="form-divider"></div>
@@ -202,6 +196,18 @@
       <span class="footer__bar-copy">© 2026 AG Miami Motors</span>
     </div>
   </footer>
+
+  <!-- Thank-you modal -->
+  <div class="thankyou-modal" id="thankyou-modal" aria-hidden="true">
+    <div class="thankyou-modal__overlay" data-modal-close></div>
+    <div class="thankyou-modal__box" role="dialog" aria-modal="true" aria-labelledby="thankyou-modal-text">
+      <p class="thankyou-modal__text" id="thankyou-modal-text">
+        Thank you! Your request has been sent.<br>
+        We will get back to you shortly.
+      </p>
+      <button type="button" class="thankyou-modal__close" data-modal-close>Close</button>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>

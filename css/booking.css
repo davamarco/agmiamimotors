@@ -181,9 +181,8 @@
 
 .field__textarea { resize: vertical; min-height: 100px; }
 
-/* Date & Time custom wrapper */
-.field__input[type="date"],
-.field__input[type="time"] {
+/* Date custom wrapper */
+.field__input[type="date"] {
   color-scheme: dark;
 }
 
@@ -244,3 +243,58 @@
   margin-top: 4px;
 }
 .form-note a { color: var(--c-orange); }
+
+/* ── Thank-you modal ────────────────────────────────────────────── */
+.thankyou-modal {
+  position: fixed; inset: 0; z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+}
+.thankyou-modal.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.4s ease;
+}
+.thankyou-modal__overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.thankyou-modal__box {
+  position: relative;
+  width: min(420px, 100%);
+  background: var(--c-black-2);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 2px;
+  padding: 44px 36px 36px;
+  text-align: center;
+  transform: translateY(16px) scale(0.97);
+  transition: transform 0.4s var(--ease-expo);
+}
+.thankyou-modal.is-visible .thankyou-modal__box {
+  transform: translateY(0) scale(1);
+}
+.thankyou-modal__text {
+  font-size: 16px; font-weight: 300;
+  color: var(--c-white);
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+.thankyou-modal__close {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 14px 40px;
+  background: var(--c-orange);
+  border: none; border-radius: 2px;
+  font-family: var(--f-body);
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--c-black);
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+.thankyou-modal__close:hover { background: #ff6a1a; }
+.thankyou-modal__close:active { transform: translateY(1px); }
