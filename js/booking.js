@@ -226,6 +226,8 @@ function showThankYouModal() {
     input?.addEventListener('change', () => clearFieldError(input));
   });
 
+  let leadEventSent = false; // fire the GTM conversion event at most once per page load
+
   form.addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -264,8 +266,15 @@ function showThankYouModal() {
     const encoded = encodeURIComponent(lines);
     const url     = `https://wa.me/${WA_NUMBER}?text=${encoded}`;
 
-    window.open(url, '_blank', 'noopener,noreferrer');
+    const waWindow = window.open(url, '_blank', 'noopener,noreferrer');
     showThankYouModal();
+
+    // Lead confirmed: validation passed and the WhatsApp handoff succeeded (not blocked as a popup).
+    if (waWindow && !leadEventSent) {
+      leadEventSent = true;
+      window.dataLayer = window.dataLayer || [];
+      dataLayer.push({ 'event': 'manual_event_SUBMIT_LEAD_FORM' });
+    }
   });
 })();
 
