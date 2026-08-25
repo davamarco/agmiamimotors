@@ -608,7 +608,6 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
 
 /* ── FAQ ────────────────────────────────────────────────────────── */
 .faq {
-  --f-faq-head: 'Bebas Neue', var(--f-head);
   --f-faq-body: 'Inter', var(--f-body);
   position: relative;
   padding: clamp(80px, 11vh, 160px) 0;
@@ -616,14 +615,6 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   border-top: 1px solid rgba(255,255,255,0.06);
 }
 .faq__head { margin-bottom: clamp(40px, 6vh, 72px); }
-.faq__title {
-  font-family: var(--f-faq-head);
-  font-size: clamp(40px, 6vw, 84px);
-  font-weight: 400;
-  text-transform: uppercase;
-  line-height: 1;
-  letter-spacing: 0.01em;
-}
 .faq__list { max-width: 880px; }
 .faq-item {
   border-bottom: 1px solid rgba(255,255,255,0.1);
