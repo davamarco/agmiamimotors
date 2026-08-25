@@ -160,6 +160,36 @@ lenis.on('scroll', ScrollTrigger.update);
   items.forEach(item => observer.observe(item));
 })();
 
+/* ── 7b. FAQ accordion + scroll reveal ────────────────────────────── */
+(function initFAQ() {
+  const items = document.querySelectorAll('.faq-item');
+  if (!items.length) return;
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (!entry.isIntersecting) return;
+      setTimeout(() => entry.target.classList.add('is-visible'), i * 90);
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.2 });
+  items.forEach(item => observer.observe(item));
+
+  items.forEach(item => {
+    const btn = item.querySelector('.faq-item__q');
+    btn.addEventListener('click', () => {
+      const wasOpen = item.classList.contains('is-open');
+      items.forEach(i => {
+        i.classList.remove('is-open');
+        i.querySelector('.faq-item__q').setAttribute('aria-expanded', 'false');
+      });
+      if (!wasOpen) {
+        item.classList.add('is-open');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+})();
+
 /* ── 8. Page transition ──────────────────────────────────────────── */
 (function initPageTransition() {
   const curtain = document.getElementById('page-curtain');
