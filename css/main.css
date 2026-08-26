@@ -12,7 +12,6 @@
   --c-orange:      #FF5500;
   --c-orange-a:    rgba(255, 85, 0, 0.18);
   --c-orange-glow: rgba(255, 85, 0, 0.45);
-  --c-gold:        #C9A84C;
   --c-gray:        #888888;
   --c-gray-mid:    #3A3A3A;
   --c-glass:       rgba(255, 255, 255, 0.04);
@@ -676,9 +675,9 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   text-transform: uppercase;
   line-height: 1;
   letter-spacing: 0.01em;
-  margin: 18px 0 22px;
+  margin: 0 0 22px;
 }
-.chauffeur__title em { color: var(--c-gold); font-style: normal; }
+.chauffeur__title em { color: var(--c-orange); font-style: normal; }
 .chauffeur__sub {
   font-family: var(--f-chauffeur-body);
   font-size: clamp(16px, 1.8vw, 22px);
@@ -703,30 +702,51 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   margin-bottom: clamp(48px, 7vh, 72px);
 }
 .chauffeur__feature {
-  display: flex; flex-direction: column; align-items: center; gap: 16px;
-  padding: clamp(28px, 3vw, 36px) 16px;
+  position: relative;
+  overflow: hidden;
+  text-align: left;
+  padding: clamp(30px, 3.2vw, 42px) clamp(22px, 2.4vw, 30px);
+  background: linear-gradient(155deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.015) 100%);
   border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 4px;
+  border-radius: 6px;
   opacity: 0; transform: translateY(24px);
-  transition: opacity 0.8s var(--ease-expo), transform 0.8s var(--ease-expo);
+  transition: opacity 0.8s var(--ease-expo), transform 0.8s var(--ease-expo),
+              border-color 0.4s, transform 0.4s;
 }
 .chauffeur__feature.is-visible { opacity: 1; transform: none; }
+.chauffeur__feature::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 100% 0%, var(--c-orange-glow) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.chauffeur__feature:hover {
+  border-color: rgba(255,85,0,0.35);
+  transform: translateY(-6px);
+}
+.chauffeur__feature:hover::before { opacity: 0.55; }
 .chauffeur__feature-num {
-  display: flex; align-items: center; justify-content: center;
-  width: 52px; height: 52px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 85, 0, 0.4);
-  color: var(--c-orange);
+  position: relative; z-index: 1;
+  display: block;
   font-family: var(--f-chauffeur-head);
-  font-size: 22px;
-  flex-shrink: 0;
+  font-size: clamp(46px, 5vw, 60px);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 85, 0, 0.55);
+  margin-bottom: clamp(20px, 2.5vw, 26px);
+  transition: -webkit-text-stroke-color 0.4s;
+}
+.chauffeur__feature:hover .chauffeur__feature-num {
+  -webkit-text-stroke-color: var(--c-orange);
 }
 .chauffeur__feature h3 {
+  position: relative; z-index: 1;
   font-family: var(--f-chauffeur-body);
-  font-size: 13px; font-weight: 500;
+  font-size: 14px; font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  line-height: 1.4;
+  letter-spacing: 0.03em;
+  line-height: 1.45;
   color: var(--c-white);
 }
 @media (max-width: 768px) {
