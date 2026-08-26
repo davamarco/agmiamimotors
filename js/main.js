@@ -160,6 +160,22 @@ lenis.on('scroll', ScrollTrigger.update);
   items.forEach(item => observer.observe(item));
 })();
 
+/* ── 7a. Private Driver scroll reveal ─────────────────────────────── */
+(function initChauffeur() {
+  const items = document.querySelectorAll('[data-chauffeur]');
+  if (!items.length) return;
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (!entry.isIntersecting) return;
+      setTimeout(() => entry.target.classList.add('is-visible'), i * 120);
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.2 });
+
+  items.forEach(item => observer.observe(item));
+})();
+
 /* ── 7b. FAQ accordion + scroll reveal ────────────────────────────── */
 (function initFAQ() {
   const items = document.querySelectorAll('.faq-item');

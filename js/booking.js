@@ -241,7 +241,8 @@ function showThankYouModal() {
       return;
     }
 
-    const car      = val('car-name') || val('car-select') || 'Not specified';
+    const car           = val('car-name') || val('car-select') || 'Not specified';
+    const privateDriver = f.querySelector('#private-driver-toggle')?.checked;
     const dateFrom = val('date-from');
     const dateTo   = val('date-to');
     const location = val('location');
@@ -253,6 +254,7 @@ function showThankYouModal() {
     const lines = [
       `NEW BOOKING REQUEST`,
       `Car: ${car}`,
+      privateDriver ? `Private Driver: Yes` : null,
       `Pick-up: ${dateFrom}`,
       `Return: ${dateTo}`,
       `Name: ${name}`,

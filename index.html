@@ -27,7 +27,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Inter:wght@300;400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Bebas+Neue&family=Inter:wght@300;400;500&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="css/main.css" />
 </head>
@@ -53,6 +53,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <nav class="header__nav">
       <a href="#fleet" class="nav-link">Fleet</a>
+      <a href="#private-driver" class="nav-link nav-link--gold">Private Driver</a>
       <a href="#why-us" class="nav-link">About</a>
       <a href="#contact" class="nav-link">Contact</a>
     </nav>
@@ -351,6 +352,47 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </section>
 
   <!-- ══════════════════════════════════════════════
+       PRIVATE DRIVER
+  ══════════════════════════════════════════════ -->
+  <section class="chauffeur" id="private-driver">
+    <div class="container">
+      <div class="chauffeur__head">
+        <span class="section-label">Beyond The Wheel</span>
+        <h2 class="chauffeur__title">Your Car.<br>Your <em>Chauffeur.</em></h2>
+        <p class="chauffeur__sub">Prefer to relax in the back seat?</p>
+        <p class="chauffeur__text">Add a private, licensed chauffeur to any vehicle in our fleet — perfect for airport arrivals, events, or a night out in Miami. Availability and rates are confirmed directly with our team.</p>
+      </div>
+
+      <div class="chauffeur__features">
+        <div class="chauffeur__feature" data-chauffeur>
+          <span class="chauffeur__feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
+          </span>
+          <h3>Professional &amp; Licensed</h3>
+        </div>
+        <div class="chauffeur__feature" data-chauffeur>
+          <span class="chauffeur__feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12.5l1.6-5A2 2 0 0 1 6.5 6h11a2 2 0 0 1 1.9 1.5l1.6 5"/><rect x="2.5" y="12.5" width="19" height="5" rx="1.5"/><circle cx="7" cy="17.5" r="1.4"/><circle cx="17" cy="17.5" r="1.4"/></svg>
+          </span>
+          <h3>Available For Any Vehicle</h3>
+        </div>
+        <div class="chauffeur__feature" data-chauffeur>
+          <span class="chauffeur__feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          </span>
+          <h3>Airport Transfers, Events, Nights Out</h3>
+        </div>
+      </div>
+
+      <div class="chauffeur__cta-wrap">
+        <a href="https://wa.me/19543108470?text=Hi%2C%20I%27m%20interested%20in%20adding%20a%20private%20driver%20to%20my%20rental." target="_blank" rel="noopener" class="btn-glass btn-glass--xl magnetic">
+          <span>Request a Private Driver</span><span class="btn-glow"></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
        MARQUEE
   ══════════════════════════════════════════════ -->
   <div class="marquee-wrap" aria-hidden="true">
@@ -484,6 +526,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div class="faq-item__a-wrap">
             <div class="faq-item__a-inner">
               <p class="faq-item__a">Absolutely. We offer daily, weekly, and longer-term rentals. Special rates may be available for multi-day and extended rentals.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item" data-faq>
+          <button class="faq-item__q" type="button" aria-expanded="false">
+            <span>Do you offer a private driver?</span>
+            <span class="faq-item__icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-item__a-wrap">
+            <div class="faq-item__a-inner">
+              <p class="faq-item__a">Yes. We offer professional, licensed chauffeurs for any vehicle in our fleet. Availability and rates are confirmed directly with our team — just let us know when booking or reach out via WhatsApp.</p>
             </div>
           </div>
         </div>
