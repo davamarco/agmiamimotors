@@ -237,6 +237,29 @@ lenis.on('scroll', ScrollTrigger.update);
   });
 })();
 
+/* ── 8b. Smooth-scroll same-page anchor links ─────────────────────
+   .page-link click handling above deliberately skips "#..." hrefs
+   (no curtain transition for an in-page jump) — handle those here
+   instead, animating through Lenis so the scroll eases in/out rather
+   than snapping instantly. ─────────────────────────────────────── */
+(function initAnchorScroll() {
+  const HEADER_OFFSET = 80; // matches --header-h
+  const easeOutExpo = t => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t));
+
+  document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(link => {
+    link.addEventListener('click', e => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      lenis.scrollTo(target, {
+        offset: -HEADER_OFFSET,
+        duration: 1.4,
+        easing: easeOutExpo,
+      });
+    });
+  });
+})();
+
 /* ── 9. Fleet cards entrance ─────────────────────────────────────── */
 (function initFleetEntrance() {
   const cards = document.querySelectorAll('.car-card');

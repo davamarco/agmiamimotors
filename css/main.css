@@ -31,6 +31,8 @@
 
 /* ── Reset ──────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* Smooth scrolling is handled by Lenis (JS) — native "smooth" here would
+   fight it for control of the scroll position and cause stutter. */
 html { scroll-behavior: auto; }
 
 /* ── Custom Scrollbar ───────────────────────────────────────────── */
