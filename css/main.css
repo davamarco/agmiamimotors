@@ -252,39 +252,75 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
 .nav-link:hover { color: #FF5500; }
 .nav-link:hover::after { width: 100%; }
 
-.nav-link--gold {
-  color: var(--c-gold);
-  letter-spacing: 1px;
-  border: 1px solid rgba(201, 168, 76, 0.5);
-  border-radius: 20px;
-  padding: 6px 16px;
-  transition: color 0.3s, background 0.3s, border-color 0.3s;
-}
-.nav-link--gold::after { display: none; }
-.nav-link.nav-link--gold:hover {
-  color: var(--c-black);
-  background: var(--c-gold);
-  border-color: var(--c-gold);
-}
-
-.header__cta {
-  display: inline-flex; align-items: center;
-  margin-left: auto;
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.3);
-  border-radius: 2px;
-  padding: 10px 28px;
+/* ── ANIMATED BUTTON (Private Driver) ──────────────────────────────
+   Adapted from a uiverse.io component, recolored to the site's
+   orange accent. Used both in the header nav and the Private Driver
+   section CTA. ────────────────────────────────────────────────── */
+.animated-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 28px;
+  border: 4px solid;
+  border-color: transparent;
   font-family: var(--f-body);
-  font-size: 11px; font-weight: 500;
-  letter-spacing: 2px; text-transform: uppercase;
-  color: #fff;
-  transition: background 0.3s, border-color 0.3s, color 0.3s;
+  font-size: 13px;
+  background-color: inherit;
+  border-radius: 100px;
+  font-weight: 600;
+  color: #FF5500;
+  box-shadow: 0 0 0 2px #FF5500;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
-.header__cta:hover {
-  background: #FF5500;
-  border-color: #FF5500;
-  color: #fff;
+.animated-button svg {
+  position: absolute;
+  width: 20px;
+  fill: #FF5500;
+  z-index: 9;
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
 }
+.animated-button .arr-1 { right: 16px; }
+.animated-button .arr-2 { left: -25%; }
+.animated-button .circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  background-color: #FF5500;
+  border-radius: 50%;
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.animated-button .text {
+  position: relative;
+  z-index: 1;
+  transform: translateX(-12px);
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.animated-button:hover {
+  box-shadow: 0 0 0 12px transparent;
+  color: #212121;
+  border-radius: 12px;
+}
+.animated-button:hover .arr-1 { right: -25%; }
+.animated-button:hover .arr-2 { left: 16px; }
+.animated-button:hover .text { transform: translateX(12px); }
+.animated-button:hover svg { fill: #212121; }
+.animated-button:active {
+  scale: 0.95;
+  box-shadow: 0 0 0 4px #FF5500;
+}
+.animated-button:hover .circle {
+  width: 220px;
+  height: 220px;
+  opacity: 1;
+}
+.header__chauffeur-btn { margin-left: auto; }
 
 /* ── HERO ───────────────────────────────────────────────────────── */
 .hero {
@@ -905,7 +941,7 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
 @media (max-width: 768px) {
   :root { --pad-x: clamp(16px, 5vw, 28px); }
 
-  .header__cta { display: none; }
+  .header__chauffeur-btn { display: none; }
   .header__nav {
     position: static; transform: none;
     flex: 1;
@@ -937,7 +973,7 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
 @media (max-width: 480px) {
   .header__nav { gap: 10px; }
   .nav-link { font-size: 11px; }
-  .nav-link--gold { padding: 5px 10px; letter-spacing: 0.3px; }
+  .animated-button { padding: 9px 20px; font-size: 11px; }
 
   .hero__actions { flex-direction: column; align-items: flex-start; }
   .btn-hero-book { padding: 16px 36px; font-size: 12px; }
