@@ -322,6 +322,7 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   opacity: 1;
 }
 .header__chauffeur-btn { margin-left: auto; }
+.hero__chauffeur-btn { display: none; opacity: 0; }
 
 /* ── HERO ───────────────────────────────────────────────────────── */
 .hero {
@@ -1029,9 +1030,23 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   .nav-link { font-size: 11px; }
   .animated-button { padding: 9px 20px; font-size: 11px; }
 
-  .hero__actions { flex-direction: column; align-items: flex-start; }
+  .hero__actions { flex-direction: row; flex-wrap: nowrap; gap: 10px; }
   .btn-hero-book { padding: 16px 36px; font-size: 12px; }
   .btn-glass--xl, .btn-outline { padding: 13px 24px; font-size: 10px; }
+  .hero__actions .btn-hero-book,
+  .hero__actions .btn-outline {
+    flex: 1;
+    justify-content: center;
+    padding-left: 14px;
+    padding-right: 14px;
+    font-size: 10px;
+  }
+
+  .hero__chauffeur-btn {
+    display: flex;
+    width: fit-content;
+    margin: 14px auto 0;
+  }
 
   .google-badge { padding: 8px 14px; gap: 8px; }
   .google-badge__logo { width: 16px; height: 16px; }
