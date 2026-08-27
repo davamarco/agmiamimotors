@@ -397,11 +397,12 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   border: 1px solid rgba(255,255,255,0.14);
   border-radius: 999px;
   opacity: 0;
-  transition: border-color 0.3s, background 0.3s;
+  transition: border-color 0.3s, background 0.3s, transform 0.3s var(--ease-expo);
 }
 .google-badge:hover {
   border-color: var(--c-orange);
   background: rgba(255,85,0,0.08);
+  transform: translateX(4px);
 }
 .google-badge__logo { width: 18px; height: 18px; flex-shrink: 0; }
 .google-badge__stars {

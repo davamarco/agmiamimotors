@@ -48,7 +48,10 @@ lenis.on('scroll', ScrollTrigger.update);
     .to(eyebrow, { opacity: 1, y: 0, duration: 0.8 }, '-=0.7')
     .to(sub,     { opacity: 1, y: 0, duration: 0.8 }, '-=0.55')
     .to(badge,   { opacity: 1, y: 0, duration: 0.8 }, '-=0.55')
-    .to(actions, { opacity: 1, y: 0, duration: 0.8 }, '-=0.55');
+    .to(actions, { opacity: 1, y: 0, duration: 0.8 }, '-=0.55')
+    // Drop the inline transform GSAP leaves behind — otherwise it outranks
+    // the CSS :hover transform on .google-badge and the hover effect never shows.
+    .set(badge, { clearProps: 'transform' });
 })();
 
 /* ── 4. Hero photo parallax ─────────────────────────────────────── */
