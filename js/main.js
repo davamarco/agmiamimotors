@@ -36,16 +36,18 @@ lenis.on('scroll', ScrollTrigger.update);
   const lines   = document.querySelectorAll('.hero__line');
   const eyebrow = document.querySelector('.hero__eyebrow');
   const sub     = document.querySelector('.hero__sub');
+  const badge   = document.querySelector('.google-badge');
   const actions = document.querySelector('.hero__actions');
 
   if (!lines.length) return;
 
-  gsap.set([eyebrow, sub, actions], { y: 18 });
+  gsap.set([eyebrow, sub, badge, actions], { y: 18 });
 
   gsap.timeline({ defaults: { ease: 'expo.out', duration: 1.2 } })
     .to(lines,   { y: '0%', stagger: 0.1, delay: 0.25 })
     .to(eyebrow, { opacity: 1, y: 0, duration: 0.8 }, '-=0.7')
     .to(sub,     { opacity: 1, y: 0, duration: 0.8 }, '-=0.55')
+    .to(badge,   { opacity: 1, y: 0, duration: 0.8 }, '-=0.55')
     .to(actions, { opacity: 1, y: 0, duration: 0.8 }, '-=0.55');
 })();
 

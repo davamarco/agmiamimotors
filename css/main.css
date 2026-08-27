@@ -389,6 +389,36 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   margin-bottom: 36px;
   opacity: 0;
 }
+.google-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 10px 18px;
+  margin-bottom: 28px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 999px;
+  opacity: 0;
+  transition: border-color 0.3s, background 0.3s;
+}
+.google-badge:hover {
+  border-color: var(--c-orange);
+  background: rgba(255,85,0,0.08);
+}
+.google-badge__logo { width: 18px; height: 18px; flex-shrink: 0; }
+.google-badge__stars {
+  color: #FFC107;
+  font-size: 13px;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+.google-badge__text {
+  font-family: var(--f-body);
+  font-size: 12px; font-weight: 500;
+  color: var(--c-white);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.google-badge__text strong { font-weight: 700; }
+
 .hero__actions {
   display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
   opacity: 0;
@@ -1000,4 +1030,9 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   .hero__actions { flex-direction: column; align-items: flex-start; }
   .btn-hero-book { padding: 16px 36px; font-size: 12px; }
   .btn-glass--xl, .btn-outline { padding: 13px 24px; font-size: 10px; }
+
+  .google-badge { padding: 8px 14px; gap: 8px; }
+  .google-badge__logo { width: 16px; height: 16px; }
+  .google-badge__stars { font-size: 11px; }
+  .google-badge__text { font-size: 11px; }
 }
