@@ -1,5 +1,5 @@
 /* ================================================================
-   AG MIAMI MOTORS — booking.js
+   AG MOTORS MIAMI — booking.js
    Form handling · WhatsApp submit · URL param pre-fill
    ================================================================ */
 
@@ -262,7 +262,7 @@ function showThankYouModal() {
       email    ? `Email: ${email}` : null,
       location ? `Location: ${location}` : null,
       comment  ? `Notes: ${comment}` : null,
-      `From: AGMiamiMotors Website`,
+      `From: AGMotorsMiami Website`,
     ].filter(Boolean).join('\n');
 
     const encoded = encodeURIComponent(lines);

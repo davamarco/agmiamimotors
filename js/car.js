@@ -1,5 +1,5 @@
 /* ================================================================
-   AG MIAMI MOTORS — car.js  (performance-optimised)
+   AG MOTORS MIAMI — car.js  (performance-optimised)
    ================================================================ */
 
 'use strict';
