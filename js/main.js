@@ -306,3 +306,53 @@ lenis.on('scroll', ScrollTrigger.update);
     },
   });
 })();
+
+/* ── 11. Private Driver quick-request → Web3Forms (auto-email) ──── */
+(function initPrivateDriverCta() {
+  const buttons = document.querySelectorAll('[data-cta="private-driver"]');
+  if (!buttons.length) return;
+
+  const WEB3FORMS_ACCESS_KEY = '8aeb3671-54be-4636-bfac-c7ed5ee15fe0';
+  const WEB3FORMS_ENDPOINT   = 'https://api.web3forms.com/submit';
+
+  function showToast(text) {
+    const toast = document.createElement('div');
+    toast.textContent = text;
+    Object.assign(toast.style, {
+      position: 'fixed', left: '50%', bottom: '32px', transform: 'translateX(-50%)',
+      background: '#212121', color: '#fff', padding: '14px 24px', borderRadius: '100px',
+      fontFamily: 'var(--f-body)', fontSize: '13px', fontWeight: '600', zIndex: '9999',
+      boxShadow: '0 0 0 2px #FF5500', opacity: '0', transition: 'opacity 0.4s ease',
+    });
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => { toast.style.opacity = '1'; });
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      setTimeout(() => toast.remove(), 400);
+    }, 4000);
+  }
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.disabled = true;
+
+      fetch(WEB3FORMS_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: 'Private Driver Request — AG Motors Miami Website',
+          from_name: 'AG Motors Miami Website',
+          message: "Hi, I'm interested in adding a private driver to my rental.",
+          botcheck: false,
+        }),
+      })
+        .then(res => res.json())
+        .then(data => showToast(data.success
+          ? "Thanks! We'll be in touch shortly."
+          : 'Something went wrong — please call us at +1 (954) 310-8470.'))
+        .catch(() => showToast('Something went wrong — please call us at +1 (954) 310-8470.'))
+        .finally(() => { btn.disabled = false; });
+    });
+  });
+})();

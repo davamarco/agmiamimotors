@@ -161,8 +161,10 @@ const CAR_PRICES = {
   update();
 })();
 
-/* ── Form submit → Email ───────────────────────────────────────── */
-const MAILTO_ADDRESS = 'Info@agmotorsmiami.com';
+/* ── Form submit → Web3Forms (auto-email, no app opens) ─────────── */
+const WEB3FORMS_ACCESS_KEY = '8aeb3671-54be-4636-bfac-c7ed5ee15fe0';
+const WEB3FORMS_ENDPOINT   = 'https://api.web3forms.com/submit';
+const MAILTO_ADDRESS       = 'Info@agmotorsmiami.com'; // fallback only, if the API call fails
 
 const REQUIRED_FIELD_IDS = ['date-from', 'date-to', 'name'];
 
@@ -265,11 +267,30 @@ function showThankYouModal() {
       `From: AGMotorsMiami Website`,
     ].filter(Boolean).join('\n');
 
-    const subject   = encodeURIComponent(`Booking Request — ${car}`);
-    const body      = encodeURIComponent(lines);
-    const mailtoUrl = `mailto:${MAILTO_ADDRESS}?subject=${subject}&body=${body}`;
+    const subject   = `Booking Request — ${car}`;
+    const mailtoUrl = `mailto:${MAILTO_ADDRESS}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines)}`;
 
-    window.location.href = mailtoUrl;
+    const submitBtn = f.querySelector('.btn-submit');
+    if (submitBtn) submitBtn.disabled = true;
+
+    fetch(WEB3FORMS_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_ACCESS_KEY,
+        subject: subject,
+        from_name: 'AG Motors Miami Website',
+        name: name,
+        email: email || undefined,
+        message: lines,
+        botcheck: false,
+      }),
+    })
+      .then(res => res.json())
+      .then(data => { if (!data.success) window.location.href = mailtoUrl; }) // API rejected it — fall back to opening the visitor's mail client
+      .catch(() => { window.location.href = mailtoUrl; })                     // network error — same fallback
+      .finally(() => { if (submitBtn) submitBtn.disabled = false; });
+
     showThankYouModal();
 
     if (!leadEventSent) {
