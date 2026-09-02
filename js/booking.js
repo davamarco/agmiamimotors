@@ -161,10 +161,10 @@ const CAR_PRICES = {
   update();
 })();
 
-/* ── Form submit → WhatsApp ─────────────────────────────────────── */
-const WA_NUMBER = '19543108470';
+/* ── Form submit → Email ───────────────────────────────────────── */
+const MAILTO_ADDRESS = 'Info@agmotorsmiami.com';
 
-const REQUIRED_FIELD_IDS = ['date-from', 'date-to', 'name', 'whatsapp'];
+const REQUIRED_FIELD_IDS = ['date-from', 'date-to', 'name'];
 
 function clearFieldError(input) {
   input.closest('.field')?.classList.remove('field--invalid');
@@ -258,21 +258,21 @@ function showThankYouModal() {
       `Pick-up: ${dateFrom}`,
       `Return: ${dateTo}`,
       `Name: ${name}`,
-      `Phone/WhatsApp: ${whatsapp}`,
+      whatsapp ? `Phone/WhatsApp: ${whatsapp}` : null,
       email    ? `Email: ${email}` : null,
       location ? `Location: ${location}` : null,
       comment  ? `Notes: ${comment}` : null,
       `From: AGMotorsMiami Website`,
     ].filter(Boolean).join('\n');
 
-    const encoded = encodeURIComponent(lines);
-    const url     = `https://wa.me/${WA_NUMBER}?text=${encoded}`;
+    const subject   = encodeURIComponent(`Booking Request — ${car}`);
+    const body      = encodeURIComponent(lines);
+    const mailtoUrl = `mailto:${MAILTO_ADDRESS}?subject=${subject}&body=${body}`;
 
-    const waWindow = window.open(url, '_blank', 'noopener,noreferrer');
+    window.location.href = mailtoUrl;
     showThankYouModal();
 
-    // Lead confirmed: validation passed and the WhatsApp handoff succeeded (not blocked as a popup).
-    if (waWindow && !leadEventSent) {
+    if (!leadEventSent) {
       leadEventSent = true;
       window.dataLayer = window.dataLayer || [];
       dataLayer.push({ 'event': 'manual_event_SUBMIT_LEAD_FORM' });
