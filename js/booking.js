@@ -273,18 +273,22 @@ function showThankYouModal() {
     const submitBtn = f.querySelector('.btn-submit');
     if (submitBtn) submitBtn.disabled = true;
 
+    // FormData (not JSON) — a "simple" CORS request that skips the preflight OPTIONS
+    // round-trip some browsers/ad-blockers on desktop drop, which was silently failing
+    // the fetch and triggering the mailto fallback below on every desktop submission.
+    const formData = new FormData();
+    formData.append('access_key', WEB3FORMS_ACCESS_KEY);
+    formData.append('subject', subject);
+    formData.append('from_name', 'AG Motors Miami Website');
+    formData.append('name', name);
+    if (email) formData.append('email', email);
+    formData.append('message', lines);
+    formData.append('botcheck', '');
+
     fetch(WEB3FORMS_ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        access_key: WEB3FORMS_ACCESS_KEY,
-        subject: subject,
-        from_name: 'AG Motors Miami Website',
-        name: name,
-        email: email || undefined,
-        message: lines,
-        botcheck: false,
-      }),
+      headers: { 'Accept': 'application/json' },
+      body: formData,
     })
       .then(res => res.json())
       .then(data => { if (!data.success) window.location.href = mailtoUrl; }) // API rejected it — fall back to opening the visitor's mail client

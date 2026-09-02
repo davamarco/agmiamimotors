@@ -336,16 +336,18 @@ lenis.on('scroll', ScrollTrigger.update);
     btn.addEventListener('click', () => {
       btn.disabled = true;
 
+      // FormData (not JSON) avoids the CORS preflight some desktop browsers/ad-blockers drop.
+      const formData = new FormData();
+      formData.append('access_key', WEB3FORMS_ACCESS_KEY);
+      formData.append('subject', 'Private Driver Request — AG Motors Miami Website');
+      formData.append('from_name', 'AG Motors Miami Website');
+      formData.append('message', "Hi, I'm interested in adding a private driver to my rental.");
+      formData.append('botcheck', '');
+
       fetch(WEB3FORMS_ENDPOINT, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          access_key: WEB3FORMS_ACCESS_KEY,
-          subject: 'Private Driver Request — AG Motors Miami Website',
-          from_name: 'AG Motors Miami Website',
-          message: "Hi, I'm interested in adding a private driver to my rental.",
-          botcheck: false,
-        }),
+        headers: { 'Accept': 'application/json' },
+        body: formData,
       })
         .then(res => res.json())
         .then(data => showToast(data.success
