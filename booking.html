@@ -137,20 +137,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <span class="field__error">This field is required</span>
           </div>
           <div class="field">
-            <label class="field__label" for="whatsapp">Phone / WhatsApp <em>(optional)</em></label>
-            <input class="field__input" type="tel" id="whatsapp" name="whatsapp" placeholder="+1 (305) 000-0000" />
+            <label class="field__label" for="whatsapp">Phone / WhatsApp</label>
+            <input class="field__input" type="tel" id="whatsapp" name="whatsapp" placeholder="+1 (305) 000-0000" required />
+            <span class="field__error">This field is required</span>
           </div>
         </div>
 
         <div class="field">
-          <label class="field__label" for="email">Email <em>(optional)</em></label>
-          <input class="field__input" type="email" id="email" name="email" placeholder="your@email.com" />
+          <label class="field__label" for="email">Email</label>
+          <input class="field__input" type="email" id="email" name="email" placeholder="your@email.com" required />
+          <span class="field__error">Please enter a valid email</span>
         </div>
 
         <!-- Car selector (if not pre-filled) -->
         <div class="field" id="field-car-select">
           <label class="field__label" for="car-select">Vehicle of Interest</label>
-          <select class="field__select" id="car-select" name="car_select">
+          <select class="field__select" id="car-select" name="car_select" required>
             <option value="">— Select a vehicle —</option>
             <option>Chevrolet Corvette Stingray Convertible</option>
             <option>Cadillac Escalade</option>
@@ -166,6 +168,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <option>Ferrari F8 Tributo Spider</option>
             <option>Open to suggestions</option>
           </select>
+          <span class="field__error">Please select a vehicle</span>
         </div>
 
         <!-- Private driver toggle -->

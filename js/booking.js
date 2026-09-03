@@ -166,7 +166,8 @@ const WEB3FORMS_ACCESS_KEY = '8aeb3671-54be-4636-bfac-c7ed5ee15fe0';
 const WEB3FORMS_ENDPOINT   = 'https://api.web3forms.com/submit';
 const MAILTO_ADDRESS       = 'Info@agmotorsmiami.com'; // fallback only, if the API call fails
 
-const REQUIRED_FIELD_IDS = ['date-from', 'date-to', 'name'];
+const REQUIRED_FIELD_IDS = ['date-from', 'date-to', 'name', 'whatsapp', 'email'];
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function clearFieldError(input) {
   input.closest('.field')?.classList.remove('field--invalid');
@@ -179,13 +180,28 @@ function validateBookingForm(f) {
     const input = f.querySelector(`#${id}`);
     if (!input) return;
     const fieldEl = input.closest('.field');
-    if (!input.value.trim()) {
+    const invalid = id === 'email' ? !EMAIL_PATTERN.test(input.value.trim()) : !input.value.trim();
+    if (invalid) {
       fieldEl?.classList.add('field--invalid');
       if (!firstInvalid) firstInvalid = input;
     } else {
       fieldEl?.classList.remove('field--invalid');
     }
   });
+
+  // Car: whichever of the two car inputs is currently shown must have a value
+  // (pre-filled + hidden when arriving with ?car=, otherwise the visible dropdown).
+  const fieldCar  = f.querySelector('#field-car');
+  const carInput  = (fieldCar && fieldCar.style.display !== 'none') ? f.querySelector('#car-name') : f.querySelector('#car-select');
+  if (carInput) {
+    const carFieldEl = carInput.closest('.field');
+    if (!carInput.value.trim()) {
+      carFieldEl?.classList.add('field--invalid');
+      if (!firstInvalid) firstInvalid = carInput;
+    } else {
+      carFieldEl?.classList.remove('field--invalid');
+    }
+  }
 
   return firstInvalid;
 }
@@ -227,6 +243,7 @@ function showThankYouModal() {
     input?.addEventListener('input', () => clearFieldError(input));
     input?.addEventListener('change', () => clearFieldError(input));
   });
+  form.querySelector('#car-select')?.addEventListener('change', function() { clearFieldError(this); });
 
   let leadEventSent = false; // fire the GTM conversion event at most once per page load
 
