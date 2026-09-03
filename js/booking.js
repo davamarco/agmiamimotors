@@ -88,6 +88,15 @@ if (!window.matchMedia('(pointer: coarse)').matches) {
   }
 })();
 
+/* ── Pre-check "Add Private Driver" from URL param ──────────────── */
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('private_driver') !== '1') return;
+
+  const toggle = document.getElementById('private-driver-toggle');
+  if (toggle) toggle.checked = true;
+})();
+
 /* ── Set min dates ──────────────────────────────────────────────── */
 (function() {
   const today  = new Date().toISOString().split('T')[0];
