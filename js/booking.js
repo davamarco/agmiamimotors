@@ -110,7 +110,7 @@ if (!window.matchMedia('(pointer: coarse)').matches) {
 
 /* ── Live price calculator ──────────────────────────────────────── */
 const CAR_PRICES = {
-  'Chevrolet Corvette Stingray Convertible': 359,
+  'Chevrolet Corvette Stingray Convertible': 349,
   'Cadillac Escalade':              349,
   'Mercedes-Benz S580 Maybach':     699,
   'Mercedes-Benz GLS600 Maybach':   759,

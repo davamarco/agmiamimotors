@@ -25,10 +25,13 @@ if (header) {
 }
 
 /* ── Hero entrance ──────────────────────────────────────────────── */
-gsap.from('.car-hero__eyebrow', { opacity: 0, y: 20, duration: 1,   ease: 'expo.out', delay: 0.3  });
-gsap.from('.car-hero__title',   { opacity: 0, y: 40, duration: 1.2, ease: 'expo.out', delay: 0.45 });
-gsap.from('.car-hero__tagline', { opacity: 0, y: 20, duration: 1,   ease: 'expo.out', delay: 0.65 });
-gsap.from('.car-hero__right',   { opacity: 0, x: 30, duration: 1,   ease: 'expo.out', delay: 0.6  });
+gsap.from('.car-hero__eyebrow',   { opacity: 0, y: 20, duration: 1,   ease: 'expo.out', delay: 0.3  });
+gsap.from('.car-hero__title',     { opacity: 0, y: 40, duration: 1.2, ease: 'expo.out', delay: 0.45 });
+gsap.from('.car-hero__subtitle',  { opacity: 0, y: 16, duration: 1,   ease: 'expo.out', delay: 0.5  });
+gsap.from('.car-hero__tagline',   { opacity: 0, y: 20, duration: 1,   ease: 'expo.out', delay: 0.65 });
+gsap.from('.car-hero__trustline', { opacity: 0, y: 16, duration: 1,   ease: 'expo.out', delay: 0.8  });
+gsap.from('.car-hero__card',      { opacity: 0, x: 30, duration: 1,   ease: 'expo.out', delay: 0.6  });
+gsap.from('.car-hero__checklist li', { opacity: 0, x: 12, duration: 0.7, ease: 'expo.out', stagger: 0.08, delay: 1.05 });
 
 /* ── Page transition ────────────────────────────────────────────── */
 (function() {
@@ -119,35 +122,73 @@ gsap.from('.car-hero__right',   { opacity: 0, x: 30, duration: 1,   ease: 'expo.
   document.body.appendChild(script);
 })();
 
-/* ── Animated counters ──────────────────────────────────────────── */
+/* ── Animated counters — rewritten from scratch, no GSAP ─────────────
+   Plain requestAnimationFrame, linear interpolation, replays every time
+   the row re-enters view. No tweening library involved, so there's
+   nothing left to mistrust about how the number gets from 0 to target. */
 (function initCounters() {
   const items = document.querySelectorAll('.spec-item__val[data-count]');
   if (!items.length) return;
 
+  const DURATION = 2800; // ms — how long the count-up visibly runs
+  const frames = new WeakMap();
+
+  function countUp(el, target, suffix, dec, unitHTML) {
+    cancelAnimationFrame(frames.get(el));
+    const startTime = performance.now();
+
+    function tick(now) {
+      const t = Math.min(1, (now - startTime) / DURATION);
+      const v = target * t; // linear: value is exactly proportional to elapsed time
+      el.innerHTML = (dec > 0 ? v.toFixed(dec) : Math.round(v)) + suffix + unitHTML;
+      if (t < 1) frames.set(el, requestAnimationFrame(tick));
+    }
+    frames.set(el, requestAnimationFrame(tick));
+  }
+
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      observer.unobserve(entry.target);
-
       const el       = entry.target;
       const target   = parseFloat(el.dataset.count);
       const suffix   = el.dataset.suffix || '';
-      const dec      = el.dataset.dec ? parseInt(el.dataset.dec) : 0;
+      const dec      = el.dataset.dec ? parseInt(el.dataset.dec, 10) : 0;
       const unit     = el.querySelector('.spec-item__unit');
       const unitHTML = unit ? unit.outerHTML : '';
 
-      gsap.fromTo({ v: 0 }, { v: target }, {
-        duration: 2.2,
-        ease: 'expo.out',
-        onUpdate() {
-          const val = dec > 0
-            ? this.targets()[0].v.toFixed(dec)
-            : Math.round(this.targets()[0].v);
-          el.innerHTML = val + suffix + unitHTML;
-        },
-      });
+      if (!entry.isIntersecting) {
+        // Only reset once it has actually counted up before — otherwise the
+        // very first (off-screen) callback IntersectionObserver fires on
+        // page load would wipe the static number before the user scrolls.
+        if (el.dataset.counted === '1') {
+          cancelAnimationFrame(frames.get(el));
+          el.innerHTML = '0' + suffix + unitHTML;
+        }
+        return;
+      }
+      el.dataset.counted = '1';
+      countUp(el, target, suffix, dec, unitHTML);
     });
-  }, { threshold: 0.3 });
+  // Trigger once the row is well inside the viewport (not just peeking at the
+  // bottom edge) — with Lenis's inertial scroll, a low threshold fired the
+  // count-up while the numbers were still off-screen, so it looked instant
+  // by the time the user's eyes actually reached them.
+  }, { threshold: 0.4, rootMargin: '0px 0px -15% 0px' });
+
+  items.forEach(item => observer.observe(item));
+})();
+
+/* ── Why Book grid reveal ───────────────────────────────────────── */
+(function initWhyReveal() {
+  const items = document.querySelectorAll('.car-why__item');
+  if (!items.length) return;
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (!entry.isIntersecting) return;
+      observer.unobserve(entry.target);
+      setTimeout(() => entry.target.classList.add('is-visible'), i * 90);
+    });
+  }, { threshold: 0.2 });
 
   items.forEach(item => observer.observe(item));
 })();
