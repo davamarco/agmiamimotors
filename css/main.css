@@ -587,6 +587,14 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   font-size: 12px; font-weight: 300;
   color: rgba(255,255,255,0.45);
 }
+.car-card__price-was {
+  color: #FF5252;
+  text-decoration: line-through;
+  text-decoration-color: #FF5252;
+  text-decoration-thickness: 2px;
+  font-weight: 600;
+  margin-right: 2px;
+}
 
 /* ── WHY US ─────────────────────────────────────────────────────── */
 .why-us {
