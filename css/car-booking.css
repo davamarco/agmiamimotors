@@ -1,0 +1,502 @@
+/* ================================================================
+   AG MOTORS MIAMI — car-booking.css
+   New car-page Hero (photo + smart calendar) and the shared
+   reservation modal that replaces the old booking.html page.
+   ================================================================ */
+
+/* ── Hero shell ─────────────────────────────────────────────────── */
+.car-hero {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  padding: calc(var(--header-h) + 14px) var(--pad-x) 20px;
+  background: var(--c-black);
+}
+.car-hero__grid {
+  width: 100%;
+  max-width: 1060px;
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: 0.4fr 1fr;
+  grid-template-areas: "book photo";
+  gap: clamp(24px, 3vw, 44px);
+  align-items: start;
+}
+.car-hero__photo { grid-area: photo; }
+.car-hero__book  { grid-area: book; }
+
+.car-hero__eyebrow {
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--c-orange);
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 14px;
+}
+.car-hero__eyebrow::before {
+  content: '';
+  display: block; width: 32px; height: 1px;
+  background: var(--c-orange);
+}
+.car-hero__title {
+  font-family: var(--f-head);
+  font-size: clamp(38px, 3.6vw, 54px);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  margin-bottom: 20px;
+}
+.car-hero__frame {
+  border-radius: 14px;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: var(--c-black-3);
+}
+.car-hero__frame img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+
+/* ── Calendar card ──────────────────────────────────────────────── */
+.car-cal {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 16px;
+  padding: clamp(14px, 1.4vw, 18px);
+}
+.car-cal__rate { margin-bottom: 12px; }
+.car-cal__rate-num {
+  font-family: var(--f-head);
+  font-weight: 900;
+  font-size: clamp(30px, 2.6vw, 36px);
+  color: var(--c-white);
+}
+.car-cal__rate-unit {
+  font-size: 15px;
+  color: rgba(255,255,255,0.4);
+  margin-left: 4px;
+}
+
+.car-cal__head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.car-cal__month {
+  font-family: var(--f-head);
+  font-weight: 800;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.car-cal__nav {
+  width: 25px; height: 25px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: var(--c-white);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.3s, color 0.3s;
+}
+.car-cal__nav:hover { border-color: var(--c-orange); color: var(--c-orange); }
+.car-cal__nav svg { width: 12px; height: 12px; }
+
+.car-cal__weekdays {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.car-cal__days {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 12px;
+}
+.car-cal__day {
+  aspect-ratio: 1;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: var(--c-white);
+  font-family: var(--f-body);
+  font-size: 13.5px; font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.car-cal__day--empty { visibility: hidden; }
+.car-cal__day--past { color: rgba(255,255,255,0.15); cursor: not-allowed; }
+.car-cal__day:not(:disabled):hover { background: rgba(255,255,255,0.08); }
+.car-cal__day.is-in-range { background: rgba(255,85,0,0.18); color: #fff; }
+.car-cal__day.is-edge { background: #fff; color: #0a0a0a; font-weight: 800; }
+
+.car-cal__discounts {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.car-cal__discount {
+  text-align: center;
+  padding: 8px 3px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.02);
+  transition: border-color 0.3s, background 0.3s;
+}
+.car-cal__discount-pct {
+  display: block;
+  font-family: var(--f-head);
+  font-weight: 900;
+  font-size: 14px;
+  color: var(--c-white);
+}
+.car-cal__discount-cond {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.45);
+  margin-top: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.car-cal__discount.is-active {
+  border-color: var(--c-orange);
+  background: rgba(255,85,0,0.12);
+}
+.car-cal__discount.is-active .car-cal__discount-pct { color: var(--c-orange); }
+
+.car-cal__summary {
+  padding-top: 10px;
+  margin-bottom: 12px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.car-cal__summary[hidden] { display: none; }
+.car-cal__summary-range {
+  font-size: 14px; font-weight: 700;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 6px;
+}
+.car-cal__summary-price {
+  display: flex; align-items: baseline; gap: 10px;
+}
+.car-cal__price-was {
+  text-decoration: line-through;
+  color: rgba(255,255,255,0.35);
+  font-size: 14px;
+}
+.car-cal__price-was[hidden] { display: none; }
+.car-cal__price-total {
+  font-family: var(--f-head);
+  font-weight: 900;
+  font-size: 28px;
+  color: var(--c-white);
+}
+.car-cal__price-est {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+}
+.car-cal__savings {
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #3ddc84;
+}
+.car-cal__savings[hidden] { display: none; }
+
+.car-cal__book {
+  width: 100%;
+  padding: 13px;
+  border-radius: 999px;
+  border: none;
+  background: #fff;
+  color: #0a0a0a;
+  font-family: var(--f-body);
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s, transform 0.2s, opacity 0.3s;
+}
+.car-cal__book:hover:not(:disabled) {
+  background: var(--c-orange);
+  color: #fff;
+  transform: translateY(-1px);
+}
+.car-cal__book:disabled {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.3);
+  cursor: not-allowed;
+}
+.car-cal__clear {
+  display: block;
+  margin: 7px auto 0;
+  background: none; border: none;
+  color: rgba(255,255,255,0.4);
+  font-family: var(--f-body);
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.car-cal__clear[hidden] { display: none; }
+
+/* ── Buttons repurposed as JS booking triggers ─────────────────── */
+button.btn-glass.js-book-cta,
+button.btn-hero-book.js-book-cta {
+  cursor: pointer;
+  font: inherit;
+  font-family: var(--f-body);
+}
+
+/* ── Responsive (mobile keeps the earlier compact sizing) ────────── */
+@media (max-width: 900px) {
+  .car-hero { min-height: auto; padding-top: calc(var(--header-h) + 16px); }
+  .car-hero__grid {
+    grid-template-columns: 1fr;
+    grid-template-areas: "photo" "book";
+    max-width: 460px;
+    gap: 18px;
+  }
+  .car-hero__eyebrow { font-size: 9px; font-weight: 500; gap: 10px; margin-bottom: 10px; }
+  .car-hero__eyebrow::before { width: 24px; }
+  .car-hero__title { font-size: clamp(26px, 6vw, 34px); margin-bottom: 14px; white-space: normal; }
+
+  .car-cal { padding: clamp(14px, 4vw, 20px); border-radius: 14px; }
+  .car-cal__rate { margin-bottom: 12px; }
+  .car-cal__rate-num { font-size: clamp(18px, 5vw, 22px); }
+  .car-cal__rate-unit { font-size: 11px; }
+  .car-cal__head { margin-bottom: 10px; }
+  .car-cal__month { font-size: 13px; }
+  .car-cal__nav { width: 22px; height: 22px; }
+  .car-cal__nav svg { width: 11px; height: 11px; }
+  .car-cal__weekdays { font-size: 8.5px; font-weight: 400; margin-bottom: 4px; }
+  .car-cal__days { gap: 2px; margin-bottom: 12px; }
+  .car-cal__day { font-size: 10.5px; font-weight: 600; border-radius: 5px; }
+  .car-cal__discounts { gap: 6px; margin-bottom: 12px; }
+  .car-cal__discount { padding: 6px 4px; border-radius: 8px; }
+  .car-cal__discount-pct { font-size: 11px; }
+  .car-cal__discount-cond { font-size: 8px; font-weight: 400; }
+  .car-cal__summary { padding-top: 10px; margin-bottom: 12px; }
+  .car-cal__summary-range { font-size: 11px; font-weight: 500; }
+  .car-cal__price-was { font-size: 11px; }
+  .car-cal__price-total { font-size: 19px; }
+  .car-cal__price-est { font-size: 9.5px; }
+  .car-cal__savings { font-size: 10.5px; font-weight: 400; }
+  .car-cal__book { padding: 11px; font-size: 12px; font-weight: 700; }
+  .car-cal__clear { font-size: 10px; margin-top: 8px; }
+}
+
+/* ================================================================
+   BOOKING MODAL
+   ================================================================ */
+.booking-modal {
+  position: fixed; inset: 0; z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0s linear 0.35s;
+}
+.booking-modal.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.35s ease;
+}
+.booking-modal__overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.82);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.booking-modal__box {
+  position: relative;
+  width: min(380px, 100%);
+  max-height: min(92vh, 92svh);
+  overflow-y: auto;
+  background: #111111;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 22px 20px 18px;
+  transform: translateY(16px) scale(0.97);
+  transition: transform 0.4s var(--ease-expo);
+}
+.booking-modal.is-visible .booking-modal__box {
+  transform: translateY(0) scale(1);
+}
+.booking-modal__x {
+  position: absolute; top: 14px; right: 14px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: none;
+  color: var(--c-white);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.booking-modal__x:hover { background: rgba(255,255,255,0.14); }
+.booking-modal__x svg { width: 13px; height: 13px; }
+
+.booking-modal__eyebrow {
+  display: block;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--c-orange);
+  margin-bottom: 6px;
+}
+.booking-modal__car {
+  font-family: var(--f-head);
+  font-weight: 900;
+  font-size: 24px;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.booking-modal__summary {
+  font-size: 11.5px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 16px;
+}
+
+.booking-modal__form { display: flex; flex-direction: column; gap: 9px; }
+.bm-row { display: grid; gap: 9px; }
+.bm-row--2 { grid-template-columns: 1fr 1fr; }
+
+.bm-field__input {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: var(--f-body);
+  font-size: 13px;
+  color: var(--c-white);
+  outline: none;
+  transition: border-color 0.3s, background 0.3s;
+}
+.bm-field__input::placeholder { color: rgba(255,255,255,0.35); }
+.bm-field__input:focus {
+  border-color: var(--c-orange);
+  background: rgba(255,85,0,0.05);
+}
+.bm-field__input[type="date"] { color-scheme: dark; }
+.bm-field__label {
+  display: block;
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 4px;
+}
+.bm-field--invalid .bm-field__input {
+  border-color: #ff5252;
+  background: rgba(255,82,82,0.05);
+}
+
+.bm-toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  cursor: pointer;
+}
+.bm-toggle-row__label { font-size: 12px; font-weight: 600; }
+.bm-switch { position: relative; display: inline-block; width: 38px; height: 21px; flex-shrink: 0; }
+.bm-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+.bm-switch__track {
+  position: absolute; inset: 0;
+  background: rgba(255,255,255,0.15);
+  border-radius: 999px;
+  transition: background 0.3s;
+}
+.bm-switch__thumb {
+  position: absolute; top: 2px; left: 2px;
+  width: 17px; height: 17px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.3s;
+}
+.bm-switch input:checked + .bm-switch__track { background: var(--c-orange); }
+.bm-switch input:checked + .bm-switch__track .bm-switch__thumb { transform: translateX(17px); }
+
+.bm-book-btn {
+  margin-top: 2px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 999px;
+  border: none;
+  background: #fff;
+  color: #0a0a0a;
+  font-family: var(--f-body);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+.bm-book-btn:hover { background: var(--c-orange); color: #fff; }
+.bm-book-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.bm-whatsapp-btn {
+  width: 100%;
+  padding: 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: var(--c-white);
+  font-family: var(--f-body);
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  transition: border-color 0.3s;
+}
+.bm-whatsapp-btn:hover { border-color: #25D366; }
+.bm-whatsapp-dot { width: 7px; height: 7px; border-radius: 50%; background: #25D366; flex-shrink: 0; }
+
+.bm-note {
+  text-align: center;
+  font-size: 10px;
+  color: rgba(255,255,255,0.3);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.bm-success-icon {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,85,0,0.12);
+  border: 1px solid var(--c-orange);
+  color: var(--c-orange);
+  display: flex; align-items: center; justify-content: center;
+  margin: 4px auto 18px;
+}
+.bm-success-icon svg { width: 20px; height: 20px; }
+.bm-thanks-text {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.bm-close-btn {
+  display: block;
+  margin: 0 auto;
+  padding: 12px 36px;
+  border-radius: 999px;
+  border: none;
+  background: var(--c-orange);
+  color: #0a0a0a;
+  font-family: var(--f-body);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.bm-close-btn:hover { background: #ff6a1a; }
+
+@media (max-width: 480px) {
+  .bm-row--2 { grid-template-columns: 1fr; }
+  .booking-modal__box { padding: 20px 16px 16px; border-radius: 14px; }
+}
