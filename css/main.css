@@ -517,24 +517,26 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   position: absolute; inset: 0;
   background: linear-gradient(
     to top,
-    rgba(10,10,10,0.97) 0%,
-    rgba(10,10,10,0.4) 48%,
-    rgba(10,10,10,0) 75%
+    rgba(6,6,6,0.99) 0%,
+    rgba(6,6,6,0.75) 40%,
+    rgba(6,6,6,0.2) 68%,
+    rgba(6,6,6,0) 90%
   );
   transition: opacity 0.5s;
 }
 .car-card:hover .car-card__shade {
   background: linear-gradient(
     to top,
-    rgba(10,10,10,1) 0%,
-    rgba(10,10,10,0.5) 52%,
-    rgba(10,10,10,0.05) 78%
+    rgba(6,6,6,1) 0%,
+    rgba(6,6,6,0.82) 44%,
+    rgba(6,6,6,0.25) 72%,
+    rgba(6,6,6,0.05) 92%
   );
 }
 
 .car-card__foot {
   position: absolute; bottom: 0; left: 0; right: 0;
-  padding: clamp(14px, 1.8vw, 26px);
+  padding: clamp(18px, 2.6vw, 34px);
   z-index: 2;
   transform: translateY(6px);
   transition: transform 0.6s var(--ease-expo);
@@ -543,7 +545,7 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
 
 .car-card__row {
   display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 5px;
+  margin-bottom: 7px;
 }
 .car-card__brand {
   font-size: 9px; font-weight: 500;
@@ -564,14 +566,9 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   margin-bottom: 6px;
 }
 .car-card__price {
-  display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
-  margin-top: 6px; padding-top: 9px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin-top: 10px; padding-top: 12px;
   border-top: 1px solid rgba(255,255,255,0.14);
-}
-.car-card__price-tag {
-  font-size: 9px; font-weight: 500;
-  letter-spacing: 0.2em; text-transform: uppercase;
-  color: rgba(255,255,255,0.35);
 }
 .car-card__price-now {
   font-family: var(--f-head);
@@ -585,16 +582,28 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
 .car-card__price-was {
   font-family: var(--f-head);
   font-size: clamp(17px, 2vw, 22px); font-weight: 700;
-  color: #FF5252;
+  color: rgba(255,255,255,0.55);
   text-decoration: line-through;
-  text-decoration-color: #FF5252;
+  text-decoration-color: rgba(255,255,255,0.55);
   text-decoration-thickness: 2px;
-  opacity: 0.85;
 }
 .car-card__price-unit {
-  font-size: 10px; font-weight: 500;
+  font-size: 13px; font-weight: 700;
   letter-spacing: 0.03em;
   color: rgba(255,255,255,0.4);
+}
+.car-card__price-badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 8px;
+  background: #FF1E1E;
+  color: var(--c-white);
+  font-family: var(--f-body);
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  line-height: 1;
+  border-radius: 4px;
+  white-space: nowrap;
 }
 
 /* ── WHY US ─────────────────────────────────────────────────────── */
