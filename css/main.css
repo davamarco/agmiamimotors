@@ -426,25 +426,6 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
   opacity: 0;
 }
-.hero__scroll-hint {
-  position: absolute; right: var(--pad-x); bottom: clamp(32px, 5vh, 72px);
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
-  z-index: 2;
-}
-.hero__scroll-bar {
-  width: 1px; height: 72px;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
-  animation: scroll-pulse 2s var(--ease-circ) infinite;
-}
-.hero__scroll-hint span {
-  font-size: 8px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: rgba(255,255,255,0.35); writing-mode: vertical-rl;
-}
-@keyframes scroll-pulse {
-  0%,100% { opacity: 0.3; transform: scaleY(0.4); transform-origin: top; }
-  50%      { opacity: 1;   transform: scaleY(1);   transform-origin: top; }
-}
-
 /* ── Floating social (Instagram) ───────────────────────────────── */
 .social-float {
   position: fixed;
@@ -483,7 +464,6 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
 }
 .fleet__h-top { display: block; color: rgba(255,255,255,0.25); font-size: 0.45em; letter-spacing: 0.1em; }
 .fleet__h-main { display: block; }
-.fleet__book { align-self: flex-end; flex-shrink: 0; }
 
 /* Grid — uniform 2-col landscape layout (11 cars) */
 .fleet__grid {
@@ -1013,9 +993,6 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   letter-spacing: 0.06em; flex-shrink: 0;
 }
 
-/* ── Magnetic effect (applied via JS) ──────────────────────────── */
-.magnetic { display: inline-flex; }
-
 /* ── RESPONSIVE ─────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .why-us__grid { grid-template-columns: repeat(2, 1fr); }
@@ -1044,7 +1021,6 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
 
   .why-us__grid { grid-template-columns: 1fr; gap: 32px; }
   .fleet__intro { flex-direction: column; align-items: flex-start; }
-  .fleet__book { display: none; }
   .footer__bar { flex-direction: column; text-align: center; }
   .footer__bar-contact { justify-content: center; gap: 8px 10px; }
   .social-float { display: none; }

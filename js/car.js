@@ -59,30 +59,6 @@ gsap.from('.car-hero__checklist li', { opacity: 0, x: 12, duration: 0.7, ease: '
   });
 })();
 
-/* ── Magnetic buttons ───────────────────────────────────────────── */
-(function() {
-  if (window.matchMedia('(pointer: coarse)').matches) return;
-
-  document.querySelectorAll('.magnetic').forEach(el => {
-    const STRENGTH = 0.35;
-    let bounds = null;
-
-    el.addEventListener('mouseenter', () => { bounds = el.getBoundingClientRect(); }, { passive: true });
-
-    el.addEventListener('mousemove', e => {
-      if (!bounds) return;
-      const dx = (e.clientX - bounds.left - bounds.width  / 2) * STRENGTH;
-      const dy = (e.clientY - bounds.top  - bounds.height / 2) * STRENGTH;
-      gsap.to(el, { x: dx, y: dy, ease: 'power3.out', duration: 0.4, overwrite: 'auto' });
-    }, { passive: true });
-
-    el.addEventListener('mouseleave', () => {
-      bounds = null;
-      gsap.to(el, { x: 0, y: 0, ease: 'elastic.out(1, 0.4)', duration: 0.9, overwrite: 'auto' });
-    }, { passive: true });
-  });
-})();
-
 /* ── Swiper Gallery ─────────────────────────────────────────────── */
 (function initSwiper() {
   if (!document.querySelector('.swiper')) return;

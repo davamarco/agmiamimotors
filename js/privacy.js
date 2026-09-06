@@ -49,19 +49,3 @@ if (header) {
     if (event.persisted) gsap.set(curtain, { y: '-100%' });
   });
 })();
-
-/* ── Magnetic buttons ───────────────────────────────────────────── */
-if (!window.matchMedia('(pointer: coarse)').matches) {
-  document.querySelectorAll('.magnetic').forEach(el => {
-    let bounds = null;
-    el.addEventListener('mouseenter', () => { bounds = el.getBoundingClientRect(); }, { passive: true });
-    el.addEventListener('mousemove', e => {
-      if (!bounds) return;
-      gsap.to(el, { x: (e.clientX - bounds.left - bounds.width/2) * 0.35, y: (e.clientY - bounds.top - bounds.height/2) * 0.35, ease: 'power3.out', duration: 0.4, overwrite: 'auto' });
-    }, { passive: true });
-    el.addEventListener('mouseleave', () => {
-      bounds = null;
-      gsap.to(el, { x: 0, y: 0, ease: 'elastic.out(1,0.4)', duration: 0.9, overwrite: 'auto' });
-    }, { passive: true });
-  });
-}
