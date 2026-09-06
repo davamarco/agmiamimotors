@@ -221,7 +221,7 @@
 
   function val(id) { return (document.getElementById(id)?.value || '').trim(); }
 
-  const REQUIRED_IDS = ['bm-first-name', 'bm-last-name', 'bm-phone', 'bm-email', 'bm-license'];
+  const REQUIRED_IDS = ['bm-first-name', 'bm-last-name', 'bm-phone', 'bm-email'];
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   function clearFieldError(input) { input.closest('.bm-field')?.classList.remove('bm-field--invalid'); }
@@ -255,7 +255,6 @@
       `Name: ${val('bm-first-name')} ${val('bm-last-name')}`,
       `Phone: ${val('bm-phone')}`,
       `Email: ${val('bm-email')}`,
-      `Driver's License: ${val('bm-license')}`,
       `Date of Birth: ${val('bm-dob')}`,
       `From: AGMotorsMiami Website`,
     ].filter(Boolean).join('\n');
