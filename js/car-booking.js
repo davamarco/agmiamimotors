@@ -37,6 +37,13 @@
   let rangeStart = null;
   let rangeEnd   = null;
 
+  // Every time the selected rental period changes (any calendar day click that
+  // completes/replaces a date range) this increments, so the resulting booking
+  // state gets a fresh id. That id — not "the form" — is what submit-state
+  // tracking below keys off, so a new date range is always a genuinely new
+  // request even if the visitor picks the exact same dates again later.
+  let bookingCounter = 0;
+
   function fmtMoney(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
   function fmtShort(d) { return MONTH_NAMES[d.getMonth()].slice(0, 3) + ' ' + d.getDate(); }
   function sameDay(a, b) { return a && b && a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
@@ -136,7 +143,7 @@
     bookBtn.disabled = false;
     clearBtn.hidden = false;
 
-    heroSection._bookingState = { carName: CAR_NAME, rangeStart, rangeEnd, days, total: Math.round(total) };
+    heroSection._bookingState = { id: ++bookingCounter, carName: CAR_NAME, rangeStart, rangeEnd, days, total: Math.round(total) };
   }
 
   prevBtn.addEventListener('click', () => {
@@ -191,6 +198,12 @@
 
   let currentBooking = null;
 
+  // Per-booking-id submission state: 'submitting' | 'succeeded'. No entry = idle.
+  // Keyed by the booking id (see bookingCounter above), never by anything
+  // persisted to storage — this is purely an in-memory guard against duplicate
+  // submits/events for one specific date-range selection, not a site-wide lock.
+  const bookingStatus = new Map();
+
   function openBookingModal(state) {
     if (!state) return;
     currentBooking = state;
@@ -201,8 +214,20 @@
       dobInput.value = new Date().toISOString().split('T')[0];
     }
 
-    formScreen.hidden = false;
-    thanksScreen.hidden = true;
+    hideFormError();
+
+    // Re-opening a booking that already succeeded (or is mid-flight) must not
+    // hand the visitor a fresh, resubmittable form — reflect its real status.
+    const status = bookingStatus.get(state.id);
+    if (status === 'succeeded') {
+      formScreen.hidden = true;
+      thanksScreen.hidden = false;
+    } else {
+      formScreen.hidden = false;
+      thanksScreen.hidden = true;
+      setSubmitBusy(status === 'submitting');
+    }
+
     modal.classList.add('is-visible');
     modal.setAttribute('aria-hidden', 'false');
   }
@@ -244,18 +269,17 @@
     input?.addEventListener('input', () => clearFieldError(input));
   });
 
-  function buildMessageLines() {
-    const privateDriver = document.getElementById('bm-private-driver')?.checked;
+  function buildMessageLines(booking, contact) {
     return [
       `NEW BOOKING REQUEST`,
-      `Car: ${currentBooking.carName}`,
-      `Dates: ${fmtShort(currentBooking.rangeStart)} → ${fmtShort(currentBooking.rangeEnd)} (${currentBooking.days} days)`,
-      `Estimated Total: ${fmtMoney(currentBooking.total)}`,
-      privateDriver ? `Private Driver: Yes ★` : null,
-      `Name: ${val('bm-first-name')} ${val('bm-last-name')}`,
-      `Phone: ${val('bm-phone')}`,
-      `Email: ${val('bm-email')}`,
-      `Date of Birth: ${val('bm-dob')}`,
+      `Car: ${booking.carName}`,
+      `Dates: ${fmtShort(booking.rangeStart)} → ${fmtShort(booking.rangeEnd)} (${booking.days} days)`,
+      `Estimated Total: ${fmtMoney(booking.total)}`,
+      contact.privateDriver ? `Private Driver: Yes ★` : null,
+      `Name: ${contact.firstName} ${contact.lastName}`,
+      `Phone: ${contact.phone}`,
+      `Email: ${contact.email}`,
+      `Date of Birth: ${contact.dob}`,
       `From: AGMotorsMiami Website`,
     ].filter(Boolean).join('\n');
   }
@@ -268,9 +292,68 @@
     thanksScreen.hidden = false;
   }
 
-  form.addEventListener('submit', e => {
+  /* ── Submit-in-progress UI (button state) ───────────────────────── */
+  const submitBtn = form.querySelector('.bm-book-btn');
+  const submitBtnDefaultText = submitBtn ? submitBtn.textContent : 'Book Now';
+
+  function setSubmitBusy(isBusy) {
+    if (!submitBtn) return;
+    submitBtn.disabled = isBusy;
+    submitBtn.textContent = isBusy ? 'Sending…' : submitBtnDefaultText;
+  }
+
+  /* ── Inline error banner (created once, no HTML edits needed across
+     the 12 car pages) ─────────────────────────────────────────────── */
+  const formError = document.createElement('p');
+  formError.className = 'bm-form-error';
+  formError.setAttribute('role', 'alert');
+  formError.setAttribute('aria-live', 'assertive');
+  formError.hidden = true;
+  if (submitBtn) submitBtn.insertAdjacentElement('beforebegin', formError);
+
+  function showFormError(message) {
+    formError.textContent = message;
+    formError.hidden = false;
+  }
+  function hideFormError() {
+    formError.hidden = true;
+    formError.textContent = '';
+  }
+
+  /* ── Web3Forms call → strict success check ───────────────────────
+     Success requires response.ok === true AND a parsed JSON body with
+     success === true. Any HTTP error, network failure, non-JSON body,
+     null body, or {success:false} is treated as a failure — never
+     assumed to have gone through. ─────────────────────────────────── */
+  async function submitBookingEmail(formData) {
+    let response;
+    try {
+      response = await fetch(WEB3FORMS_ENDPOINT, { method: 'POST', headers: { Accept: 'application/json' }, body: formData });
+    } catch (networkErr) {
+      return false;
+    }
+    if (!response || response.ok !== true) return false;
+
+    let result;
+    try {
+      result = await response.json();
+    } catch (parseErr) {
+      return false;
+    }
+    return !!(result && result.success === true);
+  }
+
+  form.addEventListener('submit', async e => {
     e.preventDefault();
     if (!currentBooking) return;
+
+    // Snapshot which booking this specific submit belongs to. Everything after
+    // this point uses `bookingId` (not `currentBooking`, which can be reassigned
+    // by a later openBookingModal() call while this request is still in flight)
+    // to decide whether it's still safe to touch the visible UI.
+    const bookingId = currentBooking.id;
+    const status = bookingStatus.get(bookingId);
+    if (status === 'submitting' || status === 'succeeded') return; // duplicate submit / resubmit-after-success
 
     const firstInvalid = validateModalForm();
     if (firstInvalid) {
@@ -278,29 +361,60 @@
       return;
     }
 
-    const lines   = buildMessageLines();
-    const subject = `Booking Request — ${currentBooking.carName}`;
+    // Capture the exact data this request represents *before* the await —
+    // later interface changes (closing the modal, picking new dates, editing
+    // fields for a different attempt) must not alter what was already sent.
+    const bookingSnapshot = { ...currentBooking };
+    const contactSnapshot = {
+      firstName: val('bm-first-name'),
+      lastName: val('bm-last-name'),
+      phone: val('bm-phone'),
+      email: val('bm-email'),
+      dob: val('bm-dob'),
+      privateDriver: !!document.getElementById('bm-private-driver')?.checked,
+    };
+
+    const lines   = buildMessageLines(bookingSnapshot, contactSnapshot);
+    const subject = `Booking Request — ${bookingSnapshot.carName}`;
 
     const formData = new FormData();
     formData.append('access_key', WEB3FORMS_ACCESS_KEY);
     formData.append('subject', subject);
     formData.append('from_name', 'AG Motors Miami Website');
-    formData.append('name', `${val('bm-first-name')} ${val('bm-last-name')}`.trim());
-    formData.append('email', val('bm-email'));
+    formData.append('name', `${contactSnapshot.firstName} ${contactSnapshot.lastName}`.trim());
+    formData.append('email', contactSnapshot.email);
     formData.append('message', lines);
     formData.append('botcheck', '');
 
-    const submitBtn = form.querySelector('.bm-book-btn');
-    if (submitBtn) submitBtn.disabled = true;
+    bookingStatus.set(bookingId, 'submitting');
+    hideFormError();
+    setSubmitBusy(true);
 
-    fetch(WEB3FORMS_ENDPOINT, { method: 'POST', headers: { Accept: 'application/json' }, body: formData })
-      .catch(() => {})
-      .finally(() => { if (submitBtn) submitBtn.disabled = false; });
+    const succeeded = await submitBookingEmail(formData);
+    const isStillCurrent = currentBooking && currentBooking.id === bookingId;
 
-    window.dataLayer = window.dataLayer || [];
-    dataLayer.push({ event: 'manual_event_SUBMIT_LEAD_FORM' });
-
-    showThanks();
+    if (succeeded) {
+      // The lead really was captured server-side — record that and fire the
+      // conversion event once, regardless of what's on screen right now.
+      if (bookingStatus.get(bookingId) !== 'succeeded') {
+        bookingStatus.set(bookingId, 'succeeded');
+        window.dataLayer = window.dataLayer || [];
+        dataLayer.push({ event: 'ag_booking_success' });
+      }
+      // Only touch the visible UI if the visitor hasn't since moved on to a
+      // different booking (new dates, new id) — a stale success must not
+      // flip a different in-progress request over to "thanks".
+      if (isStillCurrent) {
+        setSubmitBusy(false);
+        showThanks();
+      }
+    } else {
+      bookingStatus.set(bookingId, 'idle'); // explicit: retry is allowed
+      if (isStillCurrent) {
+        setSubmitBusy(false);
+        showFormError("We couldn't confirm your request. Please try again or contact us on WhatsApp.");
+      }
+    }
   });
 
   whatsappBtn.addEventListener('click', () => {
@@ -323,11 +437,9 @@
       `Email: ${val('bm-email')}`,
     ].filter(Boolean).join('\n');
 
+    // Opening WhatsApp only hands the visitor a pre-filled chat — it does not
+    // confirm the message was actually sent, so no success screen and no
+    // conversion event here (that event means "we captured a lead").
     window.open(`https://wa.me/19543108470?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
-
-    window.dataLayer = window.dataLayer || [];
-    dataLayer.push({ event: 'manual_event_SUBMIT_LEAD_FORM' });
-
-    showThanks();
   });
 })();
