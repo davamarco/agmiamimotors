@@ -400,6 +400,9 @@
         bookingStatus.set(bookingId, 'succeeded');
         window.dataLayer = window.dataLayer || [];
         dataLayer.push({ event: 'ag_booking_success' });
+        if (typeof fbq !== 'undefined') {
+          fbq('track', 'Lead');
+        }
       }
       // Only touch the visible UI if the visitor hasn't since moved on to a
       // different booking (new dates, new id) — a stale success must not
