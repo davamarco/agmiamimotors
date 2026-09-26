@@ -40,17 +40,16 @@ lenis.on('scroll', ScrollTrigger.update);
   const check   = document.querySelector('.hero__check');
   const badge   = document.querySelector('.google-badge');
   const scroll  = document.querySelector('.hero__scroll');
-  const chauffeurBtn = document.querySelector('.hero__chauffeur-btn');
 
   if (!lines.length) return;
 
-  const items = [eyebrow, contact, notes, chauffeurBtn, check, badge, scroll].filter(Boolean);
+  const items = [eyebrow, contact, notes, check, badge, scroll].filter(Boolean);
   gsap.set(items, { y: 18 });
 
   gsap.timeline({ defaults: { ease: 'expo.out', duration: 1.2 } })
     .to(lines,   { y: '0%', stagger: 0.1, delay: 0.25 })
     .to(eyebrow, { opacity: 1, y: 0, duration: 0.8 }, '-=0.9')
-    .to([contact, notes, chauffeurBtn].filter(Boolean), { opacity: 1, y: 0, duration: 0.8, stagger: 0.1 }, '-=0.7')
+    .to([contact, notes].filter(Boolean), { opacity: 1, y: 0, duration: 0.8, stagger: 0.1 }, '-=0.7')
     .to(check,   { opacity: 1, y: 0, duration: 0.8 }, '-=0.55')
     .to(badge,   { opacity: 1, y: 0, duration: 0.8 }, '-=0.55')
     .to(scroll,  { opacity: 1, y: 0, duration: 0.8 }, '-=0.55')

@@ -331,7 +331,6 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   height: 220px;
   opacity: 1;
 }
-.hero__chauffeur-btn { display: none; opacity: 0; }
 
 /* ── HERO ───────────────────────────────────────────────────────── */
 .hero {
@@ -1138,16 +1137,6 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   .hero-cta { padding: 14px 22px; font-size: 15px; }
   .hero__check { padding: 18px 40px; font-size: 13px; }
   .btn-glass--xl { padding: 13px 24px; font-size: 10px; }
-
-  .hero__chauffeur-btn {
-    background: rgba(0,0,0,0.55);
-    color: #fff;
-    /* GSAP fades this in — keep opacity out of the CSS transition so they don't fight */
-    transition-property: color, box-shadow, border-radius, background-color, scale;
-    display: flex;
-    width: fit-content;
-    margin: 14px auto 0;
-  }
 
   .google-badge { padding: 8px 14px; gap: 8px; }
   .google-badge__logo { width: 18px; height: 18px; }
