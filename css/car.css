@@ -518,7 +518,8 @@
 }
 @media (max-width: 768px) {
   .car-sticky-cta { display: flex; }
-  body.has-sticky-cta { padding-bottom: 64px; }
+  body.has-sticky-cta { padding-bottom: 140px; }
+  body.has-sticky-cta .header__nav { bottom: calc(76px + env(safe-area-inset-bottom)); }
 }
 @media (max-width: 600px) {
   .car-specs__grid { grid-template-columns: repeat(2, 1fr); }

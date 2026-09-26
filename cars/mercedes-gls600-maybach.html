@@ -39,8 +39,8 @@ src="https://www.facebook.com/tr?id=1617303853199188&ev=PageView&noscript=1"
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Kaushan+Script&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../css/main.css?v=24" />
-  <link rel="stylesheet" href="../css/car.css?v=11" />
+  <link rel="stylesheet" href="../css/main.css?v=27" />
+  <link rel="stylesheet" href="../css/car.css?v=12" />
   <link rel="stylesheet" href="../css/car-booking.css?v=14" />
   <script type="application/ld+json">
   {
@@ -76,20 +76,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <header class="header" id="header">
     <a href="https://agmotorsmiami.com/" class="header__logo page-link"><img src="../assets/images/logo.png?v=2" alt="AG Motors Miami" class="header__logo-img" /></a>
-    <nav class="header__nav">
-      <a href="https://agmotorsmiami.com/#fleet" class="nav-link page-link">Fleet</a>
-      <a href="https://agmotorsmiami.com/#contact" class="nav-link page-link">Contact</a>
+    <nav class="header__nav" aria-label="Main">
+      <a href="https://agmotorsmiami.com/" class="nav-link nav-link--home page-link" data-nav="home">Home</a>
+      <a href="https://agmotorsmiami.com/#fleet" class="nav-link page-link" data-nav="fleet">Fleet</a>
+      <a href="https://agmotorsmiami.com/chauffeur.html" class="nav-link page-link" data-nav="chauffeur">Chauffeur</a>
+      <a href="https://agmotorsmiami.com/#contact" class="nav-link page-link" data-nav="about">About</a>
+      <a href="https://agmotorsmiami.com/reviews.html" class="nav-link page-link" data-nav="reviews">Reviews</a>
+      <a href="https://agmotorsmiami.com/#faq" class="nav-link page-link" data-nav="faq">FAQ</a>
     </nav>
-    <a href="https://agmotorsmiami.com/#private-driver" class="animated-button header__chauffeur-btn page-link">
-      <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
-        <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
-      </svg>
-      <span class="text">Private Driver</span>
-      <span class="circle"></span>
-      <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
-        <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
-      </svg>
-    </a>
   </header>
 
   <!-- Hero -->
@@ -292,7 +286,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <ul class="footer__list">
           <li><a href="https://agmotorsmiami.com/#fleet">The fleet</a></li>
           <li><a href="https://agmotorsmiami.com/#why-us">Why AG Motors</a></li>
-          <li><a href="https://agmotorsmiami.com/#private-driver">Private driver</a></li>
+          <li><a href="https://agmotorsmiami.com/chauffeur.html">Private driver</a></li>
           <li><a href="https://agmotorsmiami.com/#faq">FAQ</a></li>
           <li><a href="https://g.page/r/CTHUj92VVM0tEBM/review" target="_blank" rel="noopener">Google Reviews</a></li>
           <li><a href="../privacy-policy.html" class="page-link">Privacy policy</a></li>
@@ -398,7 +392,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             or Reserve on WhatsApp <span class="bm-whatsapp-dot"></span>
           </button>
           <p class="bm-note">No charge now — we confirm availability &amp; pricing first.</p>
-          <p class="bm-mileage"><strong>Daily mileage limit applies.</strong> Each vehicle has its own limit — please confirm the details with your manager.</p>
+          <p class="bm-mileage"><strong>Daily mileage limit applies.</strong> Each vehicle has its own limit — please confirm the details with us.</p>
         </form>
       </div>
 
@@ -417,5 +411,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="../js/car.js?v=6"></script>
   <script src="../js/car-booking.js?v=6"></script>
+  <script src="../js/nav.js?v=2"></script>
 </body>
 </html>
