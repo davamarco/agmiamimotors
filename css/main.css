@@ -1267,3 +1267,26 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
 
 .google-badge__stars { display: inline-flex; gap: 2px; letter-spacing: 0; }
 .google-badge__stars svg { width: 1em; height: 1em; }
+
+/* Chauffeur hero buttons: white "Request" + red "Call", same size, centered under the hero */
+.chauffeur__cta-wrap {
+  grid-column: 1 / -1;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 14px;
+  margin-top: clamp(4px, 1.5vh, 16px);
+}
+.chauffeur__btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 300px; padding: 20px 24px;
+  border-radius: 999px;
+  font-family: var(--f-body); font-size: 14px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap;
+  transition: background 0.3s, color 0.3s, transform 0.3s var(--ease-expo), box-shadow 0.3s;
+}
+.chauffeur__btn--white { background: #fff; color: #0a0a0a; box-shadow: 0 8px 28px rgba(255,255,255,0.18); }
+.chauffeur__btn--white:hover { background: var(--c-orange); color: #fff; transform: translateY(-3px); }
+.chauffeur__btn--red { background: #ff0000; color: #fff; box-shadow: 0 8px 28px rgba(255,0,0,0.45); }
+.chauffeur__btn--red:hover { filter: brightness(1.1); transform: translateY(-3px); }
+@media (max-width: 560px) {
+  .chauffeur__cta-wrap { flex-direction: column; align-items: stretch; }
+  .chauffeur__btn { width: auto; padding: 18px 24px; }
+}

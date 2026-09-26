@@ -6,7 +6,8 @@
 
 /* ── 1. Lenis + GSAP - single ticker, no duplicate RAF loop ─────── */
 const lenis = new Lenis({
-  duration: 1.3,
+  duration: 1.8,
+  wheelMultiplier: 0.85,
   easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
   orientation: 'vertical',
   smoothWheel: true,
@@ -235,7 +236,7 @@ lenis.on('scroll', ScrollTrigger.update);
       e.preventDefault();
       lenis.scrollTo(target, {
         offset: -HEADER_OFFSET,
-        duration: 1.4,
+        duration: 2.0,
         easing: easeOutExpo,
       });
     });
