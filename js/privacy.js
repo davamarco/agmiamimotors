@@ -1,10 +1,10 @@
 /* ================================================================
-   AG MOTORS MIAMI — privacy.js
+   AG MOTORS MIAMI - privacy.js
    ================================================================ */
 
 'use strict';
 
-/* ── Lenis + GSAP — single ticker ──────────────────────────────── */
+/* ── Lenis + GSAP - single ticker ──────────────────────────────── */
 const lenis = new Lenis({
   duration: 1.3,
   easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -43,7 +43,7 @@ if (header) {
     });
   });
 
-  // Bfcache restore (browser Back/Forward) freezes the DOM mid-transition —
+  // Bfcache restore (browser Back/Forward) freezes the DOM mid-transition -
   // without this the curtain can stay stuck covering the screen (black screen on back).
   window.addEventListener('pageshow', event => {
     if (event.persisted) gsap.set(curtain, { y: '-100%' });

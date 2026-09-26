@@ -1,5 +1,5 @@
 /* ================================================================
-   AG MOTORS MIAMI — nav.js
+   AG MOTORS MIAMI - nav.js
    Glass pill navigation: a soft highlight glides between links on
    hover, and rests on the current page / section.
    ================================================================ */

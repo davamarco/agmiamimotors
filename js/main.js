@@ -1,10 +1,10 @@
 /* ================================================================
-   AG MOTORS MIAMI — main.js  (performance-optimised)
+   AG MOTORS MIAMI - main.js  (performance-optimised)
    ================================================================ */
 
 'use strict';
 
-/* ── 1. Lenis + GSAP — single ticker, no duplicate RAF loop ─────── */
+/* ── 1. Lenis + GSAP - single ticker, no duplicate RAF loop ─────── */
 const lenis = new Lenis({
   duration: 1.3,
   easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -13,7 +13,7 @@ const lenis = new Lenis({
 });
 
 // ONE source of truth: GSAP ticker drives Lenis.
-// Do NOT also run a manual requestAnimationFrame(lenisRaf) loop —
+// Do NOT also run a manual requestAnimationFrame(lenisRaf) loop -
 // that would call lenis.raf() twice per frame causing double updates.
 gsap.ticker.add((time) => lenis.raf(time * 1000));
 gsap.ticker.lagSmoothing(0);
@@ -84,7 +84,7 @@ lenis.on('scroll', ScrollTrigger.update);
   const cards = document.querySelectorAll('[data-tilt]');
   if (!cards.length) return;
 
-  // Single shared bounds map — avoids 10 separate resize listeners
+  // Single shared bounds map - avoids 10 separate resize listeners
   const boundsMap = new Map();
 
   let resizeTimer;
@@ -212,7 +212,7 @@ lenis.on('scroll', ScrollTrigger.update);
     });
   });
 
-  // Bfcache restore (browser Back/Forward) freezes the DOM mid-transition —
+  // Bfcache restore (browser Back/Forward) freezes the DOM mid-transition -
   // without this the curtain can stay stuck covering the screen (black screen on back).
   window.addEventListener('pageshow', event => {
     if (event.persisted) gsap.set(curtain, { y: '-100%' });
@@ -221,7 +221,7 @@ lenis.on('scroll', ScrollTrigger.update);
 
 /* ── 8b. Smooth-scroll same-page anchor links ─────────────────────
    .page-link click handling above deliberately skips "#..." hrefs
-   (no curtain transition for an in-page jump) — handle those here
+   (no curtain transition for an in-page jump) - handle those here
    instead, animating through Lenis so the scroll eases in/out rather
    than snapping instantly. ─────────────────────────────────────── */
 (function initAnchorScroll() {
@@ -269,7 +269,7 @@ lenis.on('scroll', ScrollTrigger.update);
   const bgText = document.querySelector('.why-us__bg-text');
   if (!bgText) return;
 
-  // scrub: 1 (smoothed) instead of scrub: true (immediate) — reduces jitter
+  // scrub: 1 (smoothed) instead of scrub: true (immediate) - reduces jitter
   gsap.to(bgText, {
     y: '-20%',
     ease: 'none',

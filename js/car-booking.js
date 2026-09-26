@@ -1,5 +1,5 @@
 /* ================================================================
-   AG MOTORS MIAMI — car-booking.js
+   AG MOTORS MIAMI - car-booking.js
    Hero date-range calendar + multi-day discount calculator,
    plus the shared reservation modal (Web3Forms + WhatsApp).
    Depends on Lenis/GSAP already initialised by car.js.
@@ -39,7 +39,7 @@
 
   // Every time the selected rental period changes (any calendar day click that
   // completes/replaces a date range) this increments, so the resulting booking
-  // state gets a fresh id. That id — not "the form" — is what submit-state
+  // state gets a fresh id. That id - not "the form" - is what submit-state
   // tracking below keys off, so a new date range is always a genuinely new
   // request even if the visitor picks the exact same dates again later.
   let bookingCounter = 0;
@@ -123,7 +123,7 @@
     const total    = original * (1 - tier.pct);
     const savings  = original - total;
 
-    rangeEl.textContent = `${fmtShort(rangeStart)} → ${fmtShort(rangeEnd)} · ${days} day${days === 1 ? '' : 's'}`;
+    rangeEl.textContent = `${fmtShort(rangeStart)} - ${fmtShort(rangeEnd)}, ${days} day${days === 1 ? '' : 's'}`;
 
     if (tier.pct > 0) {
       originalEl.hidden = false;
@@ -208,7 +208,7 @@
 
   // Per-booking-id submission state: 'submitting' | 'succeeded'. No entry = idle.
   // Keyed by the booking id (see bookingCounter above), never by anything
-  // persisted to storage — this is purely an in-memory guard against duplicate
+  // persisted to storage - this is purely an in-memory guard against duplicate
   // submits/events for one specific date-range selection, not a site-wide lock.
   const bookingStatus = new Map();
 
@@ -216,12 +216,12 @@
     if (!state) return;
     currentBooking = state;
     modalCar.textContent = state.carName;
-    modalSummary.textContent = `${fmtShort(state.rangeStart)} → ${fmtShort(state.rangeEnd)} · ${state.days} day${state.days === 1 ? '' : 's'} · ${fmtMoney(state.total)} est.`;
+    modalSummary.textContent = `${fmtShort(state.rangeStart)} - ${fmtShort(state.rangeEnd)}, ${state.days} day${state.days === 1 ? '' : 's'}, ${fmtMoney(state.total)} est.`;
 
     hideFormError();
 
     // Re-opening a booking that already succeeded (or is mid-flight) must not
-    // hand the visitor a fresh, resubmittable form — reflect its real status.
+    // hand the visitor a fresh, resubmittable form - reflect its real status.
     const status = bookingStatus.get(state.id);
     if (status === 'succeeded') {
       formScreen.hidden = true;
@@ -286,9 +286,9 @@
     return [
       `NEW BOOKING REQUEST`,
       `Car: ${booking.carName}`,
-      `Dates: ${fmtShort(booking.rangeStart)} → ${fmtShort(booking.rangeEnd)} (${booking.days} days)`,
+      `Dates: ${fmtShort(booking.rangeStart)} - ${fmtShort(booking.rangeEnd)} (${booking.days} days)`,
       `Estimated Total: ${fmtMoney(booking.total)}`,
-      contact.privateDriver ? `Private Driver: Yes ★` : null,
+      contact.privateDriver ? `Private Driver: Yes` : null,
       `Name: ${contact.firstName} ${contact.lastName}`,
       `Phone: ${contact.phone}`,
       `Email: ${contact.email || 'not provided'}`,
@@ -312,7 +312,7 @@
   function setSubmitBusy(isBusy) {
     if (!submitBtn) return;
     submitBtn.disabled = isBusy;
-    submitBtn.textContent = isBusy ? 'Sending…' : submitBtnDefaultText;
+    submitBtn.textContent = isBusy ? 'Sending...' : submitBtnDefaultText;
   }
 
   /* ── Inline error banner (created once, no HTML edits needed across
@@ -333,10 +333,10 @@
     formError.textContent = '';
   }
 
-  /* ── Web3Forms call → strict success check ───────────────────────
+  /* ── Web3Forms call - strict success check ───────────────────────
      Success requires response.ok === true AND a parsed JSON body with
      success === true. Any HTTP error, network failure, non-JSON body,
-     null body, or {success:false} is treated as a failure — never
+     null body, or {success:false} is treated as a failure - never
      assumed to have gone through. ─────────────────────────────────── */
   async function submitBookingEmail(formData) {
     let response;
@@ -374,7 +374,7 @@
       return;
     }
 
-    // Capture the exact data this request represents *before* the await —
+    // Capture the exact data this request represents *before* the await -
     // later interface changes (closing the modal, picking new dates, editing
     // fields for a different attempt) must not alter what was already sent.
     const bookingSnapshot = { ...currentBooking };
@@ -388,7 +388,7 @@
     };
 
     const lines   = buildMessageLines(bookingSnapshot, contactSnapshot);
-    const subject = `Booking Request — ${bookingSnapshot.carName}`;
+    const subject = `Booking Request - ${bookingSnapshot.carName}`;
 
     const formData = new FormData();
     formData.append('access_key', WEB3FORMS_ACCESS_KEY);
@@ -407,7 +407,7 @@
     const isStillCurrent = currentBooking && currentBooking.id === bookingId;
 
     if (succeeded) {
-      // The lead really was captured server-side — record that and fire the
+      // The lead really was captured server-side - record that and fire the
       // conversion event once, regardless of what's on screen right now.
       if (bookingStatus.get(bookingId) !== 'succeeded') {
         bookingStatus.set(bookingId, 'succeeded');
@@ -418,7 +418,7 @@
         }
       }
       // Only touch the visible UI if the visitor hasn't since moved on to a
-      // different booking (new dates, new id) — a stale success must not
+      // different booking (new dates, new id) - a stale success must not
       // flip a different in-progress request over to "thanks".
       if (isStillCurrent) {
         setSubmitBusy(false);
@@ -445,16 +445,16 @@
     const privateDriver = document.getElementById('bm-private-driver')?.checked;
     const text = [
       `Hi! I'd like to reserve the ${currentBooking.carName}.`,
-      `Dates: ${fmtShort(currentBooking.rangeStart)} → ${fmtShort(currentBooking.rangeEnd)} (${currentBooking.days} days)`,
+      `Dates: ${fmtShort(currentBooking.rangeStart)} - ${fmtShort(currentBooking.rangeEnd)} (${currentBooking.days} days)`,
       `Estimated Total: ${fmtMoney(currentBooking.total)}`,
-      privateDriver ? `★ Private Driver requested` : null,
+      privateDriver ? `Private Driver requested` : null,
       `Name: ${val('bm-first-name')} ${val('bm-last-name')}`,
       `Phone: ${val('bm-phone')}`,
       val('bm-email') ? `Email: ${val('bm-email')}` : null,
       `18 or older: ${document.getElementById('bm-age-18')?.checked ? 'Yes' : 'No'}`,
     ].filter(Boolean).join('\n');
 
-    // Opening WhatsApp only hands the visitor a pre-filled chat — it does not
+    // Opening WhatsApp only hands the visitor a pre-filled chat - it does not
     // confirm the message was actually sent, so no success screen and no
     // conversion event here (that event means "we captured a lead").
     window.open(`https://wa.me/19543108470?text=${encodeURIComponent(text)}`, '_blank', 'noopener');

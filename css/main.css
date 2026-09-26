@@ -1201,3 +1201,69 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
     linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.65) 100%);
 }
 .page-chauffeur .chauffeur { background: var(--c-black); }
+
+/* ── Chauffeur request form ─────────────────────────────────────── */
+.cform {
+  padding: clamp(48px, 7vh, 88px) var(--pad-x) clamp(64px, 9vh, 110px);
+  background: var(--c-black-2);
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.cform__inner { max-width: 640px; margin-inline: auto; text-align: center; }
+.cform__eyebrow {
+  display: inline-block; margin-bottom: 8px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; color: var(--c-orange);
+}
+.cform__title {
+  font-family: var(--f-head); font-weight: 900; text-transform: uppercase;
+  font-size: clamp(28px, 3vw, 40px); line-height: 1.05; margin-bottom: 10px;
+}
+.cform__sub { font-size: 16px; line-height: 1.55; color: rgba(255,255,255,0.72); max-width: 520px; margin: 0 auto 22px; }
+.cform__contact { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 22px; }
+.cform__form {
+  text-align: left;
+  display: grid; gap: 12px;
+  padding: clamp(18px, 2.4vw, 26px);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+}
+.cform__row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.cform__field { display: grid; gap: 6px; min-width: 0; }
+.cform__field > span { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: rgba(255,255,255,0.7); }
+.cform__field input, .cform__field select, .cform__field textarea {
+  width: 100%; min-width: 0; box-sizing: border-box; padding: 12px 14px;
+  font-family: var(--f-body); font-size: 16px; color: #fff;
+  background: rgba(0,0,0,0.45);
+  border: 1px solid rgba(255,255,255,0.16); border-radius: 10px;
+  outline: none; color-scheme: dark;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.cform__field textarea { resize: vertical; min-height: 84px; }
+.cform__field input::placeholder, .cform__field textarea::placeholder { color: rgba(255,255,255,0.4); }
+.cform__field input:focus, .cform__field select:focus, .cform__field textarea:focus {
+  border-color: var(--c-orange); box-shadow: 0 0 0 3px rgba(255,85,0,0.18);
+}
+.cform__field .is-invalid, .cform__field input.is-invalid { border-color: #ff0000; }
+.cform__hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.cform__error { color: #ff5a5a; font-size: 14px; font-weight: 600; }
+.cform__submit {
+  padding: 15px 28px; border: 0; border-radius: 999px; cursor: pointer;
+  background: #fff; color: #0a0a0a;
+  font-family: var(--f-body); font-size: 14px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  transition: background 0.3s, color 0.3s, transform 0.3s var(--ease-expo);
+}
+.cform__submit:hover { background: var(--c-orange); color: #fff; transform: translateY(-2px); }
+.cform__submit:disabled { opacity: 0.6; cursor: wait; transform: none; }
+.cform__note { text-align: center; font-size: 14px; color: rgba(255,255,255,0.55); }
+.cform__thanks {
+  padding: 28px; border: 1.5px solid var(--c-orange); border-radius: 16px;
+  background: rgba(255,85,0,0.08);
+}
+.cform__thanks h3 { font-family: var(--f-head); font-weight: 800; text-transform: uppercase; font-size: 28px; margin-bottom: 8px; }
+.cform__thanks p { font-size: 16px; color: rgba(255,255,255,0.8); }
+@media (max-width: 560px) {
+  .cform__row { grid-template-columns: 1fr; }
+}
+
+.google-badge__stars { display: inline-flex; gap: 2px; letter-spacing: 0; }
+.google-badge__stars svg { width: 1em; height: 1em; }

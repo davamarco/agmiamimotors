@@ -1,10 +1,10 @@
 /* ================================================================
-   AG MOTORS MIAMI — car.js  (performance-optimised)
+   AG MOTORS MIAMI - car.js  (performance-optimised)
    ================================================================ */
 
 'use strict';
 
-/* ── Lenis + GSAP — single ticker ──────────────────────────────── */
+/* ── Lenis + GSAP - single ticker ──────────────────────────────── */
 const lenis = new Lenis({
   duration: 1.3,
   easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -52,7 +52,7 @@ gsap.from('.car-hero__checklist li', { opacity: 0, x: 12, duration: 0.7, ease: '
     });
   });
 
-  // Bfcache restore (browser Back/Forward) freezes the DOM mid-transition —
+  // Bfcache restore (browser Back/Forward) freezes the DOM mid-transition -
   // without this the curtain can stay stuck covering the screen (black screen on back).
   window.addEventListener('pageshow', event => {
     if (event.persisted) gsap.set(curtain, { y: '-100%' });
@@ -160,7 +160,7 @@ gsap.from('.car-hero__checklist li', { opacity: 0, x: 12, duration: 0.7, ease: '
   document.body.appendChild(script);
 })();
 
-/* ── Animated counters — rewritten from scratch, no GSAP ─────────────
+/* ── Animated counters - rewritten from scratch, no GSAP ─────────────
    Plain requestAnimationFrame, linear interpolation, replays every time
    the row re-enters view. No tweening library involved, so there's
    nothing left to mistrust about how the number gets from 0 to target. */
@@ -168,7 +168,7 @@ gsap.from('.car-hero__checklist li', { opacity: 0, x: 12, duration: 0.7, ease: '
   const items = document.querySelectorAll('.spec-item__val[data-count]');
   if (!items.length) return;
 
-  const DURATION = 2800; // ms — how long the count-up visibly runs
+  const DURATION = 2800; // ms - how long the count-up visibly runs
   const frames = new WeakMap();
 
   function countUp(el, target, suffix, dec, unitHTML) {
@@ -194,7 +194,7 @@ gsap.from('.car-hero__checklist li', { opacity: 0, x: 12, duration: 0.7, ease: '
       const unitHTML = unit ? unit.outerHTML : '';
 
       if (!entry.isIntersecting) {
-        // Only reset once it has actually counted up before — otherwise the
+        // Only reset once it has actually counted up before - otherwise the
         // very first (off-screen) callback IntersectionObserver fires on
         // page load would wipe the static number before the user scrolls.
         if (el.dataset.counted === '1') {
@@ -207,7 +207,7 @@ gsap.from('.car-hero__checklist li', { opacity: 0, x: 12, duration: 0.7, ease: '
       countUp(el, target, suffix, dec, unitHTML);
     });
   // Trigger once the row is well inside the viewport (not just peeking at the
-  // bottom edge) — with Lenis's inertial scroll, a low threshold fired the
+  // bottom edge) - with Lenis's inertial scroll, a low threshold fired the
   // count-up while the numbers were still off-screen, so it looked instant
   // by the time the user's eyes actually reached them.
   }, { threshold: 0.4, rootMargin: '0px 0px -15% 0px' });
