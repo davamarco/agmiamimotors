@@ -75,8 +75,8 @@
 
   /* Sub-pages: fixed active link */
   if (/\/cars\//.test(path)) { setActive(byKey('fleet')); return; }
-  if (/reviews\.html$/.test(path)) { setActive(byKey('reviews')); return; }
-  if (/chauffeur\.html$/.test(path)) { setActive(byKey('chauffeur')); return; }
+  if (/\/reviews(\.html)?\/?$/.test(path)) { setActive(byKey('reviews')); return; }
+  if (/\/chauffeur(\.html)?\/?$/.test(path)) { setActive(byKey('chauffeur')); return; }
   if (!document.getElementById('fleet')) { return; }   // e.g. privacy policy: nothing highlighted
 
   /* Home page: scroll-spy */
