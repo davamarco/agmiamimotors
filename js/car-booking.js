@@ -281,7 +281,7 @@
       `Name: ${contact.firstName} ${contact.lastName}`,
       `Phone: ${contact.phone}`,
       `Email: ${contact.email || 'not provided'}`,
-      `21 or older: ${contact.age21 ? 'Yes' : 'No'}`,
+      `18 or older: ${contact.age18 ? 'Yes' : 'No'}`,
       `From: AGMotorsMiami Website`,
     ].filter(Boolean).join('\n');
   }
@@ -296,7 +296,7 @@
 
   /* ── Submit-in-progress UI (button state) ───────────────────────── */
   const submitBtn = form.querySelector('.bm-book-btn');
-  const submitBtnDefaultText = submitBtn ? submitBtn.textContent : 'Book Now';
+  const submitBtnDefaultText = submitBtn ? submitBtn.textContent : 'Check Availability';
 
   function setSubmitBusy(isBusy) {
     if (!submitBtn) return;
@@ -372,7 +372,7 @@
       lastName: val('bm-last-name'),
       phone: val('bm-phone'),
       email: val('bm-email'),
-      age21: !!document.getElementById('bm-age-21')?.checked,
+      age18: !!document.getElementById('bm-age-18')?.checked,
       privateDriver: !!document.getElementById('bm-private-driver')?.checked,
     };
 
@@ -440,7 +440,7 @@
       `Name: ${val('bm-first-name')} ${val('bm-last-name')}`,
       `Phone: ${val('bm-phone')}`,
       val('bm-email') ? `Email: ${val('bm-email')}` : null,
-      `21 or older: ${document.getElementById('bm-age-21')?.checked ? 'Yes' : 'No'}`,
+      `18 or older: ${document.getElementById('bm-age-18')?.checked ? 'Yes' : 'No'}`,
     ].filter(Boolean).join('\n');
 
     // Opening WhatsApp only hands the visitor a pre-filled chat — it does not

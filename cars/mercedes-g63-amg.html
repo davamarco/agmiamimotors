@@ -41,7 +41,7 @@ src="https://www.facebook.com/tr?id=1617303853199188&ev=PageView&noscript=1"
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/main.css?v=8" />
   <link rel="stylesheet" href="../css/car.css?v=5" />
-  <link rel="stylesheet" href="../css/car-booking.css?v=2" />
+  <link rel="stylesheet" href="../css/car-booking.css?v=5" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -146,7 +146,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <p class="car-cal__savings" data-cal-savings hidden></p>
           </div>
 
-          <button type="button" class="car-cal__book" data-cal-book disabled>Book Now</button>
+          <button type="button" class="car-cal__book" data-cal-book disabled>Check Availability</button>
           <button type="button" class="car-cal__clear" data-cal-clear hidden>Clear dates</button>
         </div>
       </div>
@@ -234,6 +234,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </section>
 
+  <!-- Deposit & Insurance -->
+  <section class="car-terms">
+    <div class="container">
+      <div class="car-terms__card car-terms__card--deposit">
+        <span class="section-label">Deposit</span>
+        <h3>$1,000 Refundable Security Deposit</h3>
+        <p>A $1,000 refundable security deposit is required before the rental. The deposit is released after the vehicle is returned and inspected, subject to the rental agreement and any outstanding charges.</p>
+      </div>
+      <div class="car-terms__card">
+        <span class="section-label">Insurance</span>
+        <h3>Covered either way</h3>
+        <p>Already insured? Great — we can verify your existing coverage.</p>
+        <p>Don’t have insurance? No problem. Rental coverage options are available.</p>
+      </div>
+    </div>
+  </section>
+
   <div class="marquee-wrap" aria-hidden="true">
     <div class="marquee-track">
       <div class="marquee-inner"><img class="marquee-logo" src="../assets/brands/bentley.svg" alt="Bentley" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/bmw.svg" alt="BMW" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/cadillac.svg" alt="Cadillac" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/corvette.svg" alt="Corvette" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/ferrari.svg" alt="Ferrari" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/lamborghini.svg" alt="Lamborghini" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/maybach.svg" alt="Maybach" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/mercedes-benz.svg" alt="Mercedes-Benz" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/porsche.svg" alt="Porsche" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/rolls-royce.svg" alt="Rolls-Royce" /><span class="marquee-dot"></span></div><div class="marquee-inner" aria-hidden="true"><img class="marquee-logo" src="../assets/brands/bentley.svg" alt="Bentley" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/bmw.svg" alt="BMW" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/cadillac.svg" alt="Cadillac" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/corvette.svg" alt="Corvette" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/ferrari.svg" alt="Ferrari" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/lamborghini.svg" alt="Lamborghini" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/maybach.svg" alt="Maybach" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/mercedes-benz.svg" alt="Mercedes-Benz" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/porsche.svg" alt="Porsche" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/rolls-royce.svg" alt="Rolls-Royce" /><span class="marquee-dot"></span></div><div class="marquee-inner" aria-hidden="true"><img class="marquee-logo" src="../assets/brands/bentley.svg" alt="Bentley" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/bmw.svg" alt="BMW" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/cadillac.svg" alt="Cadillac" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/corvette.svg" alt="Corvette" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/ferrari.svg" alt="Ferrari" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/lamborghini.svg" alt="Lamborghini" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/maybach.svg" alt="Maybach" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/mercedes-benz.svg" alt="Mercedes-Benz" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/porsche.svg" alt="Porsche" /><span class="marquee-dot"></span><img class="marquee-logo" src="../assets/brands/rolls-royce.svg" alt="Rolls-Royce" /><span class="marquee-dot"></span></div>
@@ -293,10 +310,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div class="bm-field">
             <input class="bm-field__input" type="email" id="bm-email" name="email" placeholder="Email (optional)" />
           </div>
-          <label class="bm-toggle-row" for="bm-age-21">
-            <span class="bm-toggle-row__label">I'm 21 or older</span>
+          <label class="bm-toggle-row" for="bm-age-18">
+            <span class="bm-toggle-row__label">I'm 18 or older</span>
             <span class="bm-switch">
-              <input type="checkbox" id="bm-age-21" name="age_21" />
+              <input type="checkbox" id="bm-age-18" name="age_18" />
               <span class="bm-switch__track"><span class="bm-switch__thumb"></span></span>
             </span>
           </label>
@@ -309,11 +326,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </span>
           </label>
 
-          <button type="submit" class="bm-book-btn">Book Now</button>
+          <div class="bm-deposit">
+            <span class="bm-deposit__title">$1,000 Refundable Security Deposit</span>
+            <span class="bm-deposit__text">Required before the rental. Released after the vehicle is returned and inspected, subject to the rental agreement and any outstanding charges.</span>
+          </div>
+          <div class="bm-insurance">
+            <span class="bm-insurance__title">Insurance</span>
+            <span class="bm-insurance__text">Already insured? Great — we can verify your existing coverage.</span>
+            <span class="bm-insurance__text">Don’t have insurance? No problem. Rental coverage options are available.</span>
+          </div>
+
+          <button type="submit" class="bm-book-btn">Check Availability</button>
           <button type="button" class="bm-whatsapp-btn" data-modal-whatsapp>
             or Reserve on WhatsApp <span class="bm-whatsapp-dot"></span>
           </button>
           <p class="bm-note">No charge now — we confirm availability &amp; pricing first.</p>
+          <p class="bm-mileage"><strong>Daily mileage limit applies.</strong> Each vehicle has its own limit — please confirm the details with your manager.</p>
         </form>
       </div>
 

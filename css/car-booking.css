@@ -449,20 +449,37 @@ button.btn-hero-book.js-book-cta {
 
 .bm-whatsapp-btn {
   width: 100%;
-  padding: 11px;
+  padding: 12px;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.15);
-  background: transparent;
-  color: var(--c-white);
+  border: none;
+  background: #25D366;
+  color: #0a0a0a;
   font-family: var(--f-body);
-  font-weight: 600;
-  font-size: 12px;
+  font-weight: 700;
+  font-size: 13px;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center; gap: 7px;
-  transition: border-color 0.3s;
+  transition: background 0.3s, transform 0.3s;
 }
-.bm-whatsapp-btn:hover { border-color: #25D366; }
-.bm-whatsapp-dot { width: 7px; height: 7px; border-radius: 50%; background: #25D366; flex-shrink: 0; }
+.bm-whatsapp-btn:hover { background: #2fe172; }
+.bm-whatsapp-dot { display: none; }
+
+.bm-deposit {
+  padding: 12px 14px;
+  background: rgba(255,85,0,0.1);
+  border: 1px solid rgba(255,85,0,0.35);
+  border-radius: 10px;
+  display: flex; flex-direction: column; gap: 3px;
+}
+.bm-deposit__title { font-size: 15px; font-weight: 700; line-height: 1.25; color: #ff7a33; }
+.bm-deposit__text { font-size: 13px; line-height: 1.5; color: rgba(255,255,255,0.85); }
+
+.bm-insurance {
+  padding: 4px 2px 2px;
+  display: flex; flex-direction: column; gap: 5px;
+}
+.bm-insurance__title { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.7); }
+.bm-insurance__text { font-size: 13px; line-height: 1.5; color: rgba(255,255,255,0.85); }
 
 .bm-note {
   text-align: center;
@@ -471,6 +488,18 @@ button.btn-hero-book.js-book-cta {
   margin-top: 2px;
   line-height: 1.4;
 }
+
+.bm-mileage {
+  margin: 4px 0 0;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: rgba(255,255,255,0.88);
+  background: rgba(255,82,82,0.1);
+  border: 1px solid rgba(255,82,82,0.45);
+  border-radius: 10px;
+}
+.bm-mileage strong { color: #ff6b6b; }
 
 .bm-success-icon {
   width: 44px; height: 44px;
@@ -510,4 +539,22 @@ button.btn-hero-book.js-book-cta {
 @media (max-width: 480px) {
   .bm-row--2 { grid-template-columns: 1fr; }
   .booking-modal__box { padding: 20px 16px 16px; border-radius: 14px; }
+}
+
+/* Deposit & insurance section on the car page */
+.car-terms { padding: 0 0 clamp(48px, 7vw, 96px); }
+.car-terms .container {
+  display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap);
+}
+.car-terms__card {
+  padding: clamp(20px, 2.4vw, 32px);
+  background: var(--c-glass);
+  border: 1px solid var(--c-glass-b);
+  border-radius: 16px;
+}
+.car-terms__card--deposit { border-color: rgba(255,85,0,0.4); background: rgba(255,85,0,0.06); }
+.car-terms__card h3 { margin: 10px 0 12px; font-size: clamp(22px, 2.2vw, 30px); line-height: 1.15; }
+.car-terms__card p { margin: 0 0 8px; font-size: 16px; line-height: 1.6; color: rgba(255,255,255,0.88); }
+@media (max-width: 720px) {
+  .car-terms .container { grid-template-columns: 1fr; }
 }
