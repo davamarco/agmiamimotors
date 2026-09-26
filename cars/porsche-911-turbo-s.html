@@ -294,12 +294,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <input class="bm-field__input" type="tel" id="bm-phone" name="phone" placeholder="Phone number" required />
           </div>
           <div class="bm-field">
-            <input class="bm-field__input" type="email" id="bm-email" name="email" placeholder="Email" required />
+            <input class="bm-field__input" type="email" id="bm-email" name="email" placeholder="Email (optional)" />
           </div>
-          <div class="bm-field">
-            <label class="bm-field__label" for="bm-dob">Date of birth</label>
-            <input class="bm-field__input" type="date" id="bm-dob" name="dob" />
-          </div>
+          <label class="bm-toggle-row" for="bm-age-21">
+            <span class="bm-toggle-row__label">I'm 21 or older</span>
+            <span class="bm-switch">
+              <input type="checkbox" id="bm-age-21" name="age_21" />
+              <span class="bm-switch__track"><span class="bm-switch__thumb"></span></span>
+            </span>
+          </label>
 
           <label class="bm-toggle-row" for="bm-private-driver">
             <span class="bm-toggle-row__label">Private Driver</span>

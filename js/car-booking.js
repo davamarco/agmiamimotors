@@ -193,7 +193,6 @@
   const formScreen    = modal.querySelector('[data-screen="form"]');
   const thanksScreen  = modal.querySelector('[data-screen="thanks"]');
   const form          = document.getElementById('booking-modal-form');
-  const dobInput      = document.getElementById('bm-dob');
   const whatsappBtn   = modal.querySelector('[data-modal-whatsapp]');
 
   let currentBooking = null;
@@ -209,10 +208,6 @@
     currentBooking = state;
     modalCar.textContent = state.carName;
     modalSummary.textContent = `${fmtShort(state.rangeStart)} → ${fmtShort(state.rangeEnd)} · ${state.days} day${state.days === 1 ? '' : 's'} · ${fmtMoney(state.total)} est.`;
-
-    if (dobInput && !dobInput.value) {
-      dobInput.value = new Date().toISOString().split('T')[0];
-    }
 
     hideFormError();
 
@@ -246,7 +241,7 @@
 
   function val(id) { return (document.getElementById(id)?.value || '').trim(); }
 
-  const REQUIRED_IDS = ['bm-first-name', 'bm-last-name', 'bm-phone', 'bm-email'];
+  const REQUIRED_IDS = ['bm-first-name', 'bm-last-name', 'bm-phone'];
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   function clearFieldError(input) { input.closest('.bm-field')?.classList.remove('bm-field--invalid'); }
@@ -256,15 +251,22 @@
     REQUIRED_IDS.forEach(id => {
       const input = document.getElementById(id);
       if (!input) return;
-      const invalid = id === 'bm-email' ? !EMAIL_RE.test(input.value.trim()) : !input.value.trim();
-      const wrap = input.closest('.bm-field');
-      wrap?.classList.toggle('bm-field--invalid', invalid);
+      const invalid = !input.value.trim();
+      input.closest('.bm-field')?.classList.toggle('bm-field--invalid', invalid);
       if (invalid && !firstInvalid) firstInvalid = input;
     });
+    // Email is optional, but if the visitor typed something it must look valid.
+    const emailInput = document.getElementById('bm-email');
+    if (emailInput) {
+      const v = emailInput.value.trim();
+      const emailBad = v !== '' && !EMAIL_RE.test(v);
+      emailInput.closest('.bm-field')?.classList.toggle('bm-field--invalid', emailBad);
+      if (emailBad && !firstInvalid) firstInvalid = emailInput;
+    }
     return firstInvalid;
   }
 
-  REQUIRED_IDS.forEach(id => {
+  [...REQUIRED_IDS, 'bm-email'].forEach(id => {
     const input = document.getElementById(id);
     input?.addEventListener('input', () => clearFieldError(input));
   });
@@ -278,8 +280,8 @@
       contact.privateDriver ? `Private Driver: Yes ★` : null,
       `Name: ${contact.firstName} ${contact.lastName}`,
       `Phone: ${contact.phone}`,
-      `Email: ${contact.email}`,
-      `Date of Birth: ${contact.dob}`,
+      `Email: ${contact.email || 'not provided'}`,
+      `21 or older: ${contact.age21 ? 'Yes' : 'No'}`,
       `From: AGMotorsMiami Website`,
     ].filter(Boolean).join('\n');
   }
@@ -370,7 +372,7 @@
       lastName: val('bm-last-name'),
       phone: val('bm-phone'),
       email: val('bm-email'),
-      dob: val('bm-dob'),
+      age21: !!document.getElementById('bm-age-21')?.checked,
       privateDriver: !!document.getElementById('bm-private-driver')?.checked,
     };
 
@@ -382,7 +384,7 @@
     formData.append('subject', subject);
     formData.append('from_name', 'AG Motors Miami Website');
     formData.append('name', `${contactSnapshot.firstName} ${contactSnapshot.lastName}`.trim());
-    formData.append('email', contactSnapshot.email);
+    if (contactSnapshot.email) formData.append('email', contactSnapshot.email);
     formData.append('message', lines);
     formData.append('botcheck', '');
 
@@ -437,7 +439,8 @@
       privateDriver ? `★ Private Driver requested` : null,
       `Name: ${val('bm-first-name')} ${val('bm-last-name')}`,
       `Phone: ${val('bm-phone')}`,
-      `Email: ${val('bm-email')}`,
+      val('bm-email') ? `Email: ${val('bm-email')}` : null,
+      `21 or older: ${document.getElementById('bm-age-21')?.checked ? 'Yes' : 'No'}`,
     ].filter(Boolean).join('\n');
 
     // Opening WhatsApp only hands the visitor a pre-filled chat — it does not
