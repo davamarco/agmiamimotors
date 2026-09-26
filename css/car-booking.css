@@ -314,6 +314,7 @@ button.btn-hero-book.js-book-cta {
   width: min(380px, 100%);
   max-height: min(92vh, 92svh);
   overflow-y: auto;
+  overscroll-behavior: contain;
   background: #111111;
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 16px;

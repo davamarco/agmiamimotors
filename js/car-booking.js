@@ -194,6 +194,9 @@
   const thanksScreen  = modal.querySelector('[data-screen="thanks"]');
   const form          = document.getElementById('booking-modal-form');
   const whatsappBtn   = modal.querySelector('[data-modal-whatsapp]');
+  // Lenis (smooth scroll) hijacks wheel/touchpad events unless told to leave this
+  // scrollable box alone — without it the page scrolls under the modal instead.
+  modal.querySelector('.booking-modal__box')?.setAttribute('data-lenis-prevent', '');
 
   let currentBooking = null;
 
