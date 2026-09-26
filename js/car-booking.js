@@ -165,13 +165,13 @@
   renderCalendar();
   updateSummary();
 
-  /* ── Book Now (hero) opens the modal ────────────────────────────── */
+  /* ── Check Availability (hero) opens the modal ────────────────────────────── */
   bookBtn.addEventListener('click', () => {
     if (bookBtn.disabled) return;
     openBookingModal(heroSection._bookingState);
   });
 
-  /* ── Other CTAs on the page (Reserve Now / Book This Car) ───────── */
+  /* ── Other CTAs on the page (Check Availability) ───────── */
   document.querySelectorAll('.js-book-cta').forEach(btn => {
     btn.addEventListener('click', () => {
       if (heroSection._bookingState) {
@@ -194,9 +194,15 @@
   const thanksScreen  = modal.querySelector('[data-screen="thanks"]');
   const form          = document.getElementById('booking-modal-form');
   const whatsappBtn   = modal.querySelector('[data-modal-whatsapp]');
-  // Lenis (smooth scroll) hijacks wheel/touchpad events unless told to leave this
-  // scrollable box alone — without it the page scrolls under the modal instead.
-  modal.querySelector('.booking-modal__box')?.setAttribute('data-lenis-prevent', '');
+  // Lenis (smooth scroll) hijacks wheel/touchpad events and scrolls the page
+  // under the modal. Keep wheel events inside the box away from Lenis so the box
+  // scrolls natively, and block wheel scrolling of the page over the backdrop.
+  const modalBox = modal.querySelector('.booking-modal__box');
+  modalBox?.setAttribute('data-lenis-prevent', '');
+  modalBox?.addEventListener('wheel', e => e.stopPropagation(), { passive: true });
+  modal.addEventListener('wheel', e => {
+    if (!modalBox || !modalBox.contains(e.target)) e.preventDefault();
+  }, { passive: false });
 
   let currentBooking = null;
 
@@ -228,11 +234,13 @@
 
     modal.classList.add('is-visible');
     modal.setAttribute('aria-hidden', 'false');
+    if (typeof lenis !== 'undefined' && lenis.stop) lenis.stop();
   }
 
   function closeBookingModal() {
     modal.classList.remove('is-visible');
     modal.setAttribute('aria-hidden', 'true');
+    if (typeof lenis !== 'undefined' && lenis.start) lenis.start();
   }
 
   modal.addEventListener('click', e => {

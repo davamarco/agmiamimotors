@@ -559,3 +559,8 @@ button.btn-hero-book.js-book-cta {
 @media (max-width: 720px) {
   .car-terms .container { grid-template-columns: 1fr; }
 }
+
+/* Desktop: wider modal so the text wraps into fewer lines (font sizes unchanged) */
+@media (min-width: 768px) {
+  .booking-modal__box { width: min(500px, 100%); }
+}
