@@ -54,6 +54,22 @@
   window.addEventListener('resize', rest);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { placed = false; rest(); });
 
+  /* Mobile burger menu */
+  const header = document.getElementById('header');
+  const toggle = document.querySelector('.nav-toggle');
+  if (header && toggle) {
+    const setOpen = open => {
+      header.classList.toggle('is-menu-open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Menu');
+    };
+    toggle.addEventListener('click', e => { e.stopPropagation(); setOpen(!header.classList.contains('is-menu-open')); });
+    nav.addEventListener('click', e => { if (e.target.closest('.nav-link')) setOpen(false); });
+    document.addEventListener('click', e => { if (!header.contains(e.target)) setOpen(false); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
+    window.addEventListener('resize', () => { if (window.innerWidth > 768) setOpen(false); });
+  }
+
   const byKey = key => links.find(l => l.dataset.nav === key) || null;
   const path = location.pathname;
 

@@ -225,6 +225,23 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   box-shadow: 0 10px 34px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.18);
 }
 /* Soft highlight that glides between links (positioned by js/nav.js) */
+.nav-toggle {
+  display: none; margin-left: auto;
+  width: 46px; height: 46px; flex-shrink: 0;
+  flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  cursor: pointer; padding: 0;
+}
+.nav-toggle span {
+  display: block; width: 20px; height: 2px; border-radius: 2px; background: #fff;
+  transition: transform 0.4s var(--ease-expo), opacity 0.25s;
+}
+.header.is-menu-open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.header.is-menu-open .nav-toggle span:nth-child(2) { opacity: 0; }
+.header.is-menu-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 .nav-indicator {
   position: absolute; top: 6px; bottom: 6px; left: 0; width: 0;
   border-radius: 999px;
@@ -1073,17 +1090,25 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
 @media (max-width: 768px) {
   :root { --pad-x: clamp(16px, 5vw, 28px); }
 
-  /* Phones/tablets: the menu floats as a glass pill at the bottom of the screen */
+  /* Phones/tablets: burger button opens a glass dropdown */
+  .nav-toggle { display: flex; }
   .header__nav {
-    position: fixed; left: 50%; transform: translateX(-50%);
-    bottom: calc(14px + env(safe-area-inset-bottom));
-    max-width: calc(100vw - 20px);
-    z-index: 1001;
-    background: rgba(20,20,20,0.5);
+    position: absolute; left: auto; right: var(--pad-x);
+    top: calc(100% + 4px); transform: translateY(-10px);
+    flex-direction: column; align-items: stretch; gap: 2px;
+    width: min(280px, calc(100vw - 2 * var(--pad-x)));
+    padding: 8px; border-radius: 22px;
+    background: rgba(14,14,14,0.94);
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.35s var(--ease-expo), transform 0.45s var(--ease-expo), visibility 0s 0.45s;
   }
-  .nav-link { padding: 11px 15px; font-size: 12px; letter-spacing: 0.08em; }
-  body { padding-bottom: 78px; }
-  .hero__content { padding-bottom: 92px; }
+  .header.is-menu-open .header__nav {
+    opacity: 1; visibility: visible; pointer-events: auto; transform: none;
+    transition: opacity 0.35s var(--ease-expo), transform 0.45s var(--ease-expo);
+  }
+  .nav-indicator { display: none; }
+  .nav-link { padding: 15px 20px; font-size: 14px; letter-spacing: 0.12em; }
+  .nav-link.is-active { background: rgba(255,255,255,0.14); }
   .header__logo-img { height: 34px; }
   .header.is-scrolled .header__logo-img { height: 32px; }
 
@@ -1106,15 +1131,8 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   .marquee-logo { height: 30px; }
 }
 
-@media (max-width: 360px) {
-  .nav-link { padding: 10px 7px; font-size: 10.5px; letter-spacing: 0.02em; }
-}
-
 @media (max-width: 480px) {
-  .header__nav { padding: 4px; }
-  .nav-indicator { top: 4px; bottom: 4px; }
-  .nav-link { padding: 10px 9px; font-size: 11px; letter-spacing: 0.04em; }
-  .nav-link--home { display: none; }
+
   .animated-button { padding: 9px 20px; font-size: 11px; }
 
   .hero-cta { padding: 14px 22px; font-size: 15px; }
@@ -1145,3 +1163,14 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
 .page-chauffeur .chauffeur { border-top: 0; min-height: 100vh; display: flex; align-items: center; padding-top: calc(var(--header-h) + clamp(40px, 8vh, 100px)); }
 .page-chauffeur .chauffeur .container { width: min(1380px, 92vw); }
 .page-chauffeur .chauffeur__feature { opacity: 1; transform: none; }
+
+/* Chauffeur page: darkened Cadillac photo behind the content */
+.chauffeur__bg { position: absolute; inset: 0; z-index: 0; }
+.chauffeur__bg img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 60%; }
+.chauffeur__bg::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    linear-gradient(to right, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.72) 45%, rgba(0,0,0,0.55) 100%),
+    linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.65) 100%);
+}
+.page-chauffeur .chauffeur { background: var(--c-black); }
