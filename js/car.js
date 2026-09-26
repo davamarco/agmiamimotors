@@ -94,6 +94,68 @@ gsap.from('.car-hero__checklist li', { opacity: 0, x: 12, duration: 0.7, ease: '
 
     btnPrev?.addEventListener('click', () => swiper.slidePrev());
     btnNext?.addEventListener('click', () => swiper.slideNext());
+
+    /* ── Lightbox: click a photo to view it large, swipeable ── */
+    const carName = document.getElementById('car-hero')?.dataset.carName || document.title;
+    const srcs = [...document.querySelectorAll('.car-gallery .swiper-slide img')].map(i => ({ src: i.currentSrc || i.src, alt: i.alt }));
+    let lb = null, lbSwiper = null;
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function openLightbox(index) {
+      if (lb) return;
+      lb = document.createElement('div');
+      lb.className = 'lb';
+      lb.setAttribute('role', 'dialog');
+      lb.setAttribute('aria-modal', 'true');
+      lb.setAttribute('aria-label', carName + ' photos');
+      lb.innerHTML =
+        '<div class="lb__bar"><span class="lb__name"></span><span class="lb__count"></span>' +
+        '<button type="button" class="lb__close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>' +
+        '<div class="swiper lb__swiper"><div class="swiper-wrapper">' +
+        srcs.map(p => '<div class="swiper-slide"><img src="' + p.src + '" alt="' + p.alt.replace(/"/g, '&quot;') + '" /></div>').join('') +
+        '</div></div>' +
+        '<button type="button" class="lb__arrow lb__arrow--prev" aria-label="Previous photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 6l-6 6 6 6"/></svg></button>' +
+        '<button type="button" class="lb__arrow lb__arrow--next" aria-label="Next photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg></button>';
+      lb.querySelector('.lb__name').textContent = carName;
+      document.body.appendChild(lb);
+      if (typeof lenis !== 'undefined') lenis.stop();
+      document.documentElement.classList.add('lb-open');
+
+      const count = lb.querySelector('.lb__count');
+      lbSwiper = new Swiper(lb.querySelector('.lb__swiper'), {
+        initialSlide: index, slidesPerView: 1, spaceBetween: 32, speed: 500,
+        grabCursor: true, keyboard: { enabled: true },
+      });
+      const upd = () => { count.textContent = pad(lbSwiper.realIndex + 1) + ' / ' + pad(srcs.length); };
+      upd();
+      lbSwiper.on('slideChange', upd);
+
+      lb.querySelector('.lb__arrow--prev').addEventListener('click', () => lbSwiper.slidePrev());
+      lb.querySelector('.lb__arrow--next').addEventListener('click', () => lbSwiper.slideNext());
+      lb.querySelector('.lb__close').addEventListener('click', closeLightbox);
+      lb.addEventListener('wheel', e => e.stopPropagation(), { passive: true });
+      // click on empty space around a photo closes it
+      lb.querySelector('.lb__swiper').addEventListener('click', e => {
+        if (e.target.tagName !== 'IMG') closeLightbox();
+      });
+      requestAnimationFrame(() => lb.classList.add('is-open'));
+    }
+
+    function closeLightbox() {
+      if (!lb) return;
+      const el = lb; lb = null;
+      lbSwiper.destroy(true, true); lbSwiper = null;
+      el.classList.remove('is-open');
+      setTimeout(() => el.remove(), 250);
+      document.documentElement.classList.remove('lb-open');
+      if (typeof lenis !== 'undefined') lenis.start();
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+    document.querySelectorAll('.car-gallery .swiper-slide').forEach((slide, i) => {
+      slide.addEventListener('click', () => { if (swiper.allowClick) openLightbox(i); });
+    });
   };
   document.body.appendChild(script);
 })();
