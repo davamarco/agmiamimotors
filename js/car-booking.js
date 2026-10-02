@@ -335,25 +335,37 @@
 
   /* ── Web3Forms call - strict success check ───────────────────────
      Success requires response.ok === true AND a parsed JSON body with
-     success === true. Any HTTP error, network failure, non-JSON body,
-     null body, or {success:false} is treated as a failure - never
-     assumed to have gone through. ─────────────────────────────────── */
-  async function submitBookingEmail(formData) {
-    let response;
-    try {
-      response = await fetch(WEB3FORMS_ENDPOINT, { method: 'POST', headers: { Accept: 'application/json' }, body: formData });
-    } catch (networkErr) {
-      return false;
-    }
-    if (!response || response.ok !== true) return false;
+     success === true. Anything else is a failure - never assumed to have
+     gone through. Returns 'ok' or the failure reason ('timeout' |
+     'network' | 'http' | 'parse' | 'rejected').
 
-    let result;
+     The request is aborted after SUBMIT_TIMEOUT_MS: on a stalled mobile
+     connection fetch can stay pending forever, which used to leave the
+     button stuck on "Sending..." with no way to retry. ──────────────── */
+  const SUBMIT_TIMEOUT_MS = 20000;
+
+  async function submitBookingEmail(formData) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), SUBMIT_TIMEOUT_MS);
     try {
-      result = await response.json();
-    } catch (parseErr) {
-      return false;
+      let response;
+      try {
+        response = await fetch(WEB3FORMS_ENDPOINT, { method: 'POST', headers: { Accept: 'application/json' }, body: formData, signal: controller.signal });
+      } catch (err) {
+        return controller.signal.aborted ? 'timeout' : 'network';
+      }
+      if (!response || response.ok !== true) return 'http';
+
+      let result;
+      try {
+        result = await response.json();
+      } catch (err) {
+        return controller.signal.aborted ? 'timeout' : 'parse';
+      }
+      return result && result.success === true ? 'ok' : 'rejected';
+    } finally {
+      clearTimeout(timer);
     }
-    return !!(result && result.success === true);
   }
 
   form.addEventListener('submit', async e => {
@@ -403,7 +415,8 @@
     hideFormError();
     setSubmitBusy(true);
 
-    const succeeded = await submitBookingEmail(formData);
+    const outcome = await submitBookingEmail(formData);
+    const succeeded = outcome === 'ok';
     const isStillCurrent = currentBooking && currentBooking.id === bookingId;
 
     if (succeeded) {
@@ -426,6 +439,12 @@
       }
     } else {
       bookingStatus.set(bookingId, 'idle'); // explicit: retry is allowed
+      // Failure reason only (no personal data) so GTM/GA4 can show how often
+      // and why submissions fail in the field.
+      try {
+        window.dataLayer = window.dataLayer || [];
+        dataLayer.push({ event: 'ag_booking_error', reason: outcome });
+      } catch (analyticsErr) { /* never let analytics affect the form */ }
       if (isStillCurrent) {
         setSubmitBusy(false);
         showFormError("We couldn't confirm your request. Please try again or contact us on WhatsApp.");
