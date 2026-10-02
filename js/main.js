@@ -4,6 +4,11 @@
 
 'use strict';
 
+if (typeof Lenis === 'undefined' || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+  document.documentElement.classList.add('no-anim');   // CDN blocked/offline: show content without animation
+  throw new Error('Animation libraries failed to load');
+}
+
 /* ── 1. Lenis + GSAP - single ticker, no duplicate RAF loop ─────── */
 const lenis = new Lenis({
   duration: 1.8,
@@ -204,6 +209,7 @@ lenis.on('scroll', ScrollTrigger.update);
     if (link.getAttribute('href')?.startsWith('#')) return;
 
     link.addEventListener('click', e => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || link.target === '_blank') return;
       e.preventDefault();
       const href = link.getAttribute('href');
       gsap.fromTo(curtain,

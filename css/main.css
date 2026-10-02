@@ -85,18 +85,10 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
 
 /* ── Grain ──────────────────────────────────────────────────────── */
 .grain {
-  position: fixed; inset: -50%; z-index: 9999;
+  position: fixed; inset: 0; z-index: 9999;
   pointer-events: none;
   opacity: 0.032;
-  width: 200%; height: 200%;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: grain 0.4s steps(3) infinite;
-}
-@keyframes grain {
-  0%   { transform: translate(0,0); }
-  33%  { transform: translate(-3%, 2%); }
-  66%  { transform: translate(2%, -3%); }
-  100% { transform: translate(-2%, 1%); }
 }
 
 /* ── Page Curtain (transition) ──────────────────────────────────── */
@@ -1290,3 +1282,8 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   .chauffeur__cta-wrap { flex-direction: column; align-items: stretch; }
   .chauffeur__btn { width: auto; padding: 18px 24px; }
 }
+
+/* If the animation libraries fail to load, never leave the hero invisible */
+.no-anim .hero__line { transform: none; }
+.no-anim .hero__eyebrow, .no-anim .hero__contact, .no-anim .hero__notes,
+.no-anim .hero__check, .no-anim .google-badge, .no-anim .hero__scroll { opacity: 1; }

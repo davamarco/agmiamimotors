@@ -35,6 +35,7 @@ if (header) {
     if (link.hostname !== window.location.hostname) return;
     if (link.getAttribute('href')?.startsWith('#')) return;
     link.addEventListener('click', e => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || link.target === '_blank') return;
       e.preventDefault();
       const href = link.getAttribute('href');
       gsap.fromTo(curtain, { y: '100%' }, {
