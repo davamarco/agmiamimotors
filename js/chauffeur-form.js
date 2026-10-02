@@ -90,11 +90,17 @@
     const label = submit.textContent;
     submit.textContent = 'Sending...';
     let ok = false;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 20000);   // a stalled mobile connection must not hang the button
     try {
-      const res = await fetch(ENDPOINT, { method: 'POST', headers: { Accept: 'application/json' }, body: data });
+      const res = await fetch(ENDPOINT, { method: 'POST', headers: { Accept: 'application/json' }, body: data, signal: controller.signal });
       const json = await res.json();
       ok = res.ok && json && json.success === true;
     } catch (err) { ok = false; }
+    clearTimeout(timer);
+
+    window.dataLayer = window.dataLayer || [];
+    dataLayer.push({ event: ok ? 'ag_chauffeur_success' : 'ag_chauffeur_error' });
 
     if (ok) {
       form.hidden = true;

@@ -44,6 +44,7 @@ gsap.from('.car-hero__checklist li', { opacity: 0, x: 12, duration: 0.7, ease: '
     if (link.hostname !== window.location.hostname) return;
     if (link.getAttribute('href')?.startsWith('#')) return;
     link.addEventListener('click', e => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || link.target === '_blank') return;
       e.preventDefault();
       const href = link.getAttribute('href');
       gsap.fromTo(curtain, { y: '100%' }, {
