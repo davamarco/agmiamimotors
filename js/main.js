@@ -282,3 +282,45 @@ lenis.on('scroll', ScrollTrigger.update);
     },
   });
 })();
+
+/* ── 10. Reviews track: press-and-drag with the mouse ──────────────
+   Touch keeps native swipe. The mouse drags the row (no wheel/trackpad
+   sideways scroll), then eases to the nearest card on release. ────── */
+(function initReviewsDrag() {
+  const track = document.querySelector('.reviews__track');
+  if (!track) return;
+  let startX = 0, startLeft = 0, down = false, moved = false;
+
+  track.addEventListener('wheel', e => {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) e.preventDefault();
+  }, { passive: false });
+
+  track.addEventListener('pointerdown', e => {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    down = true; moved = false;
+    startX = e.clientX; startLeft = track.scrollLeft;
+  });
+  window.addEventListener('pointermove', e => {
+    if (!down) return;
+    const dx = e.clientX - startX;
+    if (!moved && Math.abs(dx) < 4) return;
+    moved = true;
+    track.classList.add('is-dragging');
+    track.scrollLeft = startLeft - dx;
+  });
+  function end() {
+    if (!down) return;
+    down = false;
+    if (!moved) return;
+    const cards = [...track.querySelectorAll('.review-card')];
+    const left = track.scrollLeft;
+    const base = cards[0].offsetLeft;
+    let best = cards[0].offsetLeft;
+    cards.forEach(c => { if (Math.abs(c.offsetLeft - base - left) < Math.abs(best - base - left)) best = c.offsetLeft; });
+    track.classList.remove('is-dragging');
+    track.scrollTo({ left: best - base, behavior: 'smooth' });
+  }
+  window.addEventListener('pointerup', end);
+  window.addEventListener('pointercancel', end);
+  track.addEventListener('dragstart', e => e.preventDefault());
+})();
