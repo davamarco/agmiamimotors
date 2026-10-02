@@ -75,7 +75,6 @@
 
   /* Sub-pages: fixed active link */
   if (/\/cars\//.test(path)) { setActive(byKey('fleet')); return; }
-  if (/\/reviews(\.html)?\/?$/.test(path)) { setActive(byKey('reviews')); return; }
   if (/\/chauffeur(\.html)?\/?$/.test(path)) { setActive(byKey('chauffeur')); return; }
   if (!document.getElementById('fleet')) { return; }   // e.g. privacy policy: nothing highlighted
 
@@ -83,6 +82,7 @@
   const sections = [
     { key: 'home',  el: document.getElementById('hero') },
     { key: 'fleet', el: document.getElementById('fleet') },
+    { key: 'reviews', el: document.getElementById('reviews') },
     { key: 'faq',   el: document.getElementById('faq') },
     { key: 'about', el: document.getElementById('contact') },
   ].filter(s => s.el && byKey(s.key));
