@@ -295,23 +295,26 @@ lenis.on('scroll', ScrollTrigger.update);
     if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) e.preventDefault();
   }, { passive: false });
 
+  let raf = 0, nextLeft = 0;
   track.addEventListener('pointerdown', e => {
     if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    e.preventDefault();                       // no text selection / native drag
     down = true; moved = false;
     startX = e.clientX; startLeft = track.scrollLeft;
+    track.classList.add('is-dragging');       // snap off immediately, no fighting the drag
   });
   window.addEventListener('pointermove', e => {
     if (!down) return;
     const dx = e.clientX - startX;
-    if (!moved && Math.abs(dx) < 4) return;
-    moved = true;
-    track.classList.add('is-dragging');
-    track.scrollLeft = startLeft - dx;
+    if (Math.abs(dx) > 3) moved = true;
+    nextLeft = startLeft - dx;
+    if (!raf) raf = requestAnimationFrame(() => { raf = 0; track.scrollLeft = nextLeft; });
   });
   function end() {
     if (!down) return;
     down = false;
-    if (!moved) return;
+    if (raf) { cancelAnimationFrame(raf); raf = 0; track.scrollLeft = nextLeft; }
+    if (!moved) { track.classList.remove('is-dragging'); return; }
     const cards = [...track.querySelectorAll('.review-card')];
     const left = track.scrollLeft;
     const base = cards[0].offsetLeft;
