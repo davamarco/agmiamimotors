@@ -83,55 +83,6 @@ lenis.on('scroll', ScrollTrigger.update);
   });
 })();
 
-/* ── 5. Fleet cards 3D tilt ─────────────────────────────────────── */
-(function initTilt() {
-  if (window.matchMedia('(pointer: coarse)').matches) return;
-
-  const cards = document.querySelectorAll('[data-tilt]');
-  if (!cards.length) return;
-
-  // Single shared bounds map - avoids 10 separate resize listeners
-  const boundsMap = new Map();
-
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      cards.forEach(c => boundsMap.set(c, c.getBoundingClientRect()));
-    }, 150);
-  }, { passive: true });
-
-  cards.forEach(card => {
-    // Cache bounds on enter (element is in viewport, rect is fresh)
-    card.addEventListener('mouseenter', () => {
-      boundsMap.set(card, card.getBoundingClientRect());
-    }, { passive: true });
-
-    card.addEventListener('mousemove', e => {
-      const b = boundsMap.get(card);
-      if (!b) return;
-      const x = (e.clientX - b.left) / b.width  - 0.5;
-      const y = (e.clientY - b.top)  / b.height - 0.5;
-      gsap.to(card, {
-        rotateY: x * 8,
-        rotateX: -y * 6,
-        transformPerspective: 900,
-        ease: 'power2.out',
-        duration: 0.45,
-        overwrite: 'auto',
-      });
-    }, { passive: true });
-
-    card.addEventListener('mouseleave', () => {
-      gsap.to(card, {
-        rotateY: 0, rotateX: 0,
-        ease: 'expo.out', duration: 1,
-        overwrite: 'auto',
-      });
-    }, { passive: true });
-  });
-})();
-
 /* ── 7. Why Us scroll reveal ─────────────────────────────────────── */
 (function initWhyUs() {
   const items = document.querySelectorAll('[data-why]');
@@ -266,6 +217,8 @@ lenis.on('scroll', ScrollTrigger.update);
         stagger: 0.06,
         duration: 0.9,
         ease: 'expo.out',
+        // GSAP leaves inline transform/scale behind, which blocks the CSS hover zoom
+        clearProps: 'all',
       });
     },
   });
