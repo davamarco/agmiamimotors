@@ -25,14 +25,16 @@
   overflow: hidden;
   --mask-y: linear-gradient(to bottom, transparent 0%, #000 16%, #000 72%, transparent 100%);
   /* horizontal fade towards the text  ×  vertical fade top & bottom */
-  -webkit-mask-image: var(--mask-x), var(--mask-y);
-          mask-image: var(--mask-x), var(--mask-y);
+  --mask-c: linear-gradient(#000, #000);   /* corner softener, set per side */
+  -webkit-mask-image: var(--mask-x), var(--mask-y), var(--mask-c);
+          mask-image: var(--mask-x), var(--mask-y), var(--mask-c);
   -webkit-mask-composite: source-in;
           mask-composite: intersect;
 }
 .about-block--right .about-block__media {
   right: 0;
   --mask-x: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 14%, #000 42%);
+  --mask-c: radial-gradient(ellipse 48% 40% at 0% 100%, transparent 0%, rgba(0,0,0,0.3) 45%, #000 100%);
 }
 .about-block--left .about-block__media {
   left: 0;
@@ -40,6 +42,8 @@
   --mask-x: linear-gradient(to left, transparent 0%, rgba(0,0,0,0.35) 9%, #000 24%);
   /* longer top fade: the bright skyline rises slowly out of chapter one */
   --mask-y: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 18%, #000 44%, #000 74%, transparent 100%);
+  /* round off the top-right corner where the two straight fades meet */
+  --mask-c: radial-gradient(ellipse 48% 46% at 100% 0%, transparent 0%, rgba(0,0,0,0.3) 45%, #000 100%);
 }
 .about-block__media img {
   position: absolute; left: 0; top: -6%;
