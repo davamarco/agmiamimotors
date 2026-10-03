@@ -76,6 +76,7 @@
   /* Sub-pages: fixed active link */
   if (/\/cars\//.test(path)) { setActive(byKey('fleet')); return; }
   if (/\/chauffeur(\.html)?\/?$/.test(path)) { setActive(byKey('chauffeur')); return; }
+  if (/\/about\/?$/.test(path)) { setActive(byKey('about')); return; }
   if (!document.getElementById('fleet')) { return; }   // e.g. privacy policy: nothing highlighted
 
   /* Home page: scroll-spy */
@@ -84,7 +85,6 @@
     { key: 'fleet', el: document.getElementById('fleet') },
     { key: 'reviews', el: document.getElementById('reviews') },
     { key: 'faq',   el: document.getElementById('faq') },
-    { key: 'about', el: document.getElementById('contact') },
   ].filter(s => s.el && byKey(s.key));
 
   let lockUntil = 0;
@@ -98,9 +98,6 @@
     const line = window.innerHeight * 0.4;
     let cur = sections[0];
     sections.forEach(s => { if (s.el.getBoundingClientRect().top <= line) cur = s; });
-    // footer counts as "About" once it is in view at the bottom
-    const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
-    if (atBottom) cur = sections[sections.length - 1];
     setActive(byKey(cur.key));
   }
 
