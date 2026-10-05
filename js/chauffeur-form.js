@@ -14,6 +14,37 @@
   const thanks = document.getElementById('cform-thanks');
   const submit = form.querySelector('.cform__submit');
 
+  /* Analytics (GTM dataLayer -> GA4): field names and failure reasons only,
+     never what the visitor typed. Every key is sent on every event so a
+     value from an earlier event never lingers in GTM. */
+  const EVENT_KEYS = ['form_type', 'form_location', 'vehicle', 'error_type', 'error_fields', 'reason', 'lead_source'];
+  function track(event, params) {
+    try {
+      const payload = { event };
+      EVENT_KEYS.forEach(k => { payload[k] = undefined; });
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push(Object.assign(payload, { form_type: 'chauffeur', form_location: 'chauffeur_page' }, params));
+    } catch (err) { /* never let analytics affect the form */ }
+  }
+  function leadSource() {
+    try { return window.AGAttribution ? window.AGAttribution.get().channel : undefined; } catch (err) { return undefined; }
+  }
+  function leadSourceLines() {
+    try { return window.AGAttribution ? window.AGAttribution.emailLines() : []; } catch (err) { return []; }
+  }
+  function invalidFieldNames() {
+    return [...form.querySelectorAll('.is-invalid')].map(el => el.name).join(',');
+  }
+
+  let started = false;
+  function onFirstInteraction() {
+    if (started) return;
+    started = true;
+    track('chauffeur_form_start');
+  }
+  form.addEventListener('input', onFirstInteraction);
+  form.addEventListener('change', onFirstInteraction);
+
   /* Dates use the US format: MM/DD/YYYY */
   function maskDate(el) {
     el.addEventListener('input', () => {
@@ -61,9 +92,13 @@
     if (dateMsg) {
       if ((from && !fromD) || (fromD && fromD < startOfToday) || (fromD && toD && toD < fromD)) form.elements.date_from.classList.add('is-invalid');
       if (to && !toD) form.elements.date_to.classList.add('is-invalid');
+      track('chauffeur_form_error', { error_type: 'validation', error_fields: invalidFieldNames() });
       showError(dateMsg); return;
     }
-    if (bad) { showError('Please fill in your name and phone (and a valid email if provided).'); return; }
+    if (bad) {
+      track('chauffeur_form_error', { error_type: 'validation', error_fields: invalidFieldNames() });
+      showError('Please fill in your name and phone (and a valid email if provided).'); return;
+    }
     if (form.botcheck.value) return;
 
     const lines = [
@@ -75,6 +110,7 @@
       'From: ' + (from || 'not specified'),
       'To: ' + (to || 'not specified'),
       'Details: ' + (form.details.value.trim() || '-'),
+      ...leadSourceLines(),
     ].join('\n');
 
     const data = new FormData();
@@ -86,21 +122,30 @@
     data.append('message', lines);
     data.append('botcheck', '');
 
+    const eventParams = { vehicle: form.vehicle.value || 'not sure yet', lead_source: leadSource() };
+    track('chauffeur_submit_attempt', eventParams);
+
     submit.disabled = true;
     const label = submit.textContent;
     submit.textContent = 'Sending...';
     let ok = false;
+    let reason = 'rejected';
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 20000);   // a stalled mobile connection must not hang the button
     try {
       const res = await fetch(ENDPOINT, { method: 'POST', headers: { Accept: 'application/json' }, body: data, signal: controller.signal });
+      if (!res.ok) reason = 'http';
       const json = await res.json();
       ok = res.ok && json && json.success === true;
-    } catch (err) { ok = false; }
+    } catch (err) { ok = false; reason = controller.signal.aborted ? 'timeout' : 'network'; }
     clearTimeout(timer);
 
-    window.dataLayer = window.dataLayer || [];
-    dataLayer.push({ event: ok ? 'ag_chauffeur_success' : 'ag_chauffeur_error' });
+    if (ok) {
+      track('ag_chauffeur_success', eventParams);
+    } else {
+      track('chauffeur_form_error', Object.assign({ error_type: 'submit', reason }, eventParams));
+      track('ag_chauffeur_error', Object.assign({ reason }, eventParams));  // kept for existing GTM setups
+    }
 
     if (ok) {
       form.hidden = true;

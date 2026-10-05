@@ -49,6 +49,44 @@
   function sameDay(a, b) { return a && b && a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
   function daysBetween(a, b) { return Math.round((b - a) / 86400000); }
 
+  function isoDate(d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  /* ── Analytics (GTM dataLayer -> GA4) ────────────────────────────
+     Only booking facts go out (car, days, estimated total, where the form
+     was opened). Never names, phones, emails or typed text.
+     Every key below is sent on every event (unused ones as undefined):
+     GTM keeps old dataLayer values around, so a value from an earlier
+     event must never leak into a later one. ─────────────────────── */
+  const EVENT_KEYS = ['form_type', 'car_name', 'daily_rate', 'rental_days', 'rental_start', 'rental_end',
+    'discount_pct', 'value', 'currency', 'form_location', 'form_action', 'error_type', 'error_fields', 'reason', 'lead_source'];
+
+  function track(event, params) {
+    try {
+      const payload = { event };
+      EVENT_KEYS.forEach(k => { payload[k] = undefined; });
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push(Object.assign(payload, params));
+    } catch (err) { /* never let analytics affect the page */ }
+  }
+
+  function bookingParams(state, extra) {
+    if (!state) return Object.assign({ form_type: 'car_rental', car_name: CAR_NAME, daily_rate: DAILY_RATE }, extra);
+    return Object.assign({
+      form_type: 'car_rental',
+      car_name: state.carName,
+      daily_rate: DAILY_RATE,
+      rental_days: state.days,
+      rental_start: isoDate(state.rangeStart),
+      rental_end: isoDate(state.rangeEnd),
+      discount_pct: state.discountPct,
+      value: state.total,
+      currency: 'USD',
+      form_location: state.formLocation,
+    }, extra);
+  }
+
   function tierFor(days) {
     if (days >= 7) return { pct: 0.20, threshold: 7 };
     if (days >= 5) return { pct: 0.15, threshold: 5 };
@@ -143,7 +181,10 @@
     bookBtn.disabled = false;
     clearBtn.hidden = false;
 
-    heroSection._bookingState = { id: ++bookingCounter, carName: CAR_NAME, rangeStart, rangeEnd, days, total: Math.round(total) };
+    heroSection._bookingState = { id: ++bookingCounter, carName: CAR_NAME, rangeStart, rangeEnd, days, total: Math.round(total), discountPct: Math.round(tier.pct * 100) };
+    track('rental_dates_selected', bookingParams(heroSection._bookingState));
+    // The total is rendered in the same step, right under the calendar.
+    track('rental_quote_viewed', bookingParams(heroSection._bookingState));
   }
 
   prevBtn.addEventListener('click', () => {
@@ -168,14 +209,14 @@
   /* ── Check Availability (hero) opens the modal ────────────────────────────── */
   bookBtn.addEventListener('click', () => {
     if (bookBtn.disabled) return;
-    openBookingModal(heroSection._bookingState);
+    openBookingModal(heroSection._bookingState, 'hero_calendar');
   });
 
   /* ── Other CTAs on the page (Check Availability) ───────── */
   document.querySelectorAll('.js-book-cta').forEach(btn => {
     btn.addEventListener('click', () => {
       if (heroSection._bookingState) {
-        openBookingModal(heroSection._bookingState);
+        openBookingModal(heroSection._bookingState, ctaLocation(btn));
       } else if (typeof lenis !== 'undefined' && lenis.scrollTo) {
         lenis.scrollTo(heroSection, { duration: 1.2 });
       } else {
@@ -183,6 +224,14 @@
       }
     });
   });
+
+  // Which "Check Availability" button opened the form, for analytics.
+  function ctaLocation(btn) {
+    if (btn.closest('.car-specs')) return 'specs_cta';
+    if (btn.closest('.car-desc')) return 'description_cta';
+    const section = btn.closest('section');
+    return (section && section.classList[0] ? section.classList[0] : 'page') + '_cta';
+  }
 
   /* ================== Booking Modal ================== */
   const modal       = document.getElementById('booking-modal');
@@ -205,6 +254,7 @@
   }, { passive: false });
 
   let currentBooking = null;
+  let formStarted = false;  // booking_form_start fires once per opening of the form
 
   // Per-booking-id submission state: 'submitting' | 'succeeded'. No entry = idle.
   // Keyed by the booking id (see bookingCounter above), never by anything
@@ -212,9 +262,11 @@
   // submits/events for one specific date-range selection, not a site-wide lock.
   const bookingStatus = new Map();
 
-  function openBookingModal(state) {
+  function openBookingModal(state, formLocation) {
     if (!state) return;
+    state.formLocation = formLocation;
     currentBooking = state;
+    formStarted = false;
     modalCar.textContent = state.carName;
     modalSummary.textContent = `${fmtShort(state.rangeStart)} - ${fmtShort(state.rangeEnd)}, ${state.days} day${state.days === 1 ? '' : 's'}, ${fmtMoney(state.total)} est.`;
 
@@ -234,6 +286,7 @@
 
     modal.classList.add('is-visible');
     modal.setAttribute('aria-hidden', 'false');
+    track('booking_form_open', bookingParams(state));
     if (typeof lenis !== 'undefined' && lenis.stop) lenis.stop();
   }
 
@@ -282,6 +335,24 @@
     input?.addEventListener('input', () => clearFieldError(input));
   });
 
+  function onFirstInteraction() {
+    if (formStarted || !currentBooking) return;
+    formStarted = true;
+    track('booking_form_start', bookingParams(currentBooking));
+  }
+  form.addEventListener('input', onFirstInteraction);
+  form.addEventListener('change', onFirstInteraction);
+
+  // Field names only (e.g. "phone,email") - never what was typed.
+  function invalidFieldNames() {
+    return [...form.querySelectorAll('.bm-field--invalid input')].map(el => el.name || el.id).join(',');
+  }
+  function trackValidationError(action) {
+    track('booking_form_error', bookingParams(currentBooking, {
+      error_type: 'validation', error_fields: invalidFieldNames(), form_action: action,
+    }));
+  }
+
   function buildMessageLines(booking, contact) {
     return [
       `NEW BOOKING REQUEST`,
@@ -294,7 +365,16 @@
       `Email: ${contact.email || 'not provided'}`,
       `18 or older: ${contact.age18 ? 'Yes' : 'No'}`,
       `From: AGMotorsMiami Website`,
-    ].filter(Boolean).join('\n');
+      ...leadSourceLines(),
+    ].filter(v => v !== null).join('\n');
+  }
+
+  // UTM tags / ad click ids remembered by attribution.js.
+  function leadSourceLines() {
+    try { return window.AGAttribution ? window.AGAttribution.emailLines() : []; } catch (err) { return []; }
+  }
+  function leadSource() {
+    try { return window.AGAttribution ? window.AGAttribution.get().channel : undefined; } catch (err) { return undefined; }
   }
 
   const WEB3FORMS_ACCESS_KEY = '8aeb3671-54be-4636-bfac-c7ed5ee15fe0';
@@ -382,6 +462,7 @@
 
     const firstInvalid = validateModalForm();
     if (firstInvalid) {
+      trackValidationError('submit');
       firstInvalid.focus({ preventScroll: true });
       return;
     }
@@ -414,6 +495,8 @@
     bookingStatus.set(bookingId, 'submitting');
     hideFormError();
     setSubmitBusy(true);
+    const eventParams = bookingParams(bookingSnapshot, { lead_source: leadSource() });
+    track('booking_submit_attempt', eventParams);
 
     const outcome = await submitBookingEmail(formData);
     const succeeded = outcome === 'ok';
@@ -424,8 +507,7 @@
       // conversion event once, regardless of what's on screen right now.
       if (bookingStatus.get(bookingId) !== 'succeeded') {
         bookingStatus.set(bookingId, 'succeeded');
-        window.dataLayer = window.dataLayer || [];
-        dataLayer.push({ event: 'ag_booking_success' });
+        track('ag_booking_success', eventParams);
         if (typeof fbq !== 'undefined') {
           fbq('track', 'Lead');
         }
@@ -441,10 +523,8 @@
       bookingStatus.set(bookingId, 'idle'); // explicit: retry is allowed
       // Failure reason only (no personal data) so GTM/GA4 can show how often
       // and why submissions fail in the field.
-      try {
-        window.dataLayer = window.dataLayer || [];
-        dataLayer.push({ event: 'ag_booking_error', reason: outcome });
-      } catch (analyticsErr) { /* never let analytics affect the form */ }
+      track('booking_form_error', Object.assign({}, eventParams, { error_type: 'submit', reason: outcome }));
+      track('ag_booking_error', Object.assign({}, eventParams, { reason: outcome }));  // kept for existing GTM setups
       if (isStillCurrent) {
         setSubmitBusy(false);
         showFormError("We couldn't confirm your request. Please try again or contact us on WhatsApp.");
@@ -457,9 +537,11 @@
 
     const firstInvalid = validateModalForm();
     if (firstInvalid) {
+      trackValidationError('whatsapp');
       firstInvalid.focus({ preventScroll: true });
       return;
     }
+    track('booking_whatsapp_click', bookingParams(currentBooking, { lead_source: leadSource() }));
 
     const privateDriver = document.getElementById('bm-private-driver')?.checked;
     const text = [
