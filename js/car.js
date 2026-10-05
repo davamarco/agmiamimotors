@@ -25,141 +25,121 @@ if (header) {
   });
 }
 
-/* ── Hero entrance ──────────────────────────────────────────────── */
-gsap.from('.car-hero__eyebrow',   { opacity: 0, y: 20, duration: 1,   ease: 'expo.out', delay: 0.3  });
-gsap.from('.car-hero__title',     { opacity: 0, y: 40, duration: 1.2, ease: 'expo.out', delay: 0.45 });
-gsap.from('.car-hero__subtitle',  { opacity: 0, y: 16, duration: 1,   ease: 'expo.out', delay: 0.5  });
-gsap.from('.car-hero__tagline',   { opacity: 0, y: 20, duration: 1,   ease: 'expo.out', delay: 0.65 });
-gsap.from('.car-hero__trustline', { opacity: 0, y: 16, duration: 1,   ease: 'expo.out', delay: 0.8  });
-gsap.from('.car-hero__card',      { opacity: 0, x: 30, duration: 1,   ease: 'expo.out', delay: 0.6  });
-gsap.from('.car-hero__checklist li', { opacity: 0, x: 12, duration: 0.7, ease: 'expo.out', stagger: 0.08, delay: 1.05 });
-
-/* ── Page transition ────────────────────────────────────────────── */
-(function() {
-  const curtain = document.getElementById('page-curtain');
-  if (!curtain) return;
-  gsap.fromTo(curtain, { y: '0%' }, { y: '-100%', duration: 1, ease: 'expo.inOut', delay: 0.05 });
-
-  document.querySelectorAll('.page-link, a[href]').forEach(link => {
-    if (link.hostname !== window.location.hostname) return;
-    if (link.getAttribute('href')?.startsWith('#')) return;
-    link.addEventListener('click', e => {
-      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || link.target === '_blank') return;
-      e.preventDefault();
-      const href = link.getAttribute('href');
-      gsap.fromTo(curtain, { y: '100%' }, {
-        y: '0%', duration: 0.65, ease: 'expo.in',
-        onComplete: () => { window.location.href = href; },
-      });
-    });
-  });
-
-  // Bfcache restore (browser Back/Forward) freezes the DOM mid-transition -
-  // without this the curtain can stay stuck covering the screen (black screen on back).
-  window.addEventListener('pageshow', event => {
-    if (event.persisted) gsap.set(curtain, { y: '-100%' });
-  });
-})();
+/* ── Hero entrance: pure CSS (css/car.css), so it starts on first paint
+   and never waits for the animation libraries to download. ───────── */
 
 /* ── Swiper Gallery ─────────────────────────────────────────────── */
 (function initSwiper() {
-  if (!document.querySelector('.swiper')) return;
+  const gallery = document.querySelector('.swiper');
+  if (!gallery) return;
 
-  const link = document.createElement('link');
-  link.rel  = 'stylesheet';
-  link.href = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css';
-  document.head.appendChild(link);
+  // Swiper (~150 KB) is only fetched when the gallery is about to scroll into view
+  let started = false;
+  const start = () => { if (!started) { started = true; loadSwiper(); } };
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => {
+      if (entries.some(e => e.isIntersecting)) { io.disconnect(); start(); }
+    }, { rootMargin: '800px 0px' });
+    io.observe(gallery);
+  } else { start(); }
 
-  const script  = document.createElement('script');
-  script.src    = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
-  script.onload = () => {
-    const swiper = new Swiper('.swiper', {
-      slidesPerView: 'auto',
-      spaceBetween: 16,
-      grabCursor: true,
-      touchRatio: 1,
-      speed: 900,
-      freeMode: { enabled: true, momentum: true, momentumRatio: 0.8 },
-      pagination: { el: '.swiper-pagination', clickable: true },
-    });
+  function loadSwiper() {
+    const link = document.createElement('link');
+    link.rel  = 'stylesheet';
+    link.href = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css';
+    document.head.appendChild(link);
 
-    const fraction = document.querySelector('.swiper-fraction');
-    const btnPrev  = document.querySelector('.swiper-btn--prev');
-    const btnNext  = document.querySelector('.swiper-btn--next');
-
-    function updateFraction() {
-      if (fraction) fraction.textContent =
-        `${String(swiper.realIndex + 1).padStart(2,'0')} / ${String(swiper.slides.length).padStart(2,'0')}`;
-    }
-    updateFraction();
-    swiper.on('slideChange', updateFraction);
-
-    btnPrev?.addEventListener('click', () => swiper.slidePrev());
-    btnNext?.addEventListener('click', () => swiper.slideNext());
-
-    /* ── Lightbox: click a photo to view it large, swipeable ── */
-    const carName = document.getElementById('car-hero')?.dataset.carName || document.title;
-    const srcs = [...document.querySelectorAll('.car-gallery .swiper-slide img')].map(i => ({ src: i.currentSrc || i.src, alt: i.alt }));
-    let lb = null, lbSwiper = null;
-
-    function pad(n) { return String(n).padStart(2, '0'); }
-
-    function openLightbox(index) {
-      if (lb) return;
-      lb = document.createElement('div');
-      lb.className = 'lb';
-      lb.setAttribute('role', 'dialog');
-      lb.setAttribute('aria-modal', 'true');
-      lb.setAttribute('aria-label', carName + ' photos');
-      lb.innerHTML =
-        '<div class="lb__bar"><span class="lb__name"></span><span class="lb__count"></span>' +
-        '<button type="button" class="lb__close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>' +
-        '<div class="swiper lb__swiper"><div class="swiper-wrapper">' +
-        srcs.map(p => '<div class="swiper-slide"><img src="' + p.src + '" alt="' + p.alt.replace(/"/g, '&quot;') + '" /></div>').join('') +
-        '</div></div>' +
-        '<button type="button" class="lb__arrow lb__arrow--prev" aria-label="Previous photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 6l-6 6 6 6"/></svg></button>' +
-        '<button type="button" class="lb__arrow lb__arrow--next" aria-label="Next photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg></button>';
-      lb.querySelector('.lb__name').textContent = carName;
-      document.body.appendChild(lb);
-      if (typeof lenis !== 'undefined') lenis.stop();
-      document.documentElement.classList.add('lb-open');
-
-      const count = lb.querySelector('.lb__count');
-      lbSwiper = new Swiper(lb.querySelector('.lb__swiper'), {
-        initialSlide: index, slidesPerView: 1, spaceBetween: 32, speed: 500,
-        grabCursor: true, keyboard: { enabled: true },
+    const script  = document.createElement('script');
+    script.src    = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
+    script.onload = () => {
+      const swiper = new Swiper('.swiper', {
+        slidesPerView: 'auto',
+        spaceBetween: 16,
+        grabCursor: true,
+        touchRatio: 1,
+        speed: 900,
+        freeMode: { enabled: true, momentum: true, momentumRatio: 0.8 },
+        pagination: { el: '.swiper-pagination', clickable: true },
       });
-      const upd = () => { count.textContent = pad(lbSwiper.realIndex + 1) + ' / ' + pad(srcs.length); };
-      upd();
-      lbSwiper.on('slideChange', upd);
 
-      lb.querySelector('.lb__arrow--prev').addEventListener('click', () => lbSwiper.slidePrev());
-      lb.querySelector('.lb__arrow--next').addEventListener('click', () => lbSwiper.slideNext());
-      lb.querySelector('.lb__close').addEventListener('click', closeLightbox);
-      lb.addEventListener('wheel', e => e.stopPropagation(), { passive: true });
-      // click on empty space around a photo closes it
-      lb.querySelector('.lb__swiper').addEventListener('click', e => {
-        if (e.target.tagName !== 'IMG') closeLightbox();
+      const fraction = document.querySelector('.swiper-fraction');
+      const btnPrev  = document.querySelector('.swiper-btn--prev');
+      const btnNext  = document.querySelector('.swiper-btn--next');
+
+      function updateFraction() {
+        if (fraction) fraction.textContent =
+          `${String(swiper.realIndex + 1).padStart(2,'0')} / ${String(swiper.slides.length).padStart(2,'0')}`;
+      }
+      updateFraction();
+      swiper.on('slideChange', updateFraction);
+
+      btnPrev?.addEventListener('click', () => swiper.slidePrev());
+      btnNext?.addEventListener('click', () => swiper.slideNext());
+
+      /* ── Lightbox: click a photo to view it large, swipeable ── */
+      const carName = document.getElementById('car-hero')?.dataset.carName || document.title;
+      const srcs = [...document.querySelectorAll('.car-gallery .swiper-slide img')].map(i => ({ src: i.dataset.full || i.currentSrc || i.src, alt: i.alt }));
+      let lb = null, lbSwiper = null;
+
+      function pad(n) { return String(n).padStart(2, '0'); }
+
+      function openLightbox(index) {
+        if (lb) return;
+        lb = document.createElement('div');
+        lb.className = 'lb';
+        lb.setAttribute('role', 'dialog');
+        lb.setAttribute('aria-modal', 'true');
+        lb.setAttribute('aria-label', carName + ' photos');
+        lb.innerHTML =
+          '<div class="lb__bar"><span class="lb__name"></span><span class="lb__count"></span>' +
+          '<button type="button" class="lb__close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>' +
+          '<div class="swiper lb__swiper"><div class="swiper-wrapper">' +
+          srcs.map(p => '<div class="swiper-slide"><img src="' + p.src + '" alt="' + p.alt.replace(/"/g, '&quot;') + '" /></div>').join('') +
+          '</div></div>' +
+          '<button type="button" class="lb__arrow lb__arrow--prev" aria-label="Previous photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 6l-6 6 6 6"/></svg></button>' +
+          '<button type="button" class="lb__arrow lb__arrow--next" aria-label="Next photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg></button>';
+        lb.querySelector('.lb__name').textContent = carName;
+        document.body.appendChild(lb);
+        if (typeof lenis !== 'undefined') lenis.stop();
+        document.documentElement.classList.add('lb-open');
+
+        const count = lb.querySelector('.lb__count');
+        lbSwiper = new Swiper(lb.querySelector('.lb__swiper'), {
+          initialSlide: index, slidesPerView: 1, spaceBetween: 32, speed: 500,
+          grabCursor: true, keyboard: { enabled: true },
+        });
+        const upd = () => { count.textContent = pad(lbSwiper.realIndex + 1) + ' / ' + pad(srcs.length); };
+        upd();
+        lbSwiper.on('slideChange', upd);
+
+        lb.querySelector('.lb__arrow--prev').addEventListener('click', () => lbSwiper.slidePrev());
+        lb.querySelector('.lb__arrow--next').addEventListener('click', () => lbSwiper.slideNext());
+        lb.querySelector('.lb__close').addEventListener('click', closeLightbox);
+        lb.addEventListener('wheel', e => e.stopPropagation(), { passive: true });
+        // click on empty space around a photo closes it
+        lb.querySelector('.lb__swiper').addEventListener('click', e => {
+          if (e.target.tagName !== 'IMG') closeLightbox();
+        });
+        requestAnimationFrame(() => lb.classList.add('is-open'));
+      }
+
+      function closeLightbox() {
+        if (!lb) return;
+        const el = lb; lb = null;
+        lbSwiper.destroy(true, true); lbSwiper = null;
+        el.classList.remove('is-open');
+        setTimeout(() => el.remove(), 250);
+        document.documentElement.classList.remove('lb-open');
+        if (typeof lenis !== 'undefined') lenis.start();
+      }
+
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+      document.querySelectorAll('.car-gallery .swiper-slide').forEach((slide, i) => {
+        slide.addEventListener('click', () => { if (swiper.allowClick) openLightbox(i); });
       });
-      requestAnimationFrame(() => lb.classList.add('is-open'));
-    }
-
-    function closeLightbox() {
-      if (!lb) return;
-      const el = lb; lb = null;
-      lbSwiper.destroy(true, true); lbSwiper = null;
-      el.classList.remove('is-open');
-      setTimeout(() => el.remove(), 250);
-      document.documentElement.classList.remove('lb-open');
-      if (typeof lenis !== 'undefined') lenis.start();
-    }
-
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
-    document.querySelectorAll('.car-gallery .swiper-slide').forEach((slide, i) => {
-      slide.addEventListener('click', () => { if (swiper.allowClick) openLightbox(i); });
-    });
-  };
-  document.body.appendChild(script);
+    };
+    document.body.appendChild(script);
+  }
 })();
 
 /* ── Animated counters - rewritten from scratch, no GSAP ─────────────

@@ -1,7 +1,7 @@
 /* ================================================================
    AG MOTORS MIAMI - about.js
    Founder page: photos ease out of a slight zoom with a gentle
-   parallax, text rises in line by line. Lenis/curtain come from
+   parallax, text rises in line by line. Lenis comes from
    privacy.js. Without GSAP everything simply stays visible.
    ================================================================ */
 (function () {
