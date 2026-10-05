@@ -37,32 +37,7 @@ lenis.on('scroll', ScrollTrigger.update);
   });
 })();
 
-/* ── 3. Hero entrance animation ─────────────────────────────────── */
-(function initHero() {
-  const lines   = document.querySelectorAll('.hero__line');
-  const eyebrow = document.querySelector('.hero__eyebrow');
-  const contact = document.querySelector('.hero__contact');
-  const notes   = document.querySelector('.hero__notes');
-  const check   = document.querySelector('.hero__check');
-  const badge   = document.querySelector('.google-badge');
-  const scroll  = document.querySelector('.hero__scroll');
-
-  if (!lines.length) return;
-
-  const items = [eyebrow, contact, notes, check, badge, scroll].filter(Boolean);
-  gsap.set(items, { y: 18 });
-
-  gsap.timeline({ defaults: { ease: 'expo.out', duration: 1.2 } })
-    .to(lines,   { y: '0%', stagger: 0.1, delay: 0.25 })
-    .to(eyebrow, { opacity: 1, y: 0, duration: 0.8 }, '-=0.9')
-    .to([contact, notes].filter(Boolean), { opacity: 1, y: 0, duration: 0.8, stagger: 0.1 }, '-=0.7')
-    .to(check,   { opacity: 1, y: 0, duration: 0.8 }, '-=0.55')
-    .to(badge,   { opacity: 1, y: 0, duration: 0.8 }, '-=0.55')
-    .to(scroll,  { opacity: 1, y: 0, duration: 0.8 }, '-=0.55')
-    // Drop the inline transforms GSAP leaves behind, otherwise they outrank
-    // the CSS :hover transforms and the hover effects never show.
-    .set(items, { clearProps: 'transform' });
-})();
+/* ── 3. Hero entrance: pure CSS now (css/main.css), see 'Hero entrance' ── */
 
 /* ── 4. Hero photo parallax ─────────────────────────────────────── */
 (function initHeroParallax() {
@@ -145,42 +120,8 @@ lenis.on('scroll', ScrollTrigger.update);
   });
 })();
 
-/* ── 8. Page transition ──────────────────────────────────────────── */
-(function initPageTransition() {
-  const curtain = document.getElementById('page-curtain');
-  if (!curtain) return;
-
-  gsap.fromTo(curtain,
-    { y: '0%' },
-    { y: '-100%', duration: 1, ease: 'expo.inOut', delay: 0.05 }
-  );
-
-  document.querySelectorAll('.page-link, a[href]').forEach(link => {
-    if (link.hostname !== window.location.hostname) return;
-    if (link.getAttribute('href')?.startsWith('#')) return;
-
-    link.addEventListener('click', e => {
-      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || link.target === '_blank') return;
-      e.preventDefault();
-      const href = link.getAttribute('href');
-      gsap.fromTo(curtain,
-        { y: '100%' },
-        { y: '0%', duration: 0.65, ease: 'expo.in', onComplete: () => { window.location.href = href; } }
-      );
-    });
-  });
-
-  // Bfcache restore (browser Back/Forward) freezes the DOM mid-transition -
-  // without this the curtain can stay stuck covering the screen (black screen on back).
-  window.addEventListener('pageshow', event => {
-    if (event.persisted) gsap.set(curtain, { y: '-100%' });
-  });
-})();
-
 /* ── 8b. Smooth-scroll same-page anchor links ─────────────────────
-   .page-link click handling above deliberately skips "#..." hrefs
-   (no curtain transition for an in-page jump) - handle those here
-   instead, animating through Lenis so the scroll eases in/out rather
+   Same-page "#..." links animate through Lenis so the scroll eases in/out rather
    than snapping instantly. ─────────────────────────────────────── */
 (function initAnchorScroll() {
   const HEADER_OFFSET = 80; // matches --header-h

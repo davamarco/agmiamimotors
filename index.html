@@ -4,7 +4,8 @@
 <head>
 <meta charset="UTF-8" />
 <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+<script>window.AG_PROD=/(^|\.)agmotorsmiami\.com$/.test(location.hostname);
+if(window.AG_PROD)(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
@@ -12,6 +13,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
 <!-- Meta Pixel Code -->
 <script>
+if(window.AG_PROD){
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -22,6 +24,7 @@ s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '1617303853199188');
 fbq('track', 'PageView');
+}
 </script>
 <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=1617303853199188&ev=PageView&noscript=1"
@@ -47,10 +50,10 @@ src="https://www.facebook.com/tr?id=1617303853199188&ev=PageView&noscript=1"
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Bebas+Neue&family=Kaushan+Script&family=Inter:wght@300;400;500&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="css/main.css?v=41" />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Bebas+Neue&family=Kaushan+Script&family=Inter:wght@300;400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Bebas+Neue&family=Kaushan+Script&family=Inter:wght@300;400;500&display=swap" /></noscript>
+  <link rel="preload" as="image" href="assets/images/hero-1600.webp" imagesrcset="assets/images/hero-640.webp 640w, assets/images/hero-1100.webp 1100w, assets/images/hero-1600.webp 1600w, assets/images/hero-2000.webp 2000w" imagesizes="(orientation: portrait) 150vh, 100vw" fetchpriority="high" />
+  <link rel="stylesheet" href="css/main.css?v=43" />
   <link rel="stylesheet" href="css/reviews.css?v=4" />
   <script type="application/ld+json">
   {
@@ -91,14 +94,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- Grain overlay -->
   <div class="grain" aria-hidden="true"></div>
 
-  <!-- Page transition curtain -->
-  <div class="page-curtain" id="page-curtain"></div>
 
   <!-- ══════════════════════════════════════════════
        HEADER
   ══════════════════════════════════════════════ -->
   <header class="header" id="header">
-    <a href="https://agmotorsmiami.com/" class="header__logo page-link"><img src="assets/images/logo.png?v=2" alt="AG Motors Miami"
+    <a href="https://agmotorsmiami.com/" class="header__logo page-link"><img src="assets/images/logo.png?v=3" alt="AG Motors Miami" width="480" height="181"
         class="header__logo-img" /></a>
 
     <nav class="header__nav" id="site-nav" aria-label="Main">
@@ -118,7 +119,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   ══════════════════════════════════════════════ -->
   <section class="hero" id="hero">
     <div class="hero__media">
-      <img class="hero__photo" src="assets/images/hero.jpg" alt="AG Motors Miami exotic car" fetchpriority="high" decoding="async" />
+      <img class="hero__photo" src="assets/images/hero-1600.webp" srcset="assets/images/hero-640.webp 640w, assets/images/hero-1100.webp 1100w, assets/images/hero-1600.webp 1600w, assets/images/hero-2000.webp 2000w" sizes="(orientation: portrait) 150vh, 100vw" alt="AG Motors Miami exotic car" fetchpriority="high" />
       <div class="hero__veil"></div>
     </div>
 
@@ -214,7 +215,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- 01 Chevrolet Corvette -->
       <article class="car-card">
         <div class="car-card__media">
-          <img src="assets/cars/covers/corvette.jpg" alt="Chevrolet Corvette Stingray Convertible" loading="lazy" />
+          <img src="assets/cars/covers/corvette-1100.webp" srcset="assets/cars/covers/corvette-640.webp 640w, assets/cars/covers/corvette-1100.webp 1100w, assets/cars/covers/corvette-1600.webp 1600w" sizes="(max-width: 1099px) 100vw, 36vw" data-full="assets/cars/covers/corvette-1600.webp" decoding="async" alt="Chevrolet Corvette Stingray Convertible" loading="lazy" />
           <div class="car-card__shade"></div>
         </div>
         <footer class="car-card__foot">
@@ -237,7 +238,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- 02 Cadillac Escalade -->
       <article class="car-card">
         <div class="car-card__media">
-          <img src="assets/cars/cadillac/photo-1.JPG" alt="Cadillac Escalade" loading="lazy" />
+          <img src="assets/cars/cadillac/photo-1-1100.webp" srcset="assets/cars/cadillac/photo-1-640.webp 640w, assets/cars/cadillac/photo-1-1100.webp 1100w, assets/cars/cadillac/photo-1-1600.webp 1600w" sizes="(max-width: 1099px) 100vw, 36vw" data-full="assets/cars/cadillac/photo-1-1600.webp" decoding="async" alt="Cadillac Escalade" loading="lazy" />
           <div class="car-card__shade"></div>
         </div>
         <footer class="car-card__foot">
@@ -259,7 +260,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- 03 Mercedes-Benz S580 Maybach -->
       <article class="car-card">
         <div class="car-card__media">
-          <img src="assets/cars/s580/photo-1.JPG" alt="Mercedes-Benz S580 Maybach" loading="lazy" />
+          <img src="assets/cars/s580/photo-1-1100.webp" srcset="assets/cars/s580/photo-1-640.webp 640w, assets/cars/s580/photo-1-1100.webp 1100w, assets/cars/s580/photo-1-1600.webp 1600w" sizes="(max-width: 1099px) 100vw, 36vw" data-full="assets/cars/s580/photo-1-1600.webp" decoding="async" alt="Mercedes-Benz S580 Maybach" loading="lazy" />
           <div class="car-card__shade"></div>
         </div>
         <footer class="car-card__foot">
@@ -280,7 +281,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- 04 Mercedes-Benz GLS600 Maybach -->
       <article class="car-card">
         <div class="car-card__media">
-          <img src="assets/cars/gls600/photo-1.JPG" alt="Mercedes-Benz GLS600 Maybach" loading="lazy" />
+          <img src="assets/cars/gls600/photo-1-1100.webp" srcset="assets/cars/gls600/photo-1-640.webp 640w, assets/cars/gls600/photo-1-1100.webp 1100w, assets/cars/gls600/photo-1-1600.webp 1600w" sizes="(max-width: 1099px) 100vw, 36vw" data-full="assets/cars/gls600/photo-1-1600.webp" decoding="async" alt="Mercedes-Benz GLS600 Maybach" loading="lazy" />
           <div class="car-card__shade"></div>
         </div>
         <footer class="car-card__foot">
@@ -301,7 +302,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- 05 Mercedes-Benz G63 AMG -->
       <article class="car-card">
         <div class="car-card__media">
-          <img src="assets/cars/g63/photo-1.JPG" alt="Mercedes-Benz G63 AMG" loading="lazy" />
+          <img src="assets/cars/g63/photo-1-1100.webp" srcset="assets/cars/g63/photo-1-640.webp 640w, assets/cars/g63/photo-1-1100.webp 1100w, assets/cars/g63/photo-1-1600.webp 1600w" sizes="(max-width: 1099px) 100vw, 36vw" data-full="assets/cars/g63/photo-1-1600.webp" decoding="async" alt="Mercedes-Benz G63 AMG" loading="lazy" />
           <div class="car-card__shade"></div>
         </div>
         <footer class="car-card__foot">
@@ -321,7 +322,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- 06 Lamborghini Urus S -->
       <article class="car-card">
         <div class="car-card__media">
-          <img src="assets/cars/lambourus/photo-1.JPG" alt="Lamborghini Urus S" loading="lazy" />
+          <img src="assets/cars/lambourus/photo-1-1100.webp" srcset="assets/cars/lambourus/photo-1-640.webp 640w, assets/cars/lambourus/photo-1-1100.webp 1100w, assets/cars/lambourus/photo-1-1600.webp 1600w" sizes="(max-width: 1099px) 100vw, 36vw" data-full="assets/cars/lambourus/photo-1-1600.webp" decoding="async" alt="Lamborghini Urus S" loading="lazy" />
           <div class="car-card__shade"></div>
         </div>
         <footer class="car-card__foot">
@@ -341,7 +342,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- 07 Lamborghini Urus Performante -->
       <article class="car-card">
         <div class="car-card__media">
-          <img src="assets/cars/lamboperformante/photo-1.JPG" alt="Lamborghini Urus Performante" loading="lazy" />
+          <img src="assets/cars/lamboperformante/photo-1-1100.webp" srcset="assets/cars/lamboperformante/photo-1-640.webp 640w, assets/cars/lamboperformante/photo-1-1100.webp 1100w, assets/cars/lamboperformante/photo-1-1600.webp 1600w" sizes="(max-width: 1099px) 100vw, 36vw" data-full="assets/cars/lamboperformante/photo-1-1600.webp" decoding="async" alt="Lamborghini Urus Performante" loading="lazy" />
           <div class="car-card__shade"></div>
         </div>
         <footer class="car-card__foot">
@@ -362,7 +363,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- 08 Lamborghini Huracan -->
       <article class="car-card">
         <div class="car-card__media">
-          <img src="assets/cars/huracan/photo-1.JPG" alt="Lamborghini Huracan" loading="lazy" />
+          <img src="assets/cars/huracan/photo-1-1100.webp" srcset="assets/cars/huracan/photo-1-640.webp 640w, assets/cars/huracan/photo-1-1100.webp 1100w, assets/cars/huracan/photo-1-1600.webp 1600w" sizes="(max-width: 1099px) 100vw, 36vw" data-full="assets/cars/huracan/photo-1-1600.webp" decoding="async" alt="Lamborghini Huracan" loading="lazy" />
           <div class="car-card__shade"></div>
         </div>
         <footer class="car-card__foot">
@@ -382,7 +383,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- 09 Rolls-Royce Cullinan -->
       <article class="car-card">
         <div class="car-card__media">
-          <img src="assets/cars/rolls/photo-1.jpg" alt="Rolls-Royce Cullinan" loading="lazy" />
+          <img src="assets/cars/rolls/photo-1-1100.webp" srcset="assets/cars/rolls/photo-1-640.webp 640w, assets/cars/rolls/photo-1-1100.webp 1100w, assets/cars/rolls/photo-1-1600.webp 1600w" sizes="(max-width: 1099px) 100vw, 36vw" data-full="assets/cars/rolls/photo-1-1600.webp" decoding="async" alt="Rolls-Royce Cullinan" loading="lazy" />
           <div class="car-card__shade"></div>
         </div>
         <footer class="car-card__foot">
@@ -402,7 +403,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- 10 Porsche 911 Turbo S -->
       <article class="car-card">
         <div class="car-card__media">
-          <img src="assets/cars/covers/porsche-911-turbo-s.jpg" alt="Porsche 911 Turbo S" loading="lazy" />
+          <img src="assets/cars/covers/porsche-911-turbo-s-1100.webp" srcset="assets/cars/covers/porsche-911-turbo-s-640.webp 640w, assets/cars/covers/porsche-911-turbo-s-1100.webp 1100w, assets/cars/covers/porsche-911-turbo-s-1600.webp 1600w" sizes="(max-width: 1099px) 100vw, 36vw" data-full="assets/cars/covers/porsche-911-turbo-s-1600.webp" decoding="async" alt="Porsche 911 Turbo S" loading="lazy" />
           <div class="car-card__shade"></div>
         </div>
         <footer class="car-card__foot">
@@ -422,7 +423,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- 11 Porsche Cayenne -->
       <article class="car-card">
         <div class="car-card__media">
-          <img src="assets/cars/cayenne/photo-1.jpg" alt="Porsche Cayenne" loading="lazy" />
+          <img src="assets/cars/cayenne/photo-1-1100.webp" srcset="assets/cars/cayenne/photo-1-640.webp 640w, assets/cars/cayenne/photo-1-1100.webp 1100w, assets/cars/cayenne/photo-1-1600.webp 1600w" sizes="(max-width: 1099px) 100vw, 36vw" data-full="assets/cars/cayenne/photo-1-1600.webp" decoding="async" alt="Porsche Cayenne" loading="lazy" />
           <div class="car-card__shade"></div>
         </div>
         <footer class="car-card__foot">
@@ -442,7 +443,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- 12 Ferrari F8 Tributo Spider -->
       <article class="car-card">
         <div class="car-card__media">
-          <img src="assets/cars/ferrari/photo-1.jpg" alt="Ferrari F8 Tributo Spider" loading="lazy" />
+          <img src="assets/cars/ferrari/photo-1-1100.webp" srcset="assets/cars/ferrari/photo-1-640.webp 640w, assets/cars/ferrari/photo-1-1100.webp 1100w, assets/cars/ferrari/photo-1-1600.webp 1600w" sizes="(max-width: 1099px) 100vw, 36vw" data-full="assets/cars/ferrari/photo-1-1600.webp" decoding="async" alt="Ferrari F8 Tributo Spider" loading="lazy" />
           <div class="car-card__shade"></div>
         </div>
         <footer class="car-card__foot">
@@ -505,38 +506,38 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   ══════════════════════════════════════════════ -->
   <div class="marquee-wrap" aria-hidden="true">
     <div class="marquee-track">
-      <div class="marquee-inner"><img class="marquee-logo" src="assets/brands/bentley.svg" alt="Bentley" /><span
-          class="marquee-dot"></span><img class="marquee-logo" src="assets/brands/bmw.svg" alt="BMW" /><span
-          class="marquee-dot"></span><img class="marquee-logo" src="assets/brands/cadillac.svg" alt="Cadillac" /><span
-          class="marquee-dot"></span><img class="marquee-logo" src="assets/brands/corvette.svg" alt="Corvette" /><span
-          class="marquee-dot"></span><img class="marquee-logo" src="assets/brands/ferrari.svg" alt="Ferrari" /><span
-          class="marquee-dot"></span><img class="marquee-logo" src="assets/brands/lamborghini.svg"
-          alt="Lamborghini" /><span class="marquee-dot"></span><img class="marquee-logo" src="assets/brands/maybach.svg"
-          alt="Maybach" /><span class="marquee-dot"></span><img class="marquee-logo"
+      <div class="marquee-inner"><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/bentley.svg" alt="Bentley" /><span
+          class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/bmw.svg" alt="BMW" /><span
+          class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/cadillac.svg" alt="Cadillac" /><span
+          class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/corvette.svg" alt="Corvette" /><span
+          class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/ferrari.svg" alt="Ferrari" /><span
+          class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/lamborghini.svg"
+          alt="Lamborghini" /><span class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/maybach.svg"
+          alt="Maybach" /><span class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async"
           src="assets/brands/mercedes-benz.svg" alt="Mercedes-Benz" /><span class="marquee-dot"></span><img
           class="marquee-logo" src="assets/brands/porsche.svg" alt="Porsche" /><span class="marquee-dot"></span><img
           class="marquee-logo" src="assets/brands/rolls-royce.svg" alt="Rolls-Royce" /><span class="marquee-dot"></span>
       </div>
-      <div class="marquee-inner" aria-hidden="true"><img class="marquee-logo" src="assets/brands/bentley.svg"
-          alt="Bentley" /><span class="marquee-dot"></span><img class="marquee-logo" src="assets/brands/bmw.svg"
-          alt="BMW" /><span class="marquee-dot"></span><img class="marquee-logo" src="assets/brands/cadillac.svg"
-          alt="Cadillac" /><span class="marquee-dot"></span><img class="marquee-logo" src="assets/brands/corvette.svg"
-          alt="Corvette" /><span class="marquee-dot"></span><img class="marquee-logo" src="assets/brands/ferrari.svg"
-          alt="Ferrari" /><span class="marquee-dot"></span><img class="marquee-logo" src="assets/brands/lamborghini.svg"
-          alt="Lamborghini" /><span class="marquee-dot"></span><img class="marquee-logo" src="assets/brands/maybach.svg"
-          alt="Maybach" /><span class="marquee-dot"></span><img class="marquee-logo"
+      <div class="marquee-inner" aria-hidden="true"><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/bentley.svg"
+          alt="Bentley" /><span class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/bmw.svg"
+          alt="BMW" /><span class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/cadillac.svg"
+          alt="Cadillac" /><span class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/corvette.svg"
+          alt="Corvette" /><span class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/ferrari.svg"
+          alt="Ferrari" /><span class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/lamborghini.svg"
+          alt="Lamborghini" /><span class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/maybach.svg"
+          alt="Maybach" /><span class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async"
           src="assets/brands/mercedes-benz.svg" alt="Mercedes-Benz" /><span class="marquee-dot"></span><img
           class="marquee-logo" src="assets/brands/porsche.svg" alt="Porsche" /><span class="marquee-dot"></span><img
           class="marquee-logo" src="assets/brands/rolls-royce.svg" alt="Rolls-Royce" /><span class="marquee-dot"></span>
       </div>
-      <div class="marquee-inner" aria-hidden="true"><img class="marquee-logo" src="assets/brands/bentley.svg"
-          alt="Bentley" /><span class="marquee-dot"></span><img class="marquee-logo" src="assets/brands/bmw.svg"
-          alt="BMW" /><span class="marquee-dot"></span><img class="marquee-logo" src="assets/brands/cadillac.svg"
-          alt="Cadillac" /><span class="marquee-dot"></span><img class="marquee-logo" src="assets/brands/corvette.svg"
-          alt="Corvette" /><span class="marquee-dot"></span><img class="marquee-logo" src="assets/brands/ferrari.svg"
-          alt="Ferrari" /><span class="marquee-dot"></span><img class="marquee-logo" src="assets/brands/lamborghini.svg"
-          alt="Lamborghini" /><span class="marquee-dot"></span><img class="marquee-logo" src="assets/brands/maybach.svg"
-          alt="Maybach" /><span class="marquee-dot"></span><img class="marquee-logo"
+      <div class="marquee-inner" aria-hidden="true"><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/bentley.svg"
+          alt="Bentley" /><span class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/bmw.svg"
+          alt="BMW" /><span class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/cadillac.svg"
+          alt="Cadillac" /><span class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/corvette.svg"
+          alt="Corvette" /><span class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/ferrari.svg"
+          alt="Ferrari" /><span class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/lamborghini.svg"
+          alt="Lamborghini" /><span class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async" src="assets/brands/maybach.svg"
+          alt="Maybach" /><span class="marquee-dot"></span><img class="marquee-logo" loading="lazy" decoding="async"
           src="assets/brands/mercedes-benz.svg" alt="Mercedes-Benz" /><span class="marquee-dot"></span><img
           class="marquee-logo" src="assets/brands/porsche.svg" alt="Porsche" /><span class="marquee-dot"></span><img
           class="marquee-logo" src="assets/brands/rolls-royce.svg" alt="Rolls-Royce" /><span class="marquee-dot"></span>
@@ -721,7 +722,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <footer class="footer" id="contact">
     <div class="footer__main container">
       <div class="footer__brand">
-        <a href="https://agmotorsmiami.com/" class="footer__logo page-link" aria-label="AG Motors Miami - home"><img src="assets/images/logo.png?v=2" alt="AG Motors Miami" /></a>
+        <a href="https://agmotorsmiami.com/" class="footer__logo page-link" aria-label="AG Motors Miami - home"><img src="assets/images/logo.png?v=3" alt="AG Motors Miami" width="480" height="181" /></a>
       </div>
 
       <nav class="footer__col" aria-label="Explore">
@@ -779,12 +780,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </footer>
 
   <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-  <script src="js/main.js?v=13"></script>
-  <script src="js/attribution.js?v=1"></script>
-  <script src="js/nav.js?v=5"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script defer src="js/main.js?v=15"></script>
+  <script defer src="js/attribution.js?v=1"></script>
+  <script defer src="js/nav.js?v=5"></script>
 </body>
 
 </html>
