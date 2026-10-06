@@ -51,7 +51,7 @@ src="https://www.facebook.com/tr?id=1617303853199188&ev=PageView&noscript=1"
   <link rel="preload" as="image" href="../assets/cars/g63/photo-1-1100.webp" imagesrcset="../assets/cars/g63/photo-1-640.webp 640w, ../assets/cars/g63/photo-1-1100.webp 1100w, ../assets/cars/g63/photo-1-1600.webp 1600w" imagesizes="(max-width: 900px) 92vw, 760px" fetchpriority="high" />
   <link rel="stylesheet" href="../css/main.css?v=43" />
   <link rel="stylesheet" href="../css/car.css?v=14" />
-  <link rel="stylesheet" href="../css/car-booking.css?v=14" />
+  <link rel="stylesheet" href="../css/car-booking.css?v=15" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -358,17 +358,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <form class="booking-modal__form" id="booking-modal-form" novalidate>
           <div class="bm-row bm-row--2">
             <div class="bm-field">
-              <input class="bm-field__input" type="text" id="bm-first-name" name="first_name" placeholder="First name" required />
+              <input class="bm-field__input" type="text" id="bm-first-name" name="first_name" placeholder="First name" autocomplete="given-name" autocapitalize="words" enterkeyhint="next" required />
             </div>
             <div class="bm-field">
-              <input class="bm-field__input" type="text" id="bm-last-name" name="last_name" placeholder="Last name" required />
+              <input class="bm-field__input" type="text" id="bm-last-name" name="last_name" placeholder="Last name (optional)" autocomplete="family-name" autocapitalize="words" enterkeyhint="next" />
             </div>
           </div>
           <div class="bm-field">
-            <input class="bm-field__input" type="tel" id="bm-phone" name="phone" placeholder="Phone number" required />
+            <input class="bm-field__input" type="tel" id="bm-phone" name="phone" placeholder="Phone number" autocomplete="tel" inputmode="tel" enterkeyhint="next" required />
           </div>
           <div class="bm-field">
-            <input class="bm-field__input" type="email" id="bm-email" name="email" placeholder="Email (optional)" />
+            <input class="bm-field__input" type="email" id="bm-email" name="email" placeholder="Email (optional)" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" />
           </div>
           <label class="bm-toggle-row" for="bm-age-18">
             <span class="bm-toggle-row__label">I'm 18 or older</span>
@@ -419,7 +419,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script defer src="../js/car.js?v=11"></script>
-  <script defer src="../js/car-booking.js?v=9"></script>
+  <script defer src="../js/car-booking.js?v=10"></script>
   <script defer src="../js/attribution.js?v=1"></script>
   <script defer src="../js/nav.js?v=5"></script>
 </body>

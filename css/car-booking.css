@@ -616,3 +616,11 @@ button.btn-hero-book.js-book-cta {
 @media (min-width: 768px) {
   .booking-modal__box { width: min(500px, 100%); }
 }
+
+/* Inline field message (added by car-booking.js when a field needs fixing) */
+.bm-field__error {
+  margin: 6px 2px 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #ff7070;
+}

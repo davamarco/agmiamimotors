@@ -29,8 +29,19 @@
 
   const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  // "Today" is Miami's date (the cars are in Miami), not the visitor's -
+  // a tourist abroad past their midnight can still book for today.
+  function miamiToday() {
+    try {
+      const p = {};
+      new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', year: 'numeric', month: 'numeric', day: 'numeric' })
+        .formatToParts(new Date()).forEach(x => { p[x.type] = x.value; });
+      const d = new Date(+p.year, +p.month - 1, +p.day);
+      if (!isNaN(d)) return d;
+    } catch (err) { /* very old browser: fall back to local date */ }
+    const d = new Date(); d.setHours(0, 0, 0, 0); return d;
+  }
+  const today = miamiToday();
 
   let viewYear   = today.getFullYear();
   let viewMonth  = today.getMonth();
@@ -305,34 +316,70 @@
 
   function val(id) { return (document.getElementById(id)?.value || '').trim(); }
 
-  const REQUIRED_IDS = ['bm-first-name', 'bm-last-name', 'bm-phone'];
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  function clearFieldError(input) { input.closest('.bm-field')?.classList.remove('bm-field--invalid'); }
+  /* Validation is deliberately forgiving - real visitors (often tourists on a
+     phone with autofill) must never be blocked by formatting:
+     - name: anything non-empty (accents, hyphens, apostrophes, any script,
+       one word or the full name in one field - last name is optional);
+     - phone: any format or country; only needs 7+ digits once spaces,
+       brackets, dashes, dots and "+" are ignored;
+     - email: optional; trailing spaces from autofill are trimmed.
+     Every problem gets a plain-English message right under the field. */
+  const FIELD_RULES = [
+    { id: 'bm-first-name', check: v => v ? '' : 'Please enter your name.' },
+    { id: 'bm-phone', check: v => v.replace(/\D/g, '').length >= 7 ? ''
+        : v ? 'Please enter a full phone number (any format, e.g. (305) 555-1234 or +44 7700 900123).'
+            : 'Please enter a phone number so we can confirm your booking.' },
+    { id: 'bm-email', check: v => !v || EMAIL_RE.test(v) ? '' : 'This email doesn\'t look complete. Fix it or leave it empty - email is optional.' },
+  ];
+
+  function setFieldError(input, msg) {
+    const field = input.closest('.bm-field');
+    if (!field) return;
+    field.classList.toggle('bm-field--invalid', !!msg);
+    let note = field.querySelector('.bm-field__error');
+    if (msg) {
+      if (!note) {
+        note = document.createElement('p');
+        note.className = 'bm-field__error';
+        note.id = input.id + '-error';
+        note.setAttribute('role', 'alert');
+        field.appendChild(note);
+      }
+      note.textContent = msg;
+      input.setAttribute('aria-invalid', 'true');
+      input.setAttribute('aria-describedby', note.id);
+    } else {
+      note?.remove();
+      input.removeAttribute('aria-invalid');
+      input.removeAttribute('aria-describedby');
+    }
+  }
+  function clearFieldError(input) { setFieldError(input, ''); }
 
   function validateModalForm() {
     let firstInvalid = null;
-    REQUIRED_IDS.forEach(id => {
-      const input = document.getElementById(id);
+    FIELD_RULES.forEach(rule => {
+      const input = document.getElementById(rule.id);
       if (!input) return;
-      const invalid = !input.value.trim();
-      input.closest('.bm-field')?.classList.toggle('bm-field--invalid', invalid);
-      if (invalid && !firstInvalid) firstInvalid = input;
+      input.value = input.value.trim();          // autofill often adds a trailing space
+      const msg = rule.check(input.value);
+      setFieldError(input, msg);
+      if (msg && !firstInvalid) firstInvalid = input;
     });
-    // Email is optional, but if the visitor typed something it must look valid.
-    const emailInput = document.getElementById('bm-email');
-    if (emailInput) {
-      const v = emailInput.value.trim();
-      const emailBad = v !== '' && !EMAIL_RE.test(v);
-      emailInput.closest('.bm-field')?.classList.toggle('bm-field--invalid', emailBad);
-      if (emailBad && !firstInvalid) firstInvalid = emailInput;
-    }
     return firstInvalid;
   }
 
-  [...REQUIRED_IDS, 'bm-email'].forEach(id => {
-    const input = document.getElementById(id);
-    input?.addEventListener('input', () => clearFieldError(input));
+  // Bring the first problem into view (inside the scrollable modal on phones)
+  function revealInvalid(input) {
+    try { input.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (err) { input.scrollIntoView(); }
+    input.focus({ preventScroll: true });
+  }
+
+  FIELD_RULES.forEach(rule => {
+    const input = document.getElementById(rule.id);
+    input?.addEventListener('input', () => { clearFieldError(input); hideFormError(); });
   });
 
   function onFirstInteraction() {
@@ -360,7 +407,7 @@
       `Dates: ${fmtShort(booking.rangeStart)} - ${fmtShort(booking.rangeEnd)} (${booking.days} days)`,
       `Estimated Total: ${fmtMoney(booking.total)}`,
       contact.privateDriver ? `Private Driver: Yes` : null,
-      `Name: ${contact.firstName} ${contact.lastName}`,
+      `Name: ${[contact.firstName, contact.lastName].filter(Boolean).join(' ')}`,
       `Phone: ${contact.phone}`,
       `Email: ${contact.email || 'not provided'}`,
       `18 or older: ${contact.age18 ? 'Yes' : 'No'}`,
@@ -463,7 +510,8 @@
     const firstInvalid = validateModalForm();
     if (firstInvalid) {
       trackValidationError('submit');
-      firstInvalid.focus({ preventScroll: true });
+      showFormError('Please check the highlighted field above.');
+      revealInvalid(firstInvalid);
       return;
     }
 
@@ -538,7 +586,8 @@
     const firstInvalid = validateModalForm();
     if (firstInvalid) {
       trackValidationError('whatsapp');
-      firstInvalid.focus({ preventScroll: true });
+      showFormError('Please check the highlighted field above.');
+      revealInvalid(firstInvalid);
       return;
     }
     track('booking_whatsapp_click', bookingParams(currentBooking, { lead_source: leadSource() }));
@@ -549,7 +598,7 @@
       `Dates: ${fmtShort(currentBooking.rangeStart)} - ${fmtShort(currentBooking.rangeEnd)} (${currentBooking.days} days)`,
       `Estimated Total: ${fmtMoney(currentBooking.total)}`,
       privateDriver ? `Private Driver requested` : null,
-      `Name: ${val('bm-first-name')} ${val('bm-last-name')}`,
+      `Name: ${[val('bm-first-name'), val('bm-last-name')].filter(Boolean).join(' ')}`,
       `Phone: ${val('bm-phone')}`,
       val('bm-email') ? `Email: ${val('bm-email')}` : null,
       `18 or older: ${document.getElementById('bm-age-18')?.checked ? 'Yes' : 'No'}`,
