@@ -2,33 +2,37 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<!-- Google Tag Manager -->
-<script>window.AG_PROD=/(^|\.)agmotorsmiami\.com$/.test(location.hostname);
-if(window.AG_PROD)(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-KC24WVXK');</script>
-<!-- End Google Tag Manager -->
-<!-- Meta Pixel Code -->
+<!-- Google Tag Manager + Meta Pixel (deferred loader) -->
 <script>
+/* Google Tag Manager + Meta Pixel, loaded right AFTER the page is usable.
+   Their ~500 KB of script used to compete with the first paint on phones.
+   dataLayer / fbq calls made before they arrive are queued, not lost.
+   Only the real domain reports (keeps localhost / copies out of GA4 and Meta). */
+window.AG_PROD=/(^|\.)agmotorsmiami\.com$/.test(location.hostname);
 if(window.AG_PROD){
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1617303853199188');
-fbq('track', 'PageView');
+  window.dataLayer=window.dataLayer||[];
+  window.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+  !function(f){if(f.fbq)return;var n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[]}(window);
+  fbq('init', '1617303853199188');
+  fbq('track', 'PageView');
+  (function(){
+    var done=false,evs=['pointerdown','touchstart','keydown','scroll','mousemove'];
+    function add(src){var s=document.createElement('script');s.async=true;s.src=src;document.head.appendChild(s);}
+    function go(){if(done)return;done=true;evs.forEach(function(e){removeEventListener(e,go,{passive:true});});
+      add('https://www.googletagmanager.com/gtm.js?id=GTM-KC24WVXK');
+      add('https://connect.facebook.net/en_US/fbevents.js');}
+    evs.forEach(function(e){addEventListener(e,go,{passive:true});});
+    if(document.readyState==='complete')setTimeout(go,2500);
+    else addEventListener('load',function(){setTimeout(go,2500);});
+  })();
 }
 </script>
 <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=1617303853199188&ev=PageView&noscript=1"
 /></noscript>
-<!-- End Meta Pixel Code -->
+<!-- End Google Tag Manager + Meta Pixel -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mercedes-Benz G63 AMG Rental in Miami | AG Motors</title>
   <meta property="og:site_name" content="AG Motors Miami" />
@@ -44,12 +48,9 @@ src="https://www.facebook.com/tr?id=1617303853199188&ev=PageView&noscript=1"
   <meta property="og:description" content="Mercedes-Benz G63 AMG rental in Miami from $649/day. 577 hp biturbo V8, unmistakable G-Wagon silhouette. White-glove delivery, insurance options available." />
   <meta property="og:url" content="https://agmotorsmiami.com/cars/mercedes-g63-amg.html" />
   <meta property="og:image" content="https://agmotorsmiami.com/assets/cars/g63/photo-1.JPG" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Kaushan+Script&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Kaushan+Script&display=swap" /></noscript>
-  <link rel="preload" as="image" href="../assets/cars/g63/photo-1-1100.webp" imagesrcset="../assets/cars/g63/photo-1-640.webp 640w, ../assets/cars/g63/photo-1-1100.webp 1100w, ../assets/cars/g63/photo-1-1600.webp 1600w" imagesizes="(max-width: 900px) 92vw, 760px" fetchpriority="high" />
-  <link rel="stylesheet" href="../css/main.css?v=43" />
+  <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/barlow-condensed-normal-64b1f4.woff2" crossorigin />
+  <link rel="preload" as="image" href="../assets/cars/g63/photo-1-1100.webp" imagesrcset="../assets/cars/g63/photo-1-640.webp 640w, ../assets/cars/g63/photo-1-800.webp 800w, ../assets/cars/g63/photo-1-1100.webp 1100w, ../assets/cars/g63/photo-1-1600.webp 1600w" imagesizes="(max-width: 900px) 92vw, 760px" fetchpriority="high" />
+  <link rel="stylesheet" href="../css/main.css?v=44" />
   <link rel="stylesheet" href="../css/car.css?v=14" />
   <link rel="stylesheet" href="../css/car-booking.css?v=15" />
   <script type="application/ld+json">
@@ -104,7 +105,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <p class="car-hero__eyebrow">Mercedes-Benz</p>
         <h1 class="car-hero__title"><span class="sr-only">Mercedes-Benz </span>G63 AMG<span class="car-hero__title-sub"> Rental in Miami</span></h1>
         <div class="car-hero__frame">
-          <img src="../assets/cars/g63/photo-1-1100.webp" srcset="../assets/cars/g63/photo-1-640.webp 640w, ../assets/cars/g63/photo-1-1100.webp 1100w, ../assets/cars/g63/photo-1-1600.webp 1600w" sizes="(max-width: 900px) 92vw, 760px" data-full="../assets/cars/g63/photo-1-1600.webp" fetchpriority="high" alt="Mercedes-Benz G63 AMG" />
+          <img width="1100" height="734" src="../assets/cars/g63/photo-1-1100.webp" srcset="../assets/cars/g63/photo-1-640.webp 640w, ../assets/cars/g63/photo-1-800.webp 800w, ../assets/cars/g63/photo-1-1100.webp 1100w, ../assets/cars/g63/photo-1-1600.webp 1600w" sizes="(max-width: 900px) 92vw, 760px" data-full="../assets/cars/g63/photo-1-1600.webp" fetchpriority="high" alt="Mercedes-Benz G63 AMG" />
         </div>
       </div>
 
@@ -202,10 +203,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="car-gallery__wrap">
       <div class="swiper">
         <div class="swiper-wrapper">
-          <div class="swiper-slide"><img src="../assets/cars/g63/photo-2-1100.webp" srcset="../assets/cars/g63/photo-2-640.webp 640w, ../assets/cars/g63/photo-2-1100.webp 1100w, ../assets/cars/g63/photo-2-1600.webp 1600w" sizes="(max-width: 700px) 85vw, 900px" data-full="../assets/cars/g63/photo-2-1600.webp" decoding="async" alt="Mercedes-Benz G63 AMG - photo 1" loading="lazy" /></div>
-          <div class="swiper-slide"><img src="../assets/cars/g63/photo-3-1100.webp" srcset="../assets/cars/g63/photo-3-640.webp 640w, ../assets/cars/g63/photo-3-1100.webp 1100w, ../assets/cars/g63/photo-3-1600.webp 1600w" sizes="(max-width: 700px) 85vw, 900px" data-full="../assets/cars/g63/photo-3-1600.webp" decoding="async" alt="Mercedes-Benz G63 AMG - photo 2" loading="lazy" /></div>
-          <div class="swiper-slide"><img src="../assets/cars/g63/photo-4-1100.webp" srcset="../assets/cars/g63/photo-4-640.webp 640w, ../assets/cars/g63/photo-4-1100.webp 1100w, ../assets/cars/g63/photo-4-1600.webp 1600w" sizes="(max-width: 700px) 85vw, 900px" data-full="../assets/cars/g63/photo-4-1600.webp" decoding="async" alt="Mercedes-Benz G63 AMG - photo 3" loading="lazy" /></div>
-          <div class="swiper-slide"><img src="../assets/cars/g63/photo-5-1100.webp" srcset="../assets/cars/g63/photo-5-640.webp 640w, ../assets/cars/g63/photo-5-1100.webp 1100w, ../assets/cars/g63/photo-5-1600.webp 1600w" sizes="(max-width: 700px) 85vw, 900px" data-full="../assets/cars/g63/photo-5-1600.webp" decoding="async" alt="Mercedes-Benz G63 AMG - photo 4" loading="lazy" /></div>
+          <div class="swiper-slide"><img width="1100" height="734" src="../assets/cars/g63/photo-2-1100.webp" srcset="../assets/cars/g63/photo-2-640.webp 640w, ../assets/cars/g63/photo-2-800.webp 800w, ../assets/cars/g63/photo-2-1100.webp 1100w, ../assets/cars/g63/photo-2-1600.webp 1600w" sizes="(max-width: 700px) 85vw, 900px" data-full="../assets/cars/g63/photo-2-1600.webp" decoding="async" alt="Mercedes-Benz G63 AMG - photo 1" loading="lazy" /></div>
+          <div class="swiper-slide"><img width="1100" height="733" src="../assets/cars/g63/photo-3-1100.webp" srcset="../assets/cars/g63/photo-3-640.webp 640w, ../assets/cars/g63/photo-3-800.webp 800w, ../assets/cars/g63/photo-3-1100.webp 1100w, ../assets/cars/g63/photo-3-1600.webp 1600w" sizes="(max-width: 700px) 85vw, 900px" data-full="../assets/cars/g63/photo-3-1600.webp" decoding="async" alt="Mercedes-Benz G63 AMG - photo 2" loading="lazy" /></div>
+          <div class="swiper-slide"><img width="1100" height="734" src="../assets/cars/g63/photo-4-1100.webp" srcset="../assets/cars/g63/photo-4-640.webp 640w, ../assets/cars/g63/photo-4-800.webp 800w, ../assets/cars/g63/photo-4-1100.webp 1100w, ../assets/cars/g63/photo-4-1600.webp 1600w" sizes="(max-width: 700px) 85vw, 900px" data-full="../assets/cars/g63/photo-4-1600.webp" decoding="async" alt="Mercedes-Benz G63 AMG - photo 3" loading="lazy" /></div>
+          <div class="swiper-slide"><img width="1100" height="733" src="../assets/cars/g63/photo-5-1100.webp" srcset="../assets/cars/g63/photo-5-640.webp 640w, ../assets/cars/g63/photo-5-800.webp 800w, ../assets/cars/g63/photo-5-1100.webp 1100w, ../assets/cars/g63/photo-5-1600.webp 1600w" sizes="(max-width: 700px) 85vw, 900px" data-full="../assets/cars/g63/photo-5-1600.webp" decoding="async" alt="Mercedes-Benz G63 AMG - photo 4" loading="lazy" /></div>
         </div>
       </div>
       <button class="swiper-btn swiper-btn--prev" aria-label="Previous photo">
@@ -415,11 +416,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </div>
 
-  <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-  <script defer src="../js/car.js?v=11"></script>
-  <script defer src="../js/car-booking.js?v=10"></script>
+  <script defer src="../js/car.js?v=13"></script>
+  <script defer src="../js/car-booking.js?v=11"></script>
   <script defer src="../js/attribution.js?v=1"></script>
   <script defer src="../js/nav.js?v=5"></script>
 </body>

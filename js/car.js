@@ -4,26 +4,40 @@
 
 'use strict';
 
-/* ── Lenis + GSAP - single ticker ──────────────────────────────── */
-const lenis = new Lenis({
-  duration: 1.8,
-  wheelMultiplier: 0.85,
-  easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-});
-
-gsap.ticker.add((time) => lenis.raf(time * 1000));
-gsap.ticker.lagSmoothing(0);
-lenis.on('scroll', ScrollTrigger.update);
-
-/* ── Header scroll ──────────────────────────────────────────────── */
+/* ── Header state: a plain scroll listener (car pages need no GSAP) ── */
 const header = document.getElementById('header');
 if (header) {
-  ScrollTrigger.create({
-    start: '80px top',
-    onEnter:     () => header.classList.add('is-scrolled'),
-    onLeaveBack: () => header.classList.remove('is-scrolled'),
-  });
+  let ticking = false;
+  const update = () => { ticking = false; header.classList.toggle('is-scrolled', window.scrollY > 80); };
+  window.addEventListener('scroll', () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  update();
 }
+
+/* ── Smooth wheel scrolling (Lenis): desktop mouse only, and only after
+   the page has loaded - phones scroll natively and never download it. ── */
+(function initSmoothScroll() {
+  if (!window.matchMedia('(pointer: fine)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  function start() {
+    const script = document.createElement('script');
+    script.src = '/js/vendor/lenis.min.js';
+    script.onload = () => {
+      if (typeof Lenis === 'undefined' || document.documentElement.classList.contains('lb-open')) return;
+      window.lenis = new Lenis({
+        duration: 1.8,
+        wheelMultiplier: 0.85,
+        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      });
+      const raf = time => { window.lenis.raf(time); requestAnimationFrame(raf); };
+      requestAnimationFrame(raf);
+    };
+    document.head.appendChild(script);
+  }
+  if (document.readyState === 'complete') start();
+  else window.addEventListener('load', start);
+})();
 
 /* ── Hero entrance: pure CSS (css/car.css), so it starts on first paint
    and never waits for the animation libraries to download. ───────── */
@@ -46,11 +60,11 @@ if (header) {
   function loadSwiper() {
     const link = document.createElement('link');
     link.rel  = 'stylesheet';
-    link.href = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css';
+    link.href = '/js/vendor/swiper-bundle.min.css';
     document.head.appendChild(link);
 
     const script  = document.createElement('script');
-    script.src    = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
+    script.src    = '/js/vendor/swiper-bundle.min.js';
     script.onload = () => {
       const swiper = new Swiper('.swiper', {
         slidesPerView: 'auto',
@@ -100,7 +114,7 @@ if (header) {
           '<button type="button" class="lb__arrow lb__arrow--next" aria-label="Next photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg></button>';
         lb.querySelector('.lb__name').textContent = carName;
         document.body.appendChild(lb);
-        if (typeof lenis !== 'undefined') lenis.stop();
+        if (window.lenis) window.lenis.stop();
         document.documentElement.classList.add('lb-open');
 
         const count = lb.querySelector('.lb__count');
@@ -130,7 +144,7 @@ if (header) {
         el.classList.remove('is-open');
         setTimeout(() => el.remove(), 250);
         document.documentElement.classList.remove('lb-open');
-        if (typeof lenis !== 'undefined') lenis.start();
+        if (window.lenis) window.lenis.start();
       }
 
       document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
