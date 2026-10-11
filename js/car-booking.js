@@ -2,7 +2,7 @@
    AG MOTORS MIAMI - car-booking.js
    Hero date-range calendar + multi-day discount calculator,
    plus the shared reservation modal (Web3Forms + WhatsApp).
-   Depends on Lenis/GSAP already initialised by car.js.
+   Uses window.lenis (desktop smooth scroll from car.js) when it exists.
    ================================================================ */
 
 'use strict';
@@ -228,8 +228,8 @@
     btn.addEventListener('click', () => {
       if (heroSection._bookingState) {
         openBookingModal(heroSection._bookingState, ctaLocation(btn));
-      } else if (typeof lenis !== 'undefined' && lenis.scrollTo) {
-        lenis.scrollTo(heroSection, { duration: 1.2 });
+      } else if (window.lenis && window.lenis.scrollTo) {
+        window.lenis.scrollTo(heroSection, { duration: 1.2 });
       } else {
         heroSection.scrollIntoView({ behavior: 'smooth' });
       }
@@ -298,13 +298,13 @@
     modal.classList.add('is-visible');
     modal.setAttribute('aria-hidden', 'false');
     track('booking_form_open', bookingParams(state));
-    if (typeof lenis !== 'undefined' && lenis.stop) lenis.stop();
+    if (window.lenis && window.lenis.stop) window.lenis.stop();
   }
 
   function closeBookingModal() {
     modal.classList.remove('is-visible');
     modal.setAttribute('aria-hidden', 'true');
-    if (typeof lenis !== 'undefined' && lenis.start) lenis.start();
+    if (window.lenis && window.lenis.start) window.lenis.start();
   }
 
   modal.addEventListener('click', e => {
