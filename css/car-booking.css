@@ -624,3 +624,124 @@ button.btn-hero-book.js-book-cta {
   line-height: 1.4;
   color: #ff7070;
 }
+
+/* ================================================================
+   DISCOUNT TILES - tappable: explain the deal + quick-pick N days
+   (behaviour in car-booking.js; built without HTML edits)
+   ================================================================ */
+.car-cal__discount {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  transition: border-color 0.25s, background 0.25s, transform 0.2s;
+}
+@media (hover: hover) {
+  .car-cal__discount:hover { border-color: rgba(255,85,0,0.55); background: rgba(255,85,0,0.06); }
+}
+.car-cal__discount:active { transform: scale(0.97); }
+.car-cal__discount:focus-visible { outline: 2px solid var(--c-orange); outline-offset: 2px; }
+.car-cal__discount[aria-expanded="true"],
+.car-cal__discount.is-armed { border-color: var(--c-orange); background: rgba(255,85,0,0.1); }
+
+.car-cal__deal-hint {
+  margin: 0 0 8px;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: rgba(255,255,255,0.55);
+  text-align: center;
+}
+
+/* Small card above the tiles, arrow points at the tapped tile */
+.car-cal__pop {
+  --arrow-x: 50%;
+  position: relative;
+  margin: 0 0 12px;
+  padding: 14px 16px 14px;
+  border-radius: 12px;
+  background: #161616;
+  border: 1px solid rgba(255,85,0,0.55);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+  opacity: 0;
+  transform: translate3d(0, 6px, 0);
+  transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.car-cal__pop.is-open { opacity: 1; transform: none; }
+.car-cal__pop::after {
+  content: '';
+  position: absolute; bottom: -7px; left: var(--arrow-x);
+  width: 12px; height: 12px;
+  margin-left: -6px;
+  background: #161616;
+  border-right: 1px solid rgba(255,85,0,0.55);
+  border-bottom: 1px solid rgba(255,85,0,0.55);
+  transform: rotate(45deg);
+}
+.car-cal__pop-x {
+  position: absolute; top: 6px; right: 6px;
+  width: 32px; height: 32px;
+  border: 0; border-radius: 50%;
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+  font-size: 22px; line-height: 1;
+  cursor: pointer;
+}
+.car-cal__pop-title {
+  margin: 0 30px 6px 0;
+  font-family: var(--f-head); font-weight: 900; text-transform: uppercase;
+  font-size: 18px; line-height: 1.05;
+  color: var(--c-orange);
+}
+.car-cal__pop-price { margin: 0 0 4px; color: #fff; }
+.car-cal__pop-price strong { font-family: var(--f-head); font-weight: 900; font-size: 26px; }
+.car-cal__pop-unit { font-size: 13px; color: rgba(255,255,255,0.6); }
+.car-cal__pop-price s { margin-left: 6px; font-size: 14px; color: rgba(255,255,255,0.35); }
+.car-cal__pop-total { margin: 0 0 12px; font-size: 13px; line-height: 1.45; color: rgba(255,255,255,0.7); }
+.car-cal__pop-cta {
+  width: 100%;
+  padding: 12px 14px;
+  border: 0; border-radius: 999px;
+  background: var(--c-orange); color: #fff;
+  font-family: var(--f-body); font-size: 14px; font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* Quick-pick: banner over the calendar + a soft pulse on the days */
+.car-cal__pickbar {
+  display: flex; align-items: center; gap: 8px;
+  margin: 0 0 8px;
+  padding: 8px 6px 8px 12px;
+  border-radius: 10px;
+  background: rgba(255,85,0,0.14);
+  border: 1px solid rgba(255,85,0,0.5);
+  font-size: 13px; font-weight: 600; line-height: 1.3; color: #fff;
+}
+.car-cal__pickbar[hidden] { display: none; }
+.car-cal__pickbar-text { flex: 1; }
+.car-cal__pickbar-x {
+  flex-shrink: 0;
+  width: 30px; height: 30px;
+  border: 0; border-radius: 50%;
+  background: rgba(255,255,255,0.08); color: #fff;
+  font-size: 18px; line-height: 1; cursor: pointer;
+}
+@keyframes car-cal-pick { 0%, 100% { box-shadow: 0 0 0 0 rgba(255,85,0,0); } 50% { box-shadow: 0 0 0 3px rgba(255,85,0,0.45); } }
+.car-cal__days.is-picking { border-radius: 10px; animation: car-cal-pick 1.1s ease-in-out 2; }
+.car-cal__days.is-picking .car-cal__day:not(:disabled):not(.car-cal__day--empty) { background: rgba(255,255,255,0.05); }
+@media (prefers-reduced-motion: reduce) {
+  .car-cal__pop { transition: none; }
+  .car-cal__days.is-picking { animation: none; box-shadow: 0 0 0 2px rgba(255,85,0,0.45); }
+}
+
+/* Phones: the calendar card is compact, keep the new bits readable and tappable */
+@media (max-width: 900px) {
+  .car-cal__deal-hint { font-size: 10.5px; margin-bottom: 6px; }
+  .car-cal__discount { min-height: 44px; }
+  .car-cal__pop { padding: 12px 14px; }
+  .car-cal__pop-title { font-size: 15px; }
+  .car-cal__pop-price strong { font-size: 22px; }
+  .car-cal__pop-total { font-size: 12px; }
+  .car-cal__pop-cta { font-size: 13px; padding: 11px 12px; }
+  .car-cal__pickbar { font-size: 11.5px; }
+}

@@ -142,6 +142,12 @@
   }
 
   function onDayClick(date) {
+    if (quickDays) {                       // a deal was chosen: one tap = whole range
+      const n = quickDays;
+      exitQuickPick();
+      setRange(date, addDays(date, n));
+      return;
+    }
     if (!rangeStart || (rangeStart && rangeEnd)) {
       rangeStart = date; rangeEnd = null;
     } else if (sameDay(date, rangeStart)) {
@@ -210,8 +216,137 @@
   });
   clearBtn.addEventListener('click', () => {
     rangeStart = null; rangeEnd = null;
+    exitQuickPick();
     renderCalendar();
     updateSummary();
+  });
+
+  /* ── Discount tiles: tappable, they explain + pre-select the days ──
+     Visitors tapped "10% OFF" etc. expecting a button and never picked
+     dates. Now a tap opens a small card with the real per-day price and
+     total for this car; "Pick start date" puts the calendar in quick-pick
+     mode, so ONE tap on a start date selects the whole N-day range. The
+     normal two-tap range selection keeps working as before, and the
+     price always comes from the same tierFor() as the summary. ────── */
+  const calCard  = heroSection.querySelector('.car-cal');
+  const tilesRow = heroSection.querySelector('.car-cal__discounts');
+  let quickDays = 0;          // >0 while waiting for a start date
+  let pop = null, popFor = null;
+
+  function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
+  function quoteFor(n) {
+    const tier = tierFor(n);
+    return { pct: Math.round(tier.pct * 100), perDay: DAILY_RATE * (1 - tier.pct), total: DAILY_RATE * n * (1 - tier.pct), full: DAILY_RATE * n };
+  }
+
+  // Hint above the tiles (built here so the 12 car pages need no HTML edits)
+  const hint = document.createElement('p');
+  hint.className = 'car-cal__deal-hint';
+  hint.textContent = 'Tap a deal or pick your dates - the discount applies automatically.';
+  tilesRow?.parentNode.insertBefore(hint, tilesRow);
+
+  // Quick-pick banner shown over the calendar while waiting for a start date
+  const pickBar = document.createElement('div');
+  pickBar.className = 'car-cal__pickbar';
+  pickBar.hidden = true;
+  pickBar.innerHTML = '<span class="car-cal__pickbar-text"></span><button type="button" class="car-cal__pickbar-x" aria-label="Cancel">&times;</button>';
+  daysEl.parentNode.insertBefore(pickBar, daysEl);
+  pickBar.querySelector('.car-cal__pickbar-x').addEventListener('click', () => { exitQuickPick(); renderCalendar(); });
+
+  function enterQuickPick(n) {
+    quickDays = n;
+    discountEls.forEach(el => el.classList.toggle('is-armed', +el.dataset.discountDays === n));
+    pickBar.querySelector('.car-cal__pickbar-text').textContent = `Tap your start date - we'll select ${n} days at ${quoteFor(n).pct}% off`;
+    pickBar.hidden = false;
+    daysEl.classList.remove('is-picking'); void daysEl.offsetWidth; daysEl.classList.add('is-picking');
+    // bring the calendar into view (on phones the tiles sit under it)
+    const r = calCard.getBoundingClientRect();
+    if (r.top < 70 || r.top > window.innerHeight * 0.5) {
+      const y = window.scrollY + daysEl.getBoundingClientRect().top - 140;
+      if (window.lenis && window.lenis.scrollTo) window.lenis.scrollTo(y, { duration: 0.8 });
+      else window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  }
+  function exitQuickPick() {
+    quickDays = 0;
+    pickBar.hidden = true;
+    daysEl.classList.remove('is-picking');
+    discountEls.forEach(el => el.classList.remove('is-armed'));
+  }
+
+  function closePop() {
+    if (!pop) return;
+    pop.remove(); pop = null;
+    if (popFor) { popFor.setAttribute('aria-expanded', 'false'); popFor = null; }
+  }
+
+  function openPop(tile) {
+    const n = +tile.dataset.discountDays;
+    if (popFor === tile) { closePop(); return; }
+    closePop();
+    const q = quoteFor(n);
+    const hasStart = !!rangeStart;
+    pop = document.createElement('div');
+    pop.className = 'car-cal__pop';
+    pop.setAttribute('role', 'dialog');
+    pop.setAttribute('aria-label', `${q.pct}% off for ${n}+ days`);
+    pop.innerHTML =
+      '<button type="button" class="car-cal__pop-x" aria-label="Close">&times;</button>' +
+      '<p class="car-cal__pop-title"></p>' +
+      '<p class="car-cal__pop-price"><strong></strong> <span class="car-cal__pop-unit">/day</span> <s></s></p>' +
+      '<p class="car-cal__pop-total"></p>' +
+      '<button type="button" class="car-cal__pop-cta"></button>';
+    pop.querySelector('.car-cal__pop-title').textContent = `Rent ${n}+ days, save ${q.pct}%`;
+    pop.querySelector('.car-cal__pop-price strong').textContent = fmtMoney(q.perDay);
+    pop.querySelector('.car-cal__pop-price s').textContent = fmtMoney(DAILY_RATE);
+    pop.querySelector('.car-cal__pop-total').textContent =
+      `${n} days: ${fmtMoney(q.total)} instead of ${fmtMoney(q.full)}. Applied automatically when your dates cover ${n}+ days.`;
+    const cta = pop.querySelector('.car-cal__pop-cta');
+    cta.textContent = hasStart ? `Make it ${n} days from ${fmtShort(rangeStart)}` : 'Pick start date';
+    cta.addEventListener('click', () => {
+      closePop();
+      if (hasStart) {
+        const start = rangeStart;
+        exitQuickPick();
+        setRange(start, addDays(start, n));
+      } else {
+        enterQuickPick(n);
+        renderCalendar();
+      }
+    });
+    pop.querySelector('.car-cal__pop-x').addEventListener('click', closePop);
+    tilesRow.parentNode.insertBefore(pop, tilesRow);
+    // point the little arrow at the tapped tile
+    const tr = tile.getBoundingClientRect(), rr = tilesRow.getBoundingClientRect();
+    pop.style.setProperty('--arrow-x', Math.round(tr.left - rr.left + tr.width / 2) + 'px');
+    popFor = tile;
+    tile.setAttribute('aria-expanded', 'true');
+    requestAnimationFrame(() => pop && pop.classList.add('is-open'));
+    track('rental_discount_click', bookingParams(null, { rental_days: n, discount_pct: q.pct, form_location: 'discount_tile' }));
+  }
+
+  function setRange(start, end) {
+    rangeStart = start; rangeEnd = end;
+    // show the month where the range starts
+    viewYear = start.getFullYear(); viewMonth = start.getMonth();
+    renderCalendar();
+    updateSummary();
+  }
+
+  discountEls.forEach(tile => {
+    tile.setAttribute('role', 'button');
+    tile.setAttribute('tabindex', '0');
+    tile.setAttribute('aria-haspopup', 'dialog');
+    tile.setAttribute('aria-expanded', 'false');
+    tile.addEventListener('click', e => { e.stopPropagation(); openPop(tile); });
+    tile.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPop(tile); }
+    });
+  });
+  document.addEventListener('click', e => { if (pop && !pop.contains(e.target)) closePop(); });
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (pop) closePop(); else if (quickDays) { exitQuickPick(); renderCalendar(); }
   });
 
   renderCalendar();
