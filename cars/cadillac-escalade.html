@@ -41,18 +41,18 @@ src="https://www.facebook.com/tr?id=1617303853199188&ev=PageView&noscript=1"
   <link rel="icon" type="image/x-icon" href="../favicon.ico">
   <link rel="icon" type="image/png" sizes="512x512" href="../favicon.png">
   <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-  <meta name="description" content="Cadillac Escalade rental in Miami from $349/day. Full-size American luxury SUV, 420 hp V8. White-glove delivery, insurance options available with AG Motors Miami." />
+  <meta name="description" content="Cadillac Escalade rental in Miami from $249/day (7+ days), $349 for a single day. Full-size American luxury SUV, 420 hp V8. White-glove delivery, insurance options available with AG Motors Miami." />
   <link rel="canonical" href="https://agmotorsmiami.com/cars/cadillac-escalade.html" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Cadillac Escalade Rental in Miami | AG Motors" />
-  <meta property="og:description" content="Cadillac Escalade rental in Miami from $349/day. Full-size American luxury SUV, 420 hp V8. White-glove delivery, insurance options available with AG Motors Miami." />
+  <meta property="og:description" content="Cadillac Escalade rental in Miami from $249/day (7+ days), $349 for a single day. Full-size American luxury SUV, 420 hp V8. White-glove delivery, insurance options available with AG Motors Miami." />
   <meta property="og:url" content="https://agmotorsmiami.com/cars/cadillac-escalade.html" />
   <meta property="og:image" content="https://agmotorsmiami.com/assets/cars/cadillac/photo-1.JPG" />
   <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/barlow-condensed-normal-64b1f4.woff2" crossorigin />
   <link rel="preload" as="image" href="../assets/cars/cadillac/photo-1-1100.webp" imagesrcset="../assets/cars/cadillac/photo-1-640.webp 640w, ../assets/cars/cadillac/photo-1-800.webp 800w, ../assets/cars/cadillac/photo-1-1100.webp 1100w, ../assets/cars/cadillac/photo-1-1600.webp 1600w" imagesizes="(max-width: 900px) 92vw, 760px" fetchpriority="high" />
-  <link rel="stylesheet" href="../css/main.css?v=44" />
+  <link rel="stylesheet" href="../css/main.css?v=45" />
   <link rel="stylesheet" href="../css/car.css?v=14" />
-  <link rel="stylesheet" href="../css/car-booking.css?v=16" />
+  <link rel="stylesheet" href="../css/car-booking.css?v=17" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -68,8 +68,10 @@ src="https://www.facebook.com/tr?id=1617303853199188&ev=PageView&noscript=1"
     },
     "speed": { "@type": "QuantitativeValue", "value": 210, "unitCode": "KMH" },
     "offers": {
-      "@type": "Offer",
-      "price": "349",
+      "@type": "AggregateOffer",
+      "lowPrice": "249",
+      "highPrice": "349",
+      "offerCount": "4",
       "priceCurrency": "USD",
       "availability": "https://schema.org/InStock",
       "url": "https://agmotorsmiami.com/cars/cadillac-escalade.html"
@@ -98,7 +100,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </header>
 
   <!-- Hero -->
-  <section class="car-hero" id="car-hero" data-car-name="Cadillac Escalade" data-car-rate="349">
+  <section class="car-hero car-hero--tiers" id="car-hero" data-car-name="Cadillac Escalade" data-car-rate="349" data-rate-tiers="1:349,2:299,4:274,7:249">
     <div class="car-hero__grid">
 
       <div class="car-hero__photo">
@@ -111,13 +113,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       <div class="car-hero__book">
         <div class="car-cal">
-          <div class="car-cal__rate"><span class="car-cal__rate-num">$349</span><span class="car-cal__rate-unit">/ day</span></div>
-          <div class="car-cal__deal">
-            <span class="rate-tag rate-tag--lg" aria-label="$279 per day for 7+ days">
-              <span class="rate-tag__cond">7+ days</span>
-              <span class="rate-tag__val"><span class="rate-tag__num">$279</span><span class="rate-tag__unit">/day</span></span>
-            </span>
+          <div class="car-cal__from">
+            <span class="car-cal__from-label">From</span>
+            <span class="car-cal__rate-num">$249</span><span class="car-cal__rate-unit">/ day</span>
           </div>
+          <ol class="car-cal__ladder" aria-label="Daily rate by rental length - the rate applies to every day">
+            <li data-ladder-days="1"><span class="car-cal__ladder-days">1 day</span><strong>$349</strong></li>
+            <li data-ladder-days="2"><span class="car-cal__ladder-days">2–3 days</span><strong>$299</strong></li>
+            <li data-ladder-days="4"><span class="car-cal__ladder-days">4–6 days</span><strong>$274</strong></li>
+            <li data-ladder-days="7" class="is-best"><span class="car-cal__ladder-badge">Best</span><span class="car-cal__ladder-days">7+ days</span><strong>$249</strong></li>
+          </ol>
 
           <div class="car-cal__head">
             <button type="button" class="car-cal__nav" data-cal-prev aria-label="Previous month">
@@ -133,16 +138,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div class="car-cal__days" data-cal-days></div>
 
           <div class="car-cal__discounts">
-            <div class="car-cal__discount" data-discount-days="3">
-              <span class="car-cal__discount-pct">10% OFF</span>
-              <span class="car-cal__discount-cond">3+ days</span>
+            <div class="car-cal__discount" data-discount-days="2">
+              <span class="car-cal__discount-pct">14% OFF</span>
+              <span class="car-cal__discount-cond">2+ days</span>
             </div>
-            <div class="car-cal__discount" data-discount-days="5">
-              <span class="car-cal__discount-pct">15% OFF</span>
-              <span class="car-cal__discount-cond">5+ days</span>
+            <div class="car-cal__discount" data-discount-days="4">
+              <span class="car-cal__discount-pct">21% OFF</span>
+              <span class="car-cal__discount-cond">4+ days</span>
             </div>
             <div class="car-cal__discount" data-discount-days="7">
-              <span class="car-cal__discount-pct">20% OFF</span>
+              <span class="car-cal__discount-pct">29% OFF</span>
               <span class="car-cal__discount-cond">7+ days</span>
             </div>
           </div>
@@ -427,7 +432,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 
   <script defer src="../js/car.js?v=13"></script>
-  <script defer src="../js/car-booking.js?v=12"></script>
+  <script defer src="../js/car-booking.js?v=13"></script>
   <script defer src="../js/attribution.js?v=1"></script>
   <script defer src="../js/nav.js?v=5"></script>
 </body>

@@ -1446,3 +1446,25 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
 @media (prefers-reduced-motion: reduce) {
   .hero__line, .hero__eyebrow, .hero__contact, .hero__notes, .hero__check, .google-badge, .hero__scroll { animation: none; }
 }
+
+/* Fleet card: tiered cars show the lowest daily rate ("from $249 / day") */
+.car-card__price--from { gap: 6px 8px; }
+.car-card__price-from {
+  align-self: flex-end;
+  padding-bottom: 3px;
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--c-orange);
+}
+.car-card__price--from .car-card__price-now { color: var(--c-orange); }
+.car-card__price-cond {
+  margin-left: auto;
+  padding: 5px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(8,8,8,0.55);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: rgba(255,255,255,0.8);
+  white-space: nowrap;
+}
