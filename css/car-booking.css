@@ -745,3 +745,70 @@ button.btn-hero-book.js-book-cta {
   .car-cal__pop-cta { font-size: 13px; padding: 11px 12px; }
   .car-cal__pickbar { font-size: 11.5px; }
 }
+
+/* ================================================================
+   TIERED PRICING (Corvette, Escalade): "From $249/day" + rate ladder
+   ================================================================ */
+.car-cal__from { display: flex; align-items: baseline; gap: 6px; margin-bottom: 10px; }
+.car-cal__from-label {
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--c-orange);
+}
+.car-hero--tiers .car-cal__rate-num { color: var(--c-orange); }
+
+.car-cal__ladder {
+  list-style: none; margin: 0 0 16px; padding: 0;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.car-cal__ladder li {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 9px 2px 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
+  text-align: center;
+  transition: border-color 0.25s, background 0.25s;
+}
+.car-cal__ladder-days {
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+  white-space: nowrap;
+}
+.car-cal__ladder strong {
+  font-family: var(--f-head); font-weight: 900;
+  font-size: 22px; line-height: 1;
+  color: #fff;
+}
+.car-cal__ladder li.is-best { border-color: rgba(255,85,0,0.6); background: rgba(255,85,0,0.08); }
+.car-cal__ladder li.is-best strong { color: var(--c-orange); }
+.car-cal__ladder-badge {
+  position: absolute; top: -8px; left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--c-orange);
+  font-size: 9px; font-weight: 800;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: #fff;
+}
+/* the step the selected dates fall into */
+.car-cal__ladder li.is-current { border-color: #fff; background: rgba(255,255,255,0.1); }
+.car-cal__ladder li.is-current strong { color: #fff; }
+
+/* A smaller photo so price, ladder and calendar share the first screen */
+.car-hero--tiers .car-hero__frame { aspect-ratio: 16 / 9; max-width: 640px; }
+
+@media (max-width: 900px) {
+  .car-hero--tiers .car-hero__frame { aspect-ratio: 2 / 1; max-width: none; }
+  .car-hero--tiers .car-hero__title { margin-bottom: 10px; }
+  .car-cal__from-label { font-size: 11px; }
+  .car-cal__ladder { gap: 4px; margin-bottom: 12px; }
+  .car-cal__ladder li { padding: 8px 1px 7px; border-radius: 8px; }
+  .car-cal__ladder-days { font-size: 8.5px; letter-spacing: 0.03em; }
+  .car-cal__ladder strong { font-size: 17px; }
+  .car-cal__ladder-badge { font-size: 7.5px; padding: 1px 5px; top: -7px; }
+}

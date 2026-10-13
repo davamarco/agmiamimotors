@@ -98,11 +98,25 @@
     }, extra);
   }
 
+  /* Pricing tiers. Default: 10/15/20% off for 3/5/7+ days.
+     A car can instead set exact per-day prices on the hero, e.g.
+     data-rate-tiers="1:349,2:299,4:274,7:249" (the step's price applies to
+     EVERY day of the rental). Either way tierFor() is the single source for
+     the per-day price, so tiles, popup, summary and booking always agree. */
+  const RATE_TIERS = (heroSection.dataset.rateTiers || '')
+    .split(',').map(x => x.split(':').map(Number))
+    .filter(t => t.length === 2 && t[0] > 0 && t[1] > 0)
+    .sort((a, b) => b[0] - a[0]);                      // longest first
+
   function tierFor(days) {
-    if (days >= 7) return { pct: 0.20, threshold: 7 };
-    if (days >= 5) return { pct: 0.15, threshold: 5 };
-    if (days >= 3) return { pct: 0.10, threshold: 3 };
-    return { pct: 0, threshold: 0 };
+    if (RATE_TIERS.length) {
+      const t = RATE_TIERS.find(([min]) => days >= min) || RATE_TIERS[RATE_TIERS.length - 1];
+      const perDay = t[1];
+      return { pct: 1 - perDay / DAILY_RATE, threshold: perDay < DAILY_RATE ? t[0] : 0, perDay, exact: true };
+    }
+    const pct = days >= 7 ? 0.20 : days >= 5 ? 0.15 : days >= 3 ? 0.10 : 0;
+    const threshold = days >= 7 ? 7 : days >= 5 ? 5 : days >= 3 ? 3 : 0;
+    return { pct, threshold, perDay: DAILY_RATE * (1 - pct), exact: false };
   }
 
   function renderCalendar() {
@@ -161,8 +175,16 @@
     updateSummary();
   }
 
+  const ladderEls = heroSection.querySelectorAll('[data-ladder-days]');
+  function markLadder(days) {
+    let cur = null;
+    ladderEls.forEach(el => { if (days && days >= +el.dataset.ladderDays) cur = el; });
+    ladderEls.forEach(el => el.classList.toggle('is-current', el === cur));
+  }
+
   function updateSummary() {
     discountEls.forEach(el => el.classList.remove('is-active'));
+    markLadder(0);
 
     if (!rangeStart || !rangeEnd) {
       summaryEl.hidden = true;
@@ -175,7 +197,7 @@
     const days     = Math.max(1, daysBetween(rangeStart, rangeEnd));
     const tier     = tierFor(days);
     const original = DAILY_RATE * days;
-    const total    = original * (1 - tier.pct);
+    const total    = tier.perDay * days;
     const savings  = original - total;
 
     rangeEl.textContent = `${fmtShort(rangeStart)} - ${fmtShort(rangeEnd)}, ${days} day${days === 1 ? '' : 's'}`;
@@ -184,7 +206,9 @@
       originalEl.hidden = false;
       originalEl.textContent = fmtMoney(original);
       savingsEl.hidden = false;
-      savingsEl.textContent = `You save ${fmtMoney(savings)} with the ${Math.round(tier.pct * 100)}% ${tier.threshold}-day rate.`;
+      savingsEl.textContent = tier.exact
+        ? `${days} days × ${fmtMoney(tier.perDay)}/day. You save ${fmtMoney(savings)} vs the 1-day rate.`
+        : `You save ${fmtMoney(savings)} with the ${Math.round(tier.pct * 100)}% ${tier.threshold}-day rate.`;
       const activeCard = heroSection.querySelector(`[data-discount-days="${tier.threshold}"]`);
       if (activeCard) activeCard.classList.add('is-active');
     } else {
@@ -193,6 +217,7 @@
     }
 
     totalEl.textContent = fmtMoney(total);
+    markLadder(days);
 
     summaryEl.hidden = false;
     bookBtn.disabled = false;
@@ -236,7 +261,7 @@
   function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
   function quoteFor(n) {
     const tier = tierFor(n);
-    return { pct: Math.round(tier.pct * 100), perDay: DAILY_RATE * (1 - tier.pct), total: DAILY_RATE * n * (1 - tier.pct), full: DAILY_RATE * n };
+    return { pct: Math.round(tier.pct * 100), perDay: tier.perDay, total: tier.perDay * n, full: DAILY_RATE * n };
   }
 
   // Hint above the tiles (built here so the 12 car pages need no HTML edits)
