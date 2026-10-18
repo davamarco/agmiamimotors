@@ -2,7 +2,6 @@
    AG MOTORS MIAMI - car-booking.js
    Hero date-range calendar + multi-day discount calculator,
    plus the shared reservation modal (Web3Forms + WhatsApp).
-   Uses window.lenis (desktop smooth scroll from car.js) when it exists.
    ================================================================ */
 
 'use strict';
@@ -288,8 +287,7 @@
     const r = calCard.getBoundingClientRect();
     if (r.top < 70 || r.top > window.innerHeight * 0.5) {
       const y = window.scrollY + daysEl.getBoundingClientRect().top - 140;
-      if (window.lenis && window.lenis.scrollTo) window.lenis.scrollTo(y, { duration: 0.8 });
-      else window.scrollTo({ top: y, behavior: 'smooth' });
+      window.scrollTo({ top: y });
     }
   }
   function exitQuickPick() {
@@ -384,17 +382,20 @@
   });
 
   /* ── Other CTAs on the page (Check Availability) ───────── */
+  // With dates picked: open the form. Without: bring the calendar into view.
+  function openOrPickDates(location) {
+    if (heroSection._bookingState) {
+      openBookingModal(heroSection._bookingState, location);
+    } else {
+      const card = heroSection.querySelector('.car-cal') || heroSection;
+      window.scrollTo({ top: window.scrollY + card.getBoundingClientRect().top - 90 });
+    }
+  }
   document.querySelectorAll('.js-book-cta').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (heroSection._bookingState) {
-        openBookingModal(heroSection._bookingState, ctaLocation(btn));
-      } else if (window.lenis && window.lenis.scrollTo) {
-        window.lenis.scrollTo(heroSection, { duration: 1.2 });
-      } else {
-        heroSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
+    btn.addEventListener('click', () => openOrPickDates(ctaLocation(btn)));
   });
+  // Used by the mobile "Book Now" bar (js/nav.js)
+  window.AGOpenBooking = openOrPickDates;
 
   // Which "Check Availability" button opened the form, for analytics.
   function ctaLocation(btn) {
@@ -414,11 +415,9 @@
   const thanksScreen  = modal.querySelector('[data-screen="thanks"]');
   const form          = document.getElementById('booking-modal-form');
   const whatsappBtn   = modal.querySelector('[data-modal-whatsapp]');
-  // Lenis (smooth scroll) hijacks wheel/touchpad events and scrolls the page
-  // under the modal. Keep wheel events inside the box away from Lenis so the box
-  // scrolls natively, and block wheel scrolling of the page over the backdrop.
+  // Wheel inside the box scrolls the box; wheel over the backdrop must not
+  // scroll the page underneath the open modal.
   const modalBox = modal.querySelector('.booking-modal__box');
-  modalBox?.setAttribute('data-lenis-prevent', '');
   modalBox?.addEventListener('wheel', e => e.stopPropagation(), { passive: true });
   modal.addEventListener('wheel', e => {
     if (!modalBox || !modalBox.contains(e.target)) e.preventDefault();
@@ -456,15 +455,15 @@
     }
 
     modal.classList.add('is-visible');
+    document.documentElement.classList.add('is-booking-open');   // hides the mobile action bar
     modal.setAttribute('aria-hidden', 'false');
     track('booking_form_open', bookingParams(state));
-    if (window.lenis && window.lenis.stop) window.lenis.stop();
   }
 
   function closeBookingModal() {
     modal.classList.remove('is-visible');
+    document.documentElement.classList.remove('is-booking-open');
     modal.setAttribute('aria-hidden', 'true');
-    if (window.lenis && window.lenis.start) window.lenis.start();
   }
 
   modal.addEventListener('click', e => {

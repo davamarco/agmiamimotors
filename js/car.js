@@ -4,156 +4,87 @@
 
 'use strict';
 
-/* ── Header state: a plain scroll listener (car pages need no GSAP) ── */
-const header = document.getElementById('header');
-if (header) {
-  let ticking = false;
-  const update = () => { ticking = false; header.classList.toggle('is-scrolled', window.scrollY > 80); };
-  window.addEventListener('scroll', () => {
-    if (!ticking) { ticking = true; requestAnimationFrame(update); }
-  }, { passive: true });
-  update();
-}
-
-/* ── Smooth wheel scrolling (Lenis): desktop mouse only, and only after
-   the page has loaded - phones scroll natively and never download it. ── */
-(function initSmoothScroll() {
-  if (!window.matchMedia('(pointer: fine)').matches) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  function start() {
-    const script = document.createElement('script');
-    script.src = '/js/vendor/lenis.min.js';
-    script.onload = () => {
-      if (typeof Lenis === 'undefined' || document.documentElement.classList.contains('lb-open')) return;
-      window.lenis = new Lenis({
-        duration: 1.8,
-        wheelMultiplier: 0.85,
-        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      });
-      const raf = time => { window.lenis.raf(time); requestAnimationFrame(raf); };
-      requestAnimationFrame(raf);
-    };
-    document.head.appendChild(script);
-  }
-  if (document.readyState === 'complete') start();
-  else window.addEventListener('load', start);
-})();
-
 /* ── Hero entrance: pure CSS (css/car.css), so it starts on first paint
    and never waits for the animation libraries to download. ───────── */
 
-/* ── Swiper Gallery ─────────────────────────────────────────────── */
-(function initSwiper() {
-  const gallery = document.querySelector('.swiper');
-  if (!gallery) return;
+/* ── Photo gallery: big main photo + thumbnails ──────────────────────
+   Thumbnails (data-base = photo path without the size suffix) swap the
+   main photo with a short fade. Arrows, swipe on touch screens and the
+   keyboard's left/right keys step through the photos. ───────────────── */
+(function initGallery() {
+  const root = document.querySelector('[data-gallery]');
+  if (!root) return;
+  const img    = root.querySelector('.car-media__img');
+  const frame  = root.querySelector('.car-hero__frame');
+  const count  = root.querySelector('.car-media__count');
+  const thumbs = [...root.querySelectorAll('.car-thumb')];
+  if (!img || thumbs.length < 2) return;
 
-  // Swiper (~150 KB) is only fetched when the gallery is about to scroll into view
-  let started = false;
-  const start = () => { if (!started) { started = true; loadSwiper(); } };
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver(entries => {
-      if (entries.some(e => e.isIntersecting)) { io.disconnect(); start(); }
-    }, { rootMargin: '800px 0px' });
-    io.observe(gallery);
-  } else { start(); }
+  const SIZES = '(max-width: 900px) 100vw, 860px';
+  const srcset = b => `${b}-640.webp 640w, ${b}-800.webp 800w, ${b}-1100.webp 1100w, ${b}-1600.webp 1600w`;
+  let current = 0, token = 0;
 
-  function loadSwiper() {
-    const link = document.createElement('link');
-    link.rel  = 'stylesheet';
-    link.href = '/js/vendor/swiper-bundle.min.css';
-    document.head.appendChild(link);
-
-    const script  = document.createElement('script');
-    script.src    = '/js/vendor/swiper-bundle.min.js';
-    script.onload = () => {
-      const swiper = new Swiper('.swiper', {
-        slidesPerView: 'auto',
-        spaceBetween: 16,
-        grabCursor: true,
-        touchRatio: 1,
-        speed: 900,
-        freeMode: { enabled: true, momentum: true, momentumRatio: 0.8 },
-        pagination: { el: '.swiper-pagination', clickable: true },
-      });
-
-      const fraction = document.querySelector('.swiper-fraction');
-      const btnPrev  = document.querySelector('.swiper-btn--prev');
-      const btnNext  = document.querySelector('.swiper-btn--next');
-
-      function updateFraction() {
-        if (fraction) fraction.textContent =
-          `${String(swiper.realIndex + 1).padStart(2,'0')} / ${String(swiper.slides.length).padStart(2,'0')}`;
-      }
-      updateFraction();
-      swiper.on('slideChange', updateFraction);
-
-      btnPrev?.addEventListener('click', () => swiper.slidePrev());
-      btnNext?.addEventListener('click', () => swiper.slideNext());
-
-      /* ── Lightbox: click a photo to view it large, swipeable ── */
-      const carName = document.getElementById('car-hero')?.dataset.carName || document.title;
-      const srcs = [...document.querySelectorAll('.car-gallery .swiper-slide img')].map(i => ({ src: i.dataset.full || i.currentSrc || i.src, alt: i.alt }));
-      let lb = null, lbSwiper = null;
-
-      function pad(n) { return String(n).padStart(2, '0'); }
-
-      function openLightbox(index) {
-        if (lb) return;
-        lb = document.createElement('div');
-        lb.className = 'lb';
-        lb.setAttribute('role', 'dialog');
-        lb.setAttribute('aria-modal', 'true');
-        lb.setAttribute('aria-label', carName + ' photos');
-        lb.innerHTML =
-          '<div class="lb__bar"><span class="lb__name"></span><span class="lb__count"></span>' +
-          '<button type="button" class="lb__close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>' +
-          '<div class="swiper lb__swiper"><div class="swiper-wrapper">' +
-          srcs.map(p => '<div class="swiper-slide"><img src="' + p.src + '" alt="' + p.alt.replace(/"/g, '&quot;') + '" /></div>').join('') +
-          '</div></div>' +
-          '<button type="button" class="lb__arrow lb__arrow--prev" aria-label="Previous photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 6l-6 6 6 6"/></svg></button>' +
-          '<button type="button" class="lb__arrow lb__arrow--next" aria-label="Next photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg></button>';
-        lb.querySelector('.lb__name').textContent = carName;
-        document.body.appendChild(lb);
-        if (window.lenis) window.lenis.stop();
-        document.documentElement.classList.add('lb-open');
-
-        const count = lb.querySelector('.lb__count');
-        lbSwiper = new Swiper(lb.querySelector('.lb__swiper'), {
-          initialSlide: index, slidesPerView: 1, spaceBetween: 32, speed: 500,
-          grabCursor: true, keyboard: { enabled: true },
-        });
-        const upd = () => { count.textContent = pad(lbSwiper.realIndex + 1) + ' / ' + pad(srcs.length); };
-        upd();
-        lbSwiper.on('slideChange', upd);
-
-        lb.querySelector('.lb__arrow--prev').addEventListener('click', () => lbSwiper.slidePrev());
-        lb.querySelector('.lb__arrow--next').addEventListener('click', () => lbSwiper.slideNext());
-        lb.querySelector('.lb__close').addEventListener('click', closeLightbox);
-        lb.addEventListener('wheel', e => e.stopPropagation(), { passive: true });
-        // click on empty space around a photo closes it
-        lb.querySelector('.lb__swiper').addEventListener('click', e => {
-          if (e.target.tagName !== 'IMG') closeLightbox();
-        });
-        requestAnimationFrame(() => lb.classList.add('is-open'));
-      }
-
-      function closeLightbox() {
-        if (!lb) return;
-        const el = lb; lb = null;
-        lbSwiper.destroy(true, true); lbSwiper = null;
-        el.classList.remove('is-open');
-        setTimeout(() => el.remove(), 250);
-        document.documentElement.classList.remove('lb-open');
-        if (window.lenis) window.lenis.start();
-      }
-
-      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
-      document.querySelectorAll('.car-gallery .swiper-slide').forEach((slide, i) => {
-        slide.addEventListener('click', () => { if (swiper.allowClick) openLightbox(i); });
-      });
-    };
-    document.body.appendChild(script);
+  function preload(i) {
+    const t = thumbs[(i + thumbs.length) % thumbs.length];
+    const pre = new Image();
+    pre.sizes = SIZES; pre.srcset = srcset(t.dataset.base); pre.src = t.dataset.base + '-1100.webp';
   }
+
+  function show(i) {
+    i = (i + thumbs.length) % thumbs.length;
+    if (i === current) return;
+    current = i;
+    const t = thumbs[i];
+    thumbs.forEach((el, k) => {
+      el.classList.toggle('is-active', k === i);
+      if (k === i) el.setAttribute('aria-current', 'true'); else el.removeAttribute('aria-current');
+    });
+    // keep the active thumbnail visible in a scrolling strip
+    const strip = t.parentElement;
+    const l = t.offsetLeft - strip.offsetLeft, r = l + t.offsetWidth;
+    if (l < strip.scrollLeft || r > strip.scrollLeft + strip.clientWidth) strip.scrollTo({ left: l - 8 });
+    if (count) count.textContent = `${i + 1} / ${thumbs.length}`;
+
+    const my = ++token;
+    img.classList.add('is-fading');
+    const next = new Image();
+    next.sizes = SIZES; next.srcset = srcset(t.dataset.base); next.src = t.dataset.base + '-1100.webp';
+    const swap = () => {
+      if (my !== token) return;                 // a newer click won
+      img.removeAttribute('fetchpriority');
+      img.sizes = SIZES; img.srcset = next.srcset; img.src = next.src;
+      img.alt = t.dataset.alt || img.alt;
+      requestAnimationFrame(() => img.classList.remove('is-fading'));
+      preload(i + 1);
+    };
+    (next.decode ? next.decode() : Promise.resolve()).then(swap, swap);
+  }
+
+  thumbs.forEach((t, k) => t.addEventListener('click', () => show(k)));
+  root.querySelector('.car-media__arrow--prev')?.addEventListener('click', () => show(current - 1));
+  root.querySelector('.car-media__arrow--next')?.addEventListener('click', () => show(current + 1));
+
+  // keyboard: left/right, unless the visitor is typing or a dialog is open
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    if (e.target.closest('input, textarea, select, [contenteditable]')) return;
+    if (document.documentElement.classList.contains('is-booking-open') || document.querySelector('.car-cal__pop')) return;
+    show(current + (e.key === 'ArrowRight' ? 1 : -1));
+  });
+
+  // swipe on touch screens (vertical scrolling stays native)
+  let x0 = null, y0 = 0;
+  frame.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+  frame.addEventListener('touchend', e => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+    x0 = null;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3) show(current + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+
+  // warm the cache for the next photo once the page has loaded
+  if (document.readyState === 'complete') preload(1);
+  else window.addEventListener('load', () => preload(1));
 })();
 
 /* ── Animated counters - rewritten from scratch, no GSAP ─────────────
@@ -203,7 +134,7 @@ if (header) {
       countUp(el, target, suffix, dec, unitHTML);
     });
   // Trigger once the row is well inside the viewport (not just peeking at the
-  // bottom edge) - with Lenis's inertial scroll, a low threshold fired the
+  // bottom edge) - a low threshold fired the
   // count-up while the numbers were still off-screen, so it looked instant
   // by the time the user's eyes actually reached them.
   }, { threshold: 0.4, rootMargin: '0px 0px -15% 0px' });
