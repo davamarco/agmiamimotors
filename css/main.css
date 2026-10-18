@@ -671,113 +671,116 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
     margin-inline: auto;
     gap: 24px;
   }
-  .car-card__name { font-size: clamp(20px, 1.7vw, 28px); }
-  .car-card__foot { padding: clamp(18px, 2vw, 28px); }
 }
 
-/* ── Car Card ───────────────────────────────────────────────────── */
+/* ── Car Card: photo on top, information plate below ────────────── */
 .car-card {
   position: relative;
-  aspect-ratio: 16 / 9;
+  display: flex; flex-direction: column;
   overflow: hidden;
-  background: var(--c-black-3);
-  border: 1px solid rgba(255,255,255,0.05);
-  /* `scale` (not `transform`) so it never fights GSAP's entrance transform */
-  transition: scale 0.9s var(--ease-expo), box-shadow 0.9s var(--ease-expo);
+  background: #101010;
+  border: 1px solid rgba(255,255,255,0.07);
+}
+.car-card__media { position: relative; overflow: hidden; aspect-ratio: 3 / 2; background: #151515; }
+.car-card__media img {
+  display: block; width: 100%; height: 100%; object-fit: cover;
+  transition: scale 1.2s var(--ease-expo);
 }
 @media (hover: hover) {
-  .car-card:hover {
-    z-index: 2;
-    scale: 1.025;
-    box-shadow: 0 24px 60px rgba(0,0,0,0.55);
-  }
+  .car-card:hover .car-card__media img { scale: 1.04; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .car-card { transition: none; }
+  .car-card__media img { transition: none; }
 }
 
-.car-card__media {
-  position: absolute; inset: 0;
+/* name left, price right; note line; Book Now button.
+   The whole card links to the car page (stretch-link); the plate lets clicks
+   fall through to it, only the Book Now button sits on top. */
+.car-card__body {
+  position: relative; z-index: 3; pointer-events: none;
+  display: grid; grid-template-columns: 1fr auto;
+  grid-template-areas: "t p" "n n" "b b";
+  gap: 0 16px;
+  padding: 22px 24px 24px;
 }
-
-.car-card__ph {
-  width: 100%; height: 100%;
-  display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(135deg, #181818 0%, #0d0d0d 60%, #1c1c1c 100%);
-  color: rgba(255,255,255,0.12);
-  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
-}
-
-/* If a real image is placed */
-.car-card__media img {
-  width: 100%; height: 100%; object-fit: cover;
-}
-
-.car-card__shade {
-  position: absolute; inset: 0;
-  /* short gradient: only the bottom third under the text, the car stays bright */
-  background: linear-gradient(
-    to top,
-    rgba(6,6,6,0.95) 0%,
-    rgba(6,6,6,0.78) 20%,
-    rgba(6,6,6,0.3) 34%,
-    rgba(6,6,6,0) 44%
-  );
-}
-
-.car-card__foot {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  padding: clamp(18px, 2.6vw, 34px);
-  z-index: 2;
-}
-
-.car-card__row {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 7px;
-}
+.car-card__titles { grid-area: t; align-self: start; min-width: 0; }
 .car-card__brand {
-  font-size: 9px; font-weight: 500;
-  letter-spacing: 0.24em; text-transform: uppercase;
-  color: var(--c-orange);
-}
-.car-card__idx {
-  font-family: var(--f-head);
-  font-size: 10px; letter-spacing: 0.1em;
-  color: rgba(255,255,255,0.18);
+  display: block;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(255,255,255,0.56);
 }
 .car-card__name {
+  margin-top: 6px;
   font-family: var(--f-head);
-  font-size: clamp(20px, 2.2vw, 34px);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  margin-bottom: 6px;
+  font-size: clamp(24px, 2vw, 30px); font-weight: 700; line-height: 1;
+  letter-spacing: 0.01em; text-transform: uppercase;
 }
-.car-card__price {
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-  margin-top: 10px; padding-top: 12px;
-  border-top: 1px solid rgba(255,255,255,0.14);
+.car-card__price { display: contents; }
+.car-card__price-label {
+  grid-area: p; align-self: start; text-align: right;
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+}
+.car-card__price-main {
+  grid-area: p; align-self: end; justify-self: end;
+  display: inline-flex; align-items: baseline; gap: 3px;
+  margin-top: 18px;
 }
 .car-card__price-now {
   font-family: var(--f-head);
-  font-size: clamp(22px, 2.6vw, 30px);
-  font-weight: 900;
-  line-height: 1;
-  color: var(--c-white);
+  font-size: clamp(28px, 2.4vw, 34px); font-weight: 700; line-height: 1;
 }
-.car-card__price-was {
-  font-family: var(--f-head);
-  font-size: clamp(17px, 2vw, 22px); font-weight: 700;
+.car-card__price-unit { font-size: 13px; color: rgba(255,255,255,0.5); }
+.car-card__price-note {
+  grid-area: n;
+  display: flex; align-items: baseline; gap: 8px;
+  margin: 18px 0;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  font-size: 12px;
   color: rgba(255,255,255,0.55);
-  text-decoration: line-through;
-  text-decoration-color: rgba(255,255,255,0.55);
-  text-decoration-thickness: 2px;
 }
-.car-card__price-unit {
-  font-size: 13px; font-weight: 700;
-  letter-spacing: 0.03em;
-  color: rgba(255,255,255,0.4);
+.car-card__price-was { color: rgba(255,255,255,0.4); }
+.car-card__price-save { font-weight: 500; color: var(--c-orange); }
+.car-card__book {
+  grid-area: b; pointer-events: auto;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 52px; padding: 0 22px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #ffffff 0%, #e6e6e6 100%);
+  color: #0a0a0a;
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    inset 0 -2px 0 rgba(0,0,0,0.14),
+    0 1px 2px rgba(0,0,0,0.5),
+    0 10px 24px -6px rgba(0,0,0,0.7);
+  transition: background 0.3s, color 0.3s, transform 0.3s var(--ease-expo), box-shadow 0.3s;
 }
+.car-card__book::after {
+  content: '\2192';
+  font-size: 18px; letter-spacing: 0;
+  transition: translate 0.3s var(--ease-expo);
+}
+.car-card__book:hover, .car-card__book:focus-visible {
+  background: linear-gradient(180deg, #ff6a1f 0%, #f04e00 100%);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.25),
+    inset 0 -2px 0 rgba(0,0,0,0.18),
+    0 12px 28px -6px rgba(255,85,0,0.55);
+}
+.car-card__book:hover::after, .car-card__book:focus-visible::after { translate: 4px 0; }
+.car-card__book:active { transform: translateY(1px); box-shadow: inset 0 2px 4px rgba(0,0,0,0.25); }
+@media (max-width: 768px) {
+  .car-card__body { padding: 18px; }
+  .car-card__price-note { margin: 16px 0; }
+}
+
 /* ── Rate tag: multi-day offer, styled like a race-broadcast timing chip ── */
 .rate-tag {
   --tag-skew: -14deg;
@@ -840,20 +843,6 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   .rate-tag--lg .rate-tag__val { padding: 6px 10px 5px; }
   .rate-tag--lg .rate-tag__num { font-size: 18px; }
   .rate-tag--lg .rate-tag__unit { font-size: 10px; }
-}
-
-.car-card__price-badge {
-  display: inline-flex; align-items: center;
-  padding: 3px 8px;
-  background: #FF1E1E;
-  color: var(--c-white);
-  font-family: var(--f-body);
-  font-size: 10px; font-weight: 800;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  line-height: 1;
-  border-radius: 4px;
-  white-space: nowrap;
 }
 
 /* ── WHY US ─────────────────────────────────────────────────────── */
@@ -1451,28 +1440,6 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   .hero__line, .hero__eyebrow, .hero__contact, .hero__notes, .hero__check, .google-badge, .hero__scroll { animation: none; }
 }
 
-/* Fleet card: tiered cars show the lowest daily rate ("from $249 / day") */
-.car-card__price--from { gap: 6px 8px; }
-.car-card__price-from {
-  align-self: flex-end;
-  padding-bottom: 3px;
-  font-size: 12px; font-weight: 700;
-  letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--c-orange);
-}
-.car-card__price--from .car-card__price-now { color: var(--c-orange); }
-.car-card__price-cond {
-  margin-left: auto;
-  padding: 5px 9px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(8,8,8,0.55);
-  font-size: 11px; font-weight: 700;
-  letter-spacing: 0.06em; text-transform: uppercase;
-  color: rgba(255,255,255,0.8);
-  white-space: nowrap;
-}
-
 /* ── Header phone (tel:) - number on wide screens, icon below 1200px ── */
 .header__phone {
   margin-left: auto;
@@ -1555,74 +1522,6 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
 }
 @media (prefers-reduced-motion: reduce) { .hero__trust, .hero__fleet-link { animation: none; } }
 
-/* ── Fleet card: status badge, Book Now, bottom row ───────────────
-   The badge text comes from data-badge on each <article class="car-card">
-   in index.html (e.g. data-badge="Most Booked"); empty hides it. ── */
-.car-card[data-badge]::before {
-  content: attr(data-badge);
-  position: absolute; top: 14px; left: 14px; z-index: 3;
-  display: inline-flex; align-items: center;
-  padding: 6px 11px 6px 22px;
-  border-radius: 999px;
-  background: rgba(10,10,10,0.72);
-  border: 1px solid rgba(255,255,255,0.16);
-  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-  font-family: var(--f-body); font-size: 11px; font-weight: 700;
-  letter-spacing: 0.08em; text-transform: uppercase;
-  color: #fff;
-  pointer-events: none;
-}
-.car-card[data-badge]::after {            /* status dot */
-  content: '';
-  position: absolute; top: 25px; left: 26px; z-index: 4;
-  width: 7px; height: 7px; border-radius: 50%;
-  background: #3ddc84; box-shadow: 0 0 8px rgba(61,220,132,0.8);
-  pointer-events: none;
-}
-.car-card[data-badge=""]::before, .car-card[data-badge=""]::after { display: none; }
-
-.car-card__name, .car-card__brand, .car-card__price { text-shadow: 0 1px 10px rgba(0,0,0,0.55); }
-.car-card__bottom {
-  display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;
-  margin-top: 10px; padding-top: 12px;
-  border-top: 1px solid rgba(255,255,255,0.14);
-}
-.car-card__bottom .car-card__price { margin-top: 0; padding-top: 0; border-top: 0; }
-.car-card__book {
-  position: relative; z-index: 3;
-  flex-shrink: 0;
-  display: inline-flex; align-items: center; justify-content: center;
-  padding: 11px 20px;
-  border-radius: 999px;
-  background: var(--c-orange); color: #fff;
-  font-family: var(--f-body); font-size: 13px; font-weight: 800;
-  letter-spacing: 0.08em; text-transform: uppercase;
-  box-shadow: 0 6px 20px rgba(255,85,0,0.35);
-  transition: background 0.25s, transform 0.25s var(--ease-expo);
-}
-.car-card__book:hover, .car-card__book:focus-visible { background: #ff6a1f; transform: translateY(-2px); }
-/* tiered price note on its own readable line */
-.car-card__price--from .car-card__price-cond {
-  flex-basis: 100%;
-  margin: 4px 0 0;
-  padding: 0; border: 0; background: none;
-  font-size: 13px; font-weight: 600; letter-spacing: 0.02em; text-transform: none;
-  color: rgba(255,255,255,0.88);
-  white-space: normal;
-}
-/* taller cards so the text sits in the bottom third and the car stays clear */
-.car-card { aspect-ratio: 4 / 3; }
-.car-card__brand { text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
-@media (max-width: 768px) {
-  .car-card__book { padding: 10px 16px; font-size: 12px; }
-  .car-card[data-badge]::before { top: 12px; left: 12px; font-size: 10px; }
-  .car-card[data-badge]::after { top: 22px; left: 23px; }
-}
-
 /* Chauffeur form note: inline Call / WhatsApp links */
 .cform__link { color: var(--c-orange); font-weight: 700; text-decoration: none; text-underline-offset: 3px; }
 .cform__link:hover, .cform__link:focus-visible { text-decoration: underline; }
-/* The whole card links to the car page (stretch-link); the text block lets
-   clicks fall through to it, only the Book Now button sits on top. */
-.car-card__foot { z-index: 3; pointer-events: none; }
-.car-card__book { pointer-events: auto; }
