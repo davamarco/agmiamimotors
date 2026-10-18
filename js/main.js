@@ -4,38 +4,13 @@
 
 'use strict';
 
-if (typeof Lenis === 'undefined' || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
   document.documentElement.classList.add('no-anim');   // CDN blocked/offline: show content without animation
   throw new Error('Animation libraries failed to load');
 }
 
-/* ── 1. Lenis + GSAP - single ticker, no duplicate RAF loop ─────── */
-const lenis = new Lenis({
-  duration: 1.8,
-  wheelMultiplier: 0.85,
-  easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-  orientation: 'vertical',
-  smoothWheel: true,
-});
-
-// ONE source of truth: GSAP ticker drives Lenis.
-// Do NOT also run a manual requestAnimationFrame(lenisRaf) loop -
-// that would call lenis.raf() twice per frame causing double updates.
-gsap.ticker.add((time) => lenis.raf(time * 1000));
-gsap.ticker.lagSmoothing(0);
-lenis.on('scroll', ScrollTrigger.update);
-
-/* ── 2. Header scroll state ─────────────────────────────────────── */
-(function initHeader() {
-  const header = document.getElementById('header');
-  if (!header) return;
-
-  ScrollTrigger.create({
-    start: '80px top',
-    onEnter:     () => header.classList.add('is-scrolled'),
-    onLeaveBack: () => header.classList.remove('is-scrolled'),
-  });
-})();
+/* ── 1-2. Native scrolling (no smooth-scroll library). ScrollTrigger
+   listens to the browser's own scroll; the header state lives in nav.js. ── */
 
 /* ── 3. Hero entrance: pure CSS now (css/main.css), see 'Hero entrance' ── */
 
@@ -120,26 +95,8 @@ lenis.on('scroll', ScrollTrigger.update);
   });
 })();
 
-/* ── 8b. Smooth-scroll same-page anchor links ─────────────────────
-   Same-page "#..." links animate through Lenis so the scroll eases in/out rather
-   than snapping instantly. ─────────────────────────────────────── */
-(function initAnchorScroll() {
-  const HEADER_OFFSET = 80; // matches --header-h
-  const easeOutExpo = t => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t));
-
-  document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(link => {
-    link.addEventListener('click', e => {
-      const target = document.querySelector(link.getAttribute('href'));
-      if (!target) return;
-      e.preventDefault();
-      lenis.scrollTo(target, {
-        offset: -HEADER_OFFSET,
-        duration: 2.0,
-        easing: easeOutExpo,
-      });
-    });
-  });
-})();
+/* ── 8b. Same-page "#..." links: plain browser jumps; sections carry
+   scroll-margin-top (css/main.css) so the fixed header never covers them. ── */
 
 /* ── 9. Fleet cards entrance ─────────────────────────────────────── */
 (function initFleetEntrance() {

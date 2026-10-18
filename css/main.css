@@ -130,9 +130,10 @@
 
 /* ── Reset ──────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-/* Smooth scrolling is handled by Lenis (JS) — native "smooth" here would
-   fight it for control of the scroll position and cause stutter. */
+/* Plain native scrolling everywhere (no smooth-scroll library, no smooth
+   anchor jumps). Anchored sections leave room for the fixed header. */
 html { scroll-behavior: auto; }
+section[id], [id="contact"], [id="reserve"] { scroll-margin-top: 76px; }
 
 /* ── Custom Scrollbar ───────────────────────────────────────────── */
 /* Firefox */
@@ -276,8 +277,10 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
 }
 .header.is-scrolled { height: 62px; }
 .header.is-scrolled::before {
-  background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0));
-  border-bottom-color: transparent;
+  background: rgba(10,10,10,0.74);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  backdrop-filter: blur(14px) saturate(1.3);
+  border-bottom-color: rgba(255,255,255,0.08);
 }
 .header__logo {
   font-family: var(--f-head);
@@ -712,12 +715,13 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
 
 .car-card__shade {
   position: absolute; inset: 0;
+  /* short gradient: only the bottom third under the text, the car stays bright */
   background: linear-gradient(
     to top,
-    rgba(6,6,6,0.99) 0%,
-    rgba(6,6,6,0.75) 40%,
-    rgba(6,6,6,0.2) 68%,
-    rgba(6,6,6,0) 90%
+    rgba(6,6,6,0.95) 0%,
+    rgba(6,6,6,0.78) 20%,
+    rgba(6,6,6,0.3) 34%,
+    rgba(6,6,6,0) 44%
   );
 }
 
@@ -1468,3 +1472,157 @@ h1,h2,h3,h4 { font-weight: inherit; line-height: 1; }
   color: rgba(255,255,255,0.8);
   white-space: nowrap;
 }
+
+/* ── Header phone (tel:) - number on wide screens, icon below 1200px ── */
+.header__phone {
+  margin-left: auto;
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 44px; padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.07);
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  font-family: var(--f-body); font-size: 14px; font-weight: 700; letter-spacing: 0.03em;
+  color: #fff; white-space: nowrap;
+  transition: border-color 0.3s, background 0.3s, color 0.3s;
+}
+.header__phone:hover, .header__phone:focus-visible { border-color: var(--c-orange); background: rgba(255,85,0,0.14); }
+.header__phone-icon { width: 17px; height: 17px; flex-shrink: 0; color: var(--c-orange); }
+@media (max-width: 1199px) {
+  .header__phone { width: 44px; padding: 0; justify-content: center; }
+  .header__phone-num { display: none; }
+}
+@media (max-width: 768px) {
+  .header__phone { width: 46px; height: 46px; }
+  .nav-toggle { margin-left: 10px; }
+}
+
+/* ── Mobile action bar: Book Now + Call (phones only) ─────────── */
+.mbar { display: none; }
+@media (max-width: 768px) {
+  .mbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 900;
+    display: flex; gap: 10px;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+    background: rgba(10,10,10,0.92);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    transition: transform 0.25s ease;
+  }
+  .mbar__btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    height: 50px; border-radius: 999px;
+    font-family: var(--f-body); font-size: 15px; font-weight: 800; letter-spacing: 0.04em;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mbar__btn--book { flex: 1 1 auto; background: var(--c-orange); color: #fff; text-transform: uppercase; }
+  .mbar__btn--call { flex: 0 0 34%; border: 1px solid rgba(255,255,255,0.25); color: #fff; background: rgba(255,255,255,0.06); }
+  .mbar__btn--call svg { width: 18px; height: 18px; color: var(--c-orange); }
+  body.has-mbar { padding-bottom: calc(70px + env(safe-area-inset-bottom)); }
+  .is-booking-open .mbar, .lb-open .mbar { transform: translateY(110%); pointer-events: none; }
+}
+
+/* ── Hero: one main action + one quiet secondary, trust line under them ── */
+.hero__actions {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 14px;
+}
+.hero__fleet-link {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 20px 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.35);
+  font-family: var(--f-body); font-size: 14px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(255,255,255,0.9);
+  transition: border-color 0.3s, color 0.3s, background 0.3s;
+}
+.hero__fleet-link:hover { border-color: #fff; color: #fff; background: rgba(255,255,255,0.08); }
+.hero__trust {
+  font-family: var(--f-body);
+  font-size: 14px; font-weight: 500; letter-spacing: 0.02em;
+  color: rgba(255,255,255,0.78);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.6);
+  animation: hero-fade-up 0.8s var(--ease-expo) 0.9s backwards;
+}
+.hero__trust span { margin: 0 6px; color: var(--c-orange); }
+.hero__fleet-link { animation: hero-fade-up 0.8s var(--ease-expo) 0.85s backwards; }
+@media (max-width: 480px) {
+  .hero__actions { flex-direction: column; width: 100%; gap: 10px; }
+  .hero__actions .hero__check, .hero__fleet-link { width: 100%; justify-content: center; }
+  .hero__fleet-link { padding: 15px 24px; font-size: 12px; }
+  .hero__trust { font-size: 12px; line-height: 1.5; max-width: 300px; }
+}
+@media (prefers-reduced-motion: reduce) { .hero__trust, .hero__fleet-link { animation: none; } }
+
+/* ── Fleet card: status badge, Book Now, bottom row ───────────────
+   The badge text comes from data-badge on each <article class="car-card">
+   in index.html (e.g. data-badge="Most Booked"); empty hides it. ── */
+.car-card[data-badge]::before {
+  content: attr(data-badge);
+  position: absolute; top: 14px; left: 14px; z-index: 3;
+  display: inline-flex; align-items: center;
+  padding: 6px 11px 6px 22px;
+  border-radius: 999px;
+  background: rgba(10,10,10,0.72);
+  border: 1px solid rgba(255,255,255,0.16);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  font-family: var(--f-body); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: #fff;
+  pointer-events: none;
+}
+.car-card[data-badge]::after {            /* status dot */
+  content: '';
+  position: absolute; top: 25px; left: 26px; z-index: 4;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #3ddc84; box-shadow: 0 0 8px rgba(61,220,132,0.8);
+  pointer-events: none;
+}
+.car-card[data-badge=""]::before, .car-card[data-badge=""]::after { display: none; }
+
+.car-card__name, .car-card__brand, .car-card__price { text-shadow: 0 1px 10px rgba(0,0,0,0.55); }
+.car-card__bottom {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;
+  margin-top: 10px; padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.14);
+}
+.car-card__bottom .car-card__price { margin-top: 0; padding-top: 0; border-top: 0; }
+.car-card__book {
+  position: relative; z-index: 3;
+  flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 11px 20px;
+  border-radius: 999px;
+  background: var(--c-orange); color: #fff;
+  font-family: var(--f-body); font-size: 13px; font-weight: 800;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  box-shadow: 0 6px 20px rgba(255,85,0,0.35);
+  transition: background 0.25s, transform 0.25s var(--ease-expo);
+}
+.car-card__book:hover, .car-card__book:focus-visible { background: #ff6a1f; transform: translateY(-2px); }
+/* tiered price note on its own readable line */
+.car-card__price--from .car-card__price-cond {
+  flex-basis: 100%;
+  margin: 4px 0 0;
+  padding: 0; border: 0; background: none;
+  font-size: 13px; font-weight: 600; letter-spacing: 0.02em; text-transform: none;
+  color: rgba(255,255,255,0.88);
+  white-space: normal;
+}
+/* taller cards so the text sits in the bottom third and the car stays clear */
+.car-card { aspect-ratio: 4 / 3; }
+.car-card__brand { text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
+@media (max-width: 768px) {
+  .car-card__book { padding: 10px 16px; font-size: 12px; }
+  .car-card[data-badge]::before { top: 12px; left: 12px; font-size: 10px; }
+  .car-card[data-badge]::after { top: 22px; left: 23px; }
+}
+
+/* Chauffeur form note: inline Call / WhatsApp links */
+.cform__link { color: var(--c-orange); font-weight: 700; text-decoration: none; text-underline-offset: 3px; }
+.cform__link:hover, .cform__link:focus-visible { text-decoration: underline; }
+/* The whole card links to the car page (stretch-link); the text block lets
+   clicks fall through to it, only the Book Now button sits on top. */
+.car-card__foot { z-index: 3; pointer-events: none; }
+.car-card__book { pointer-events: auto; }

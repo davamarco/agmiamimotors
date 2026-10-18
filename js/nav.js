@@ -90,7 +90,7 @@
   let lockUntil = 0;
   links.forEach(link => link.addEventListener('click', () => {
     setActive(link);
-    lockUntil = performance.now() + 1700;   // let the smooth scroll finish before the spy takes over
+    lockUntil = performance.now() + 400;    // let the jump settle before the spy takes over
   }));
 
   function spy() {
@@ -108,4 +108,73 @@
     requestAnimationFrame(() => { ticking = false; spy(); });
   }, { passive: true });
   spy();
+})();
+
+/* ================================================================
+   Shared on every page: header scroll state, mobile action bar and
+   click tracking for the phone / Book Now buttons.
+   ================================================================ */
+(function () {
+  'use strict';
+
+  /* Analytics: names start with booking_ so the site's GTM tag (rental_*,
+     booking_*, chauffeur_*) forwards them to GA4. Keys are reset on every
+     push so values from an earlier event never leak into this one. */
+  const KEYS = ['form_type', 'car_name', 'daily_rate', 'rental_days', 'rental_start', 'rental_end',
+    'discount_pct', 'value', 'currency', 'form_location', 'form_action', 'error_type', 'error_fields', 'reason', 'lead_source'];
+  function track(event, params) {
+    try {
+      const payload = { event };
+      KEYS.forEach(k => { payload[k] = undefined; });
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push(Object.assign(payload, params));
+    } catch (err) { /* analytics must never break the page */ }
+  }
+  const hero = document.querySelector('.car-hero[data-car-name]');
+  const pageCar = hero ? hero.dataset.carName : undefined;
+
+  /* Header: dark translucent bar with blur once the page is scrolled */
+  const header = document.getElementById('header');
+  if (header) {
+    let ticking = false;
+    const update = () => { ticking = false; header.classList.toggle('is-scrolled', window.scrollY > 40); };
+    window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    update();
+  }
+
+  /* Mobile action bar (CSS shows it below 769px only) */
+  const onHome = !!document.getElementById('fleet');
+  const bar = document.createElement('div');
+  bar.className = 'mbar';
+  bar.setAttribute('role', 'region');
+  bar.setAttribute('aria-label', 'Quick actions');
+  bar.innerHTML =
+    '<a class="mbar__btn mbar__btn--book" data-cta-location="sticky_bar"></a>' +
+    '<a class="mbar__btn mbar__btn--call" href="tel:+19543108470" data-phone-location="sticky_bar" aria-label="Call AG Motors Miami">' +
+    '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 006.6 6.6l2.2-2.2a1 1 0 011-.25c1.1.37 2.3.57 3.6.57a1 1 0 011 1V20a1 1 0 01-1 1C10.6 21 3 13.4 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.5.57 3.6a1 1 0 01-.25 1z"/></svg><span>Call</span></a>';
+  const book = bar.querySelector('.mbar__btn--book');
+  book.textContent = 'Book Now';
+  book.href = hero ? '#car-hero' : onHome ? '#fleet' : 'https://agmotorsmiami.com/#fleet';
+  if (pageCar) book.dataset.carName = pageCar;
+  book.addEventListener('click', e => {
+    // On a car page: open this car's booking (or bring its calendar up)
+    if (hero && typeof window.AGOpenBooking === 'function') { e.preventDefault(); window.AGOpenBooking('sticky_bar'); }
+  });
+  document.body.appendChild(bar);
+  document.body.classList.add('has-mbar');
+
+  /* Click tracking (capture phase: runs even if the link navigates away) */
+  document.addEventListener('click', e => {
+    const tel = e.target.closest('a[href^="tel:"]');
+    if (tel) {
+      const sec = tel.closest('section, header, footer');
+      track('booking_phone_click', {
+        car_name: pageCar,
+        form_location: tel.dataset.phoneLocation || (sec ? (sec.id || sec.className.split(' ')[0]) : 'page'),
+      });
+      return;
+    }
+    const cta = e.target.closest('[data-cta-location]');
+    if (cta) track('booking_cta_click', { car_name: cta.dataset.carName || pageCar, form_location: cta.dataset.ctaLocation });
+  }, true);
 })();
