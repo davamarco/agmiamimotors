@@ -895,3 +895,30 @@ button.btn-hero-book.js-book-cta {
   .car-thumbs::-webkit-scrollbar { display: none; }
   .car-thumb { flex: 0 0 76px; border-radius: 6px; }
 }
+
+/* Rate ladder steps are buttons: tap = pick that many days */
+.car-cal__ladder li {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+@media (hover: hover) {
+  .car-cal__ladder li:hover { border-color: rgba(255,85,0,0.7); background: rgba(255,85,0,0.1); }
+}
+.car-cal__ladder li:active { transform: scale(0.97); }
+.car-cal__ladder li:focus-visible { outline: 2px solid var(--c-orange); outline-offset: 2px; }
+.car-cal__ladder li.is-armed { border-color: var(--c-orange); background: rgba(255,85,0,0.16); box-shadow: 0 0 0 1px var(--c-orange) inset; }
+.car-cal__ladder li.is-armed strong { color: var(--c-orange); }
+
+/* "Start today" shortcut inside the pick prompt */
+.car-cal__pickbar-today {
+  flex-shrink: 0;
+  height: 30px; padding: 0 12px;
+  border: 0; border-radius: 999px;
+  background: var(--c-orange); color: #fff;
+  font-family: var(--f-body); font-size: 12px; font-weight: 800;
+  letter-spacing: 0.03em; white-space: nowrap;
+  cursor: pointer; touch-action: manipulation;
+}
+@media (max-width: 900px) { .car-cal__pickbar-today { font-size: 11px; padding: 0 10px; } }

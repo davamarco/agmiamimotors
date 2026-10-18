@@ -273,21 +273,32 @@
   const pickBar = document.createElement('div');
   pickBar.className = 'car-cal__pickbar';
   pickBar.hidden = true;
-  pickBar.innerHTML = '<span class="car-cal__pickbar-text"></span><button type="button" class="car-cal__pickbar-x" aria-label="Cancel">&times;</button>';
+  pickBar.innerHTML = '<span class="car-cal__pickbar-text"></span>' +
+    '<button type="button" class="car-cal__pickbar-today">Start today</button>' +
+    '<button type="button" class="car-cal__pickbar-x" aria-label="Cancel">&times;</button>';
   daysEl.parentNode.insertBefore(pickBar, daysEl);
   pickBar.querySelector('.car-cal__pickbar-x').addEventListener('click', () => { exitQuickPick(); renderCalendar(); });
+  pickBar.querySelector('.car-cal__pickbar-today').addEventListener('click', () => {
+    const n = quickDays;
+    if (!n) return;
+    exitQuickPick();
+    setRange(today, addDays(today, n));
+  });
 
   function enterQuickPick(n) {
     quickDays = n;
     discountEls.forEach(el => el.classList.toggle('is-armed', +el.dataset.discountDays === n));
-    pickBar.querySelector('.car-cal__pickbar-text').textContent = `Tap your start date - we'll select ${n} days at ${quoteFor(n).pct}% off`;
+    const q = quoteFor(n);
+    pickBar.querySelector('.car-cal__pickbar-text').textContent = tierFor(n).exact
+      ? `Tap your start date - we'll select ${n} day${n === 1 ? '' : 's'} at ${fmtMoney(q.perDay)}/day`
+      : `Tap your start date - we'll select ${n} days at ${q.pct}% off`;
     pickBar.hidden = false;
     daysEl.classList.remove('is-picking'); void daysEl.offsetWidth; daysEl.classList.add('is-picking');
-    // bring the calendar into view (on phones the tiles sit under it)
-    const r = calCard.getBoundingClientRect();
-    if (r.top < 70 || r.top > window.innerHeight * 0.5) {
-      const y = window.scrollY + daysEl.getBoundingClientRect().top - 140;
-      window.scrollTo({ top: y });
+    // bring the prompt + calendar into view
+    const top = pickBar.getBoundingClientRect().top;
+    const bottom = daysEl.getBoundingClientRect().bottom;
+    if (top < 80 || bottom > window.innerHeight - 70) {
+      window.scrollTo({ top: window.scrollY + top - 96, behavior: 'smooth' });
     }
   }
   function exitQuickPick() {
@@ -295,6 +306,7 @@
     pickBar.hidden = true;
     daysEl.classList.remove('is-picking');
     discountEls.forEach(el => el.classList.remove('is-armed'));
+    ladderEls.forEach(el => el.classList.remove('is-armed'));
   }
 
   function closePop() {
@@ -366,6 +378,32 @@
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPop(tile); }
     });
   });
+  /* Rate ladder (tiered cars): each step is a button. With a start date
+     already chosen it resizes the range at once; otherwise the calendar
+     waits for one tap on a start date (or "Start today"). data-ladder-pick
+     on each step sets how many days it selects. */
+  ladderEls.forEach(step => {
+    const n = +(step.dataset.ladderPick || step.dataset.ladderDays);
+    step.setAttribute('role', 'button');
+    step.setAttribute('tabindex', '0');
+    step.setAttribute('aria-label', `Select ${n} day${n === 1 ? '' : 's'} at ${fmtMoney(tierFor(n).perDay)} per day`);
+    const go = () => {
+      closePop();
+      track('rental_discount_click', bookingParams(null, { rental_days: n, discount_pct: quoteFor(n).pct, form_location: 'rate_ladder' }));
+      if (rangeStart) {
+        const start = rangeStart;
+        exitQuickPick();
+        setRange(start, addDays(start, n));
+        return;
+      }
+      enterQuickPick(n);
+      ladderEls.forEach(el => el.classList.toggle('is-armed', el === step));
+      renderCalendar();
+    };
+    step.addEventListener('click', e => { e.stopPropagation(); go(); });
+    step.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+  });
+
   document.addEventListener('click', e => { if (pop && !pop.contains(e.target)) closePop(); });
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
